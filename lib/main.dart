@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loop/src/core/styles/app_theme.dart';
 import 'package:loop/src/features/auth/presentation/pages/auth_page.dart';
 
 void main() {
@@ -12,9 +13,7 @@ class LoopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Loop',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: lightAppTheme,
       home: const AuthPage(),
     );
   }

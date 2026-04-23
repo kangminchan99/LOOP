@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loop/src/core/layout/default_layout.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -10,6 +11,9 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return DefaultLayout(
+      appBarTitle: 'Auth Page',
+      child: SafeArea(child: Center(child: Text('Welcome to the Auth Page'))),
+    );
   }
 }
