@@ -66,17 +66,35 @@ devtools_options.yaml
 # Android
 .gradle/
 local.properties
+android/app/src/main/res/drawable*/
+android/app/src/main/res/values-v31/
+android/app/src/main/res/values-night-v31/
 
 # iOS
 ios/Pods/
+ios/Podfile
+ios/Podfile.lock
 ios/.symlinks/
 ios/Flutter/Flutter.podspec
 ios/Flutter/Generated.xcconfig
 ios/Flutter/flutter_export_environment.sh
+ios/Runner/Assets.xcassets/LaunchBackground.imageset/
 
 # macOS
 macos/Pods/
+macos/Podfile
+macos/Podfile.lock
 macos/Flutter/ephemeral/
+macos/Flutter/*.xcconfig
+
+# Web splash assets
+web/splash/
+
+# Flutter native splash config
+flutter_native_splash.yaml
+
+# Dependency lock files
+pubspec.lock
 
 # Windows
 windows/flutter/ephemeral/
