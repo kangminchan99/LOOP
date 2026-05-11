@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/features/auth/presentation/widgets/login_card_widget.dart';
@@ -101,6 +102,18 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back, size: 30),
+                            onPressed: () {
+                              context.pop();
+                            },
+                          ),
+                        ),
+                      ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(32),
                         child: BackdropFilter(

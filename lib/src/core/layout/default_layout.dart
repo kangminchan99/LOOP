@@ -51,6 +51,9 @@ class DefaultLayout extends StatelessWidget {
   /// AppBar 하단에 표시할 위젯 (예: TabBar, 구분선)
   final PreferredSizeWidget? bottom;
 
+  /// AppBar flexibleSpace (그래디언트 등을 적용할 때 사용)
+  final Widget? flexibleSpace;
+
   const DefaultLayout({
     super.key,
     required this.child,
@@ -63,6 +66,7 @@ class DefaultLayout extends StatelessWidget {
     this.actions,
     this.elevation,
     this.bottom,
+    this.flexibleSpace,
   });
 
   @override
@@ -88,6 +92,8 @@ class DefaultLayout extends StatelessWidget {
       actions: actions,
       elevation: elevation,
       bottom: bottom,
+      backgroundColor: flexibleSpace != null ? Colors.transparent : null,
+      flexibleSpace: flexibleSpace,
     );
   }
 }

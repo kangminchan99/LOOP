@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 
 class LoginCardWidget extends StatefulWidget {
@@ -116,7 +118,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
               ),
               const SizedBox(width: 4),
               GestureDetector(
-                onTap: () {},
+                onTap: () => context.push(AppRoute.signUp.path),
                 child: const Text(
                   '회원가입',
                   style: TextStyle(
