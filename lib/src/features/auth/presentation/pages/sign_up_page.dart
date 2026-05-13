@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
+import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
+import 'package:loop/src/features/auth/presentation/providers/sign_up/sign_up_state.dart';
 import 'package:loop/src/features/auth/presentation/widgets/signup_agreement_widget.dart';
 import 'package:loop/src/features/auth/presentation/widgets/signup_input_field_widget.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _nicknameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -28,7 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  void _handleSignUp() {
+  Future<void> _handleSignUp() async {
     if (_nicknameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -53,12 +55,35 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    // TODO: 회원가입 로직
-    context.push(AppRoute.login.path);
+    await ref
+        .read(signUpProvider.notifier)
+        .signUp(
+          nickname: _nicknameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<SignUpState>(signUpProvider, (previous, next) {
+      next.whenOrNull(
+        success: (user) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('회원가입이 완료되었습니다')));
+          // context.go(AppRoute.login.path);
+        },
+        error: (message) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(message)));
+        },
+      );
+    });
+
+    final signUpState = ref.watch(signUpProvider);
+    final isLoading = signUpState is SignUpLoading;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -178,12 +203,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         const SizedBox(height: 20),
                         // Sign Up Button
                         GestureDetector(
-                          onTap: _handleSignUp,
+                          onTap: isLoading ? null : _handleSignUp,
+
                           child: Container(
                             height: 56,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-                              color: AppColors.textPrimary,
+                              color: isLoading
+                                  ? AppColors.textPrimary.withValues(alpha: 0.6)
+                                  : AppColors.textPrimary,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.2),
@@ -192,15 +220,24 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ],
                             ),
-                            child: const Center(
-                              child: Text(
-                                '가입하고 시작하기',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
+                            child: Center(
+                              child: isLoading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      '가입하고 시작하기',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
                           ),
                         ),

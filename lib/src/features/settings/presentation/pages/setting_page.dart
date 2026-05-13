@@ -51,7 +51,7 @@ class _SettingPageState extends State<SettingPage> {
                       : SettingLoginCardWidget(
                           onLoginTap: () {
                             setState(() {
-                              isLoggedIn = true;
+                              // isLoggedIn = true;
                             });
                             context.push(AppRoute.login.path);
                           },

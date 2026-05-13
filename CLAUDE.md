@@ -2,14 +2,14 @@
 
 Flutter Clean Architecture + Riverpod 기반 멀티플랫폼 앱 초기 세팅 템플릿.
 
-**핵심 스택**: Flutter 3.x / flutter_riverpod / go_router / Dio / fpdart / flutter_secure_storage / shared_preferences / cached_network_image
+**핵심 스택**: Flutter 3.x / flutter_riverpod / go_router / Dio / fpdart / freezed / freezed_annotation / flutter_secure_storage / shared_preferences / cached_network_image
 
 ---
 
 ## 새 기능 추가 순서
 
 ```
-1. domain/models/           → 모델 (json_serializable + Equatable)
+1. domain/models/           → 모델 (Freezed + json_serializable)
 2. domain/repositories/     → abstract Repository 인터페이스
 3. data/data_sources/       → API, 로컬 저장소 래퍼
 4. data/repositories/       → Repository 구현체
@@ -25,26 +25,24 @@ Flutter Clean Architecture + Riverpod 기반 멀티플랫폼 앱 초기 세팅 �
 ### Domain — 모델
 
 ```dart
-part 'some_model.g.dart'; // build_runner 생성 — 직접 수정 금지
+part 'some_model.freezed.dart'; // build_runner 생성 — 직접 수정 금지
+part 'some_model.g.dart';
 
-// 응답 파싱용: createToJson: false (서버로 다시 보낼 일 없으면)
-// BLoC state props에 쓰이면 Equatable 상속 필수
-@JsonSerializable(createToJson: false)
-class UserModel extends Equatable {
-  final int id;
-  @JsonKey(name: 'user_email') // 서버 키가 다를 경우
-  final String email;
+@freezed
+class UserModel with _$UserModel {
+  const factory UserModel({
+    required int id,
+    @JsonKey(name: 'user_email') required String email,
+  }) = _UserModel;
 
-  const UserModel({required this.id, required this.email});
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
-
-  @override
-  List<Object?> get props => [id, email];
 }
 ```
 
+요청 모델도 동일하게 Freezed로 작성하고, 서버로 다시 보낼 일이 없으면 `toJson` 호출만 하지 않으면 된다.
+
 코드 생성: `dart run build_runner build --delete-conflicting-outputs`
-`.g.dart` 파일은 git에 커밋.
+`.freezed.dart`, `.g.dart` 파일은 git에 커밋.
 
 ### Domain — Repository 인터페이스
 
@@ -135,20 +133,14 @@ final userProvider = AsyncNotifierProvider<UserAsyncNotifier, UserModel>((ref) {
 });
 
 // <feature>_state.dart
-abstract class AuthState extends Equatable { const AuthState(); @override List<Object?> get props => []; }
-class AuthInitial      extends AuthState {}
-class AuthLoading      extends AuthState {}
-class AuthLoggingOut   extends AuthState {} // 로그아웃 중 — redirect와 구분 필요
-class AuthUnauthenticated extends AuthState {}
-class AuthAuthenticated extends AuthState {
-  final UserModel user;
-  const AuthAuthenticated(this.user);
-  @override List<Object?> get props => [user];
-}
-class AuthError extends AuthState {
-  final String message;
-  const AuthError(this.message);
-  @override List<Object?> get props => [message];
+@freezed
+sealed class AuthState with _$AuthState {
+  const factory AuthState.initial() = AuthInitial;
+  const factory AuthState.loading() = AuthLoading;
+  const factory AuthState.loggingOut() = AuthLoggingOut; // 로그아웃 중 — redirect와 구분 필요
+  const factory AuthState.unauthenticated() = AuthUnauthenticated;
+  const factory AuthState.authenticated(UserModel user) = AuthAuthenticated;
+  const factory AuthState.error(String message) = AuthError;
 }
 ```
 

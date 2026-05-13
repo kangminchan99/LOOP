@@ -19,7 +19,7 @@ String get apiUrl => dotenv.env['API_URL'] ?? _defaultApiUrl;
 /// - 그 외 (iOS 시뮬레이터, 웹, 데스크톱): localhost
 String get _defaultApiUrl {
   if (defaultTargetPlatform == TargetPlatform.android && !kIsWeb) {
-    return 'http://10.0.2.2:3000/api';
+    return 'http://10.0.2.2:3000';
   }
-  return 'http://localhost:3000/api';
+  return 'http://localhost:3000';
 }
