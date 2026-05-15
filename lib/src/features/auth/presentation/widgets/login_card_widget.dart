@@ -4,7 +4,18 @@ import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 
 class LoginCardWidget extends StatefulWidget {
-  const LoginCardWidget({super.key});
+  const LoginCardWidget({
+    required this.emailController,
+    required this.passwordController,
+    required this.onLogin,
+    required this.isLoading,
+    super.key,
+  });
+
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final VoidCallback onLogin;
+  final bool isLoading;
 
   @override
   State<LoginCardWidget> createState() => _LoginCardWidgetState();
@@ -53,6 +64,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
             width: double.infinity,
             height: 56,
             child: TextFormField(
+              controller: widget.emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 hintText: '아이디 또는 이메일',
@@ -83,6 +95,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
             width: double.infinity,
             height: 56,
             child: TextFormField(
+              controller: widget.passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 hintText: '비밀번호',
@@ -102,6 +115,39 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                   borderRadius: BorderRadius.circular(18),
                   borderSide: const BorderSide(color: AppColors.primary),
                 ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          GestureDetector(
+            onTap: widget.isLoading ? null : widget.onLogin,
+            child: Container(
+              decoration: BoxDecoration(
+                color: widget.isLoading
+                    ? AppColors.secondary.withValues(alpha: 0.6)
+                    : AppColors.secondary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              height: 56,
+              child: Center(
+                child: widget.isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        '로그인',
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
               ),
             ),
           ),
