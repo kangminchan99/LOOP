@@ -77,4 +77,10 @@ class AuthRepositoryImpl implements AbstractAuthRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<void> logout() async {
+    await _secureStorage.delete(key: kAccessTokenKey);
+    await _secureStorage.delete(key: kRefreshTokenKey);
+  }
 }

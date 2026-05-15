@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
+import 'package:loop/src/shared/domain/models/user_model.dart';
 
 class SettingProfileCardWidget extends StatelessWidget {
   final VoidCallback? onEditTap;
+  final UserModel user;
 
-  const SettingProfileCardWidget({super.key, this.onEditTap});
+  const SettingProfileCardWidget({
+    required this.user,
+    super.key,
+    this.onEditTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +41,9 @@ class SettingProfileCardWidget extends StatelessWidget {
                 colors: AppColors.primaryGradient,
               ),
             ),
-            child: const Center(
+            child: Center(
               child: Text(
-                '민',
+                'img',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -51,8 +57,8 @@ class SettingProfileCardWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '민찬',
+                Text(
+                  user.nickname,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
@@ -61,7 +67,7 @@ class SettingProfileCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '@minchan_loop',
+                  user.email,
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
