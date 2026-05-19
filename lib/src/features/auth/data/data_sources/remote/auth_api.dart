@@ -19,4 +19,8 @@ class AuthApi {
       data: request.toJson(),
     );
   }
+
+  Future<Response<Map<String, dynamic>>> getMe() {
+    return _dio.get<Map<String, dynamic>>('/users/me');
+  }
 }

@@ -83,4 +83,24 @@ class AuthRepositoryImpl implements AbstractAuthRepository {
     await _secureStorage.delete(key: kAccessTokenKey);
     await _secureStorage.delete(key: kRefreshTokenKey);
   }
+
+  @override
+  Future<Either<Failure, UserModel>> getMe() async {
+    try {
+      final response = await _authApi.getMe();
+      final data = response.data;
+
+      if (data == null) {
+        return const Left(ServerFailure('응답 데이터가 없습니다.', 500));
+      }
+
+      return Right(UserModel.fromJson(data));
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }

@@ -32,5 +32,6 @@ final loginProvider = StateNotifierProvider<LoginStateNotifier, LoginState>((
   ref,
 ) {
   final repository = ref.watch(authRepositoryProvider);
-  return LoginStateNotifier(repository);
+  final secureStorage = ref.watch(secureStorageProvider);
+  return LoginStateNotifier(repository, secureStorage);
 });

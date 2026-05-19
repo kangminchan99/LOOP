@@ -52,7 +52,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('${user.nickname}님 환영합니다!')));
-          context.go(AppRoute.board.path);
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go(AppRoute.board.path);
+          }
         },
         error: (message) {
           ScaffoldMessenger.of(

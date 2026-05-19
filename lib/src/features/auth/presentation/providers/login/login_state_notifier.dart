@@ -1,12 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:loop/src/core/utils/constant/network_constant.dart';
 import 'package:loop/src/features/auth/domain/models/login_request_model.dart';
 import 'package:loop/src/features/auth/domain/repositories/abstract_auth_repository.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
 
 class LoginStateNotifier extends StateNotifier<LoginState> {
   final AbstractAuthRepository _authRepository;
+  final FlutterSecureStorage _secureStorage;
 
-  LoginStateNotifier(this._authRepository) : super(const LoginState.initial());
+  LoginStateNotifier(this._authRepository, this._secureStorage)
+    : super(const LoginState.initial());
 
   Future<void> login({required String email, required String password}) async {
     state = const LoginState.loading();
@@ -24,6 +28,23 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
   Future<void> logout() async {
     await _authRepository.logout();
     state = const LoginState.initial();
+  }
+
+  // 앱 시작 시 토큰이 유효한지 확인하여 자동 로그인 처리
+  Future<void> restoreSession() async {
+    final token = await _secureStorage.read(key: kAccessTokenKey);
+    if (token == null || token.isEmpty) {
+      state = const LoginState.initial();
+      return;
+    }
+
+    state = const LoginState.loading();
+    final result = await _authRepository.getMe();
+
+    state = result.fold(
+      (failure) => const LoginState.initial(),
+      (user) => LoginState.success(user),
+    );
   }
 
   void reset() {

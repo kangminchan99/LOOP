@@ -9,5 +9,7 @@ abstract class AbstractAuthRepository {
 
   Future<Either<Failure, UserModel>> login(LoginRequestModel request);
 
+  Future<Either<Failure, UserModel>> getMe();
+
   Future<void> logout();
 }
