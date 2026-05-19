@@ -1,4 +1,4 @@
-enum AppRoute { login, signUp, board, settings }
+enum AppRoute { login, signUp, board, settings, write }
 
 extension AppRouteExtension on AppRoute {
   String get path {
@@ -9,6 +9,8 @@ extension AppRouteExtension on AppRoute {
         return '/sign-up';
       case AppRoute.board:
         return '/board';
+      case AppRoute.write:
+        return '/write';
       case AppRoute.settings:
         return '/settings';
     }
@@ -22,6 +24,8 @@ extension AppRouteExtension on AppRoute {
         return 'signUp';
       case AppRoute.board:
         return 'board';
+      case AppRoute.write:
+        return 'write';
       case AppRoute.settings:
         return 'settings';
     }

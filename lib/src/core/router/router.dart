@@ -6,6 +6,7 @@ import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/pages/login_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:loop/src/features/board/presentation/pages/board_page.dart';
+import 'package:loop/src/features/board/presentation/pages/board_write_page.dart';
 import 'package:loop/src/features/settings/presentation/pages/setting_page.dart';
 
 final routerProvider = Provider((ref) {
@@ -22,6 +23,11 @@ final routerProvider = Provider((ref) {
         path: AppRoute.signUp.path,
         name: AppRoute.signUp.name,
         builder: (context, state) => const SignUpPage(),
+      ),
+      GoRoute(
+        path: AppRoute.write.path,
+        name: AppRoute.write.name,
+        builder: (context, state) => const BoardWritePage(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -42,6 +48,13 @@ final routerProvider = Provider((ref) {
               GoRoute(
                 path: AppRoute.board.path,
                 builder: (context, state) => const BoardPage(),
+                // routes: [
+                //   GoRoute(
+                //     path: AppRoute.write.path,
+                //     name: AppRoute.write.name,
+                //     builder: (context, state) => const BoardWritePage(),
+                //   ),
+                // ],
               ),
             ],
           ),
