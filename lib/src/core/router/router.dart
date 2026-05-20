@@ -5,8 +5,8 @@ import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/pages/login_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/sign_up_page.dart';
-import 'package:loop/src/features/board/presentation/pages/board_page.dart';
-import 'package:loop/src/features/board/presentation/pages/board_write_page.dart';
+import 'package:loop/src/features/post/presentation/pages/board_page.dart';
+import 'package:loop/src/features/post/presentation/pages/board_write_page.dart';
 import 'package:loop/src/features/settings/presentation/pages/setting_page.dart';
 
 final routerProvider = Provider((ref) {

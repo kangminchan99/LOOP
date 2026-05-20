@@ -1,11 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
+import 'package:loop/src/features/post/presentation/providers/create_post/create_post_state.dart';
+import 'package:loop/src/features/post/presentation/providers/post_providers.dart';
 
-class BoardWritePage extends StatelessWidget {
+class BoardWritePage extends ConsumerStatefulWidget {
   const BoardWritePage({super.key});
 
   @override
+  ConsumerState<BoardWritePage> createState() => _BoardWritePageState();
+}
+
+class _BoardWritePageState extends ConsumerState<BoardWritePage> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitPost() async {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+
+    if (title.isEmpty || content.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('제목과 내용을 모두 입력해주세요.')));
+      return;
+    } else {
+      await ref
+          .read(createPostProvider.notifier)
+          .submitPost(title: title, content: content);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen(createPostProvider, (previous, next) {
+      next.whenOrNull(
+        success: (post) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('게시글이 등록되었습니다.')));
+          context.pop();
+        },
+        error: (message) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('게시글 등록 실패: $message')));
+        },
+      );
+    });
     return DefaultLayout(
       appBarTitle: '글 작성',
       backgroundColor: Colors.white,
@@ -13,13 +63,13 @@ class BoardWritePage extends StatelessWidget {
       centerTitle: true,
       leading: IconButton(
         icon: const Icon(Icons.close, color: Colors.black),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => context.pop(),
       ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 12),
           child: TextButton(
-            onPressed: () {},
+            onPressed: _submitPost,
             child: const Text(
               '등록',
               style: TextStyle(
@@ -73,7 +123,8 @@ class BoardWritePage extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const TextField(
+                    child: TextField(
+                      controller: _titleController,
                       decoration: InputDecoration(
                         hintText: '제목을 입력하세요',
                         border: InputBorder.none,
@@ -94,7 +145,8 @@ class BoardWritePage extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const TextField(
+                    child: TextField(
+                      controller: _contentController,
                       maxLines: null,
                       expands: true,
                       textAlignVertical: TextAlignVertical.top,
@@ -167,7 +219,7 @@ class BoardWritePage extends StatelessWidget {
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: _submitPost,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4F7CFF),
                   foregroundColor: Colors.white,
