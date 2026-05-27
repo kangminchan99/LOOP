@@ -1,4 +1,4 @@
-import 'package:loop/src/features/settings/data/models/setting_model.dart';
+import 'package:loop/src/features/settings/domain/models/setting_model.dart';
 
 class SettingConstants {
   // 로그인 상태 섹션

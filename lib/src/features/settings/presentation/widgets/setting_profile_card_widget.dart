@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/shared/domain/models/user_model.dart';
@@ -30,28 +31,40 @@ class SettingProfileCardWidget extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: AppColors.primaryGradient,
-              ),
-            ),
-            child: Center(
-              child: Text(
-                'img',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+          user.profileImageUrl == null
+              ? Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: AppColors.primaryGradient,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '없음',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                )
+              : Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(user.profileImageUrl!),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(

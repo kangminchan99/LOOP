@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
-import 'package:loop/src/features/settings/data/models/setting_model.dart';
+import 'package:loop/src/features/settings/domain/models/setting_model.dart';
 
 import 'setting_item_widget.dart';
 

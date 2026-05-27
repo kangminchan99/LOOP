@@ -11,6 +11,7 @@ abstract class UserModel with _$UserModel {
     required String nickname,
     required DateTime createdAt,
     required DateTime updatedAt,
+    String? profileImageUrl,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

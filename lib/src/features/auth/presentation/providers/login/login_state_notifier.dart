@@ -4,6 +4,7 @@ import 'package:loop/src/core/utils/constant/network_constant.dart';
 import 'package:loop/src/features/auth/domain/models/login_request_model.dart';
 import 'package:loop/src/features/auth/domain/repositories/abstract_auth_repository.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
+import 'package:loop/src/shared/domain/models/user_model.dart';
 
 class LoginStateNotifier extends StateNotifier<LoginState> {
   final AbstractAuthRepository _authRepository;
@@ -28,6 +29,10 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
   Future<void> logout() async {
     await _authRepository.logout();
     state = const LoginState.initial();
+  }
+
+  Future<void> updateUser(UserModel user) async {
+    state = LoginState.success(user);
   }
 
   // 앱 시작 시 토큰이 유효한지 확인하여 자동 로그인 처리
