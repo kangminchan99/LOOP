@@ -5,12 +5,14 @@ import 'package:loop/src/shared/domain/models/user_model.dart';
 
 class SettingProfileCardWidget extends StatelessWidget {
   final VoidCallback? onEditTap;
+  final VoidCallback? onImageError;
   final UserModel user;
 
   const SettingProfileCardWidget({
     required this.user,
     super.key,
     this.onEditTap,
+    this.onImageError,
   });
 
   @override
@@ -60,7 +62,10 @@ class SettingProfileCardWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     image: DecorationImage(
-                      image: CachedNetworkImageProvider(user.profileImageUrl!),
+                      image: CachedNetworkImageProvider(
+                        user.profileImageUrl!,
+                        errorListener: (_) => onImageError?.call(),
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),

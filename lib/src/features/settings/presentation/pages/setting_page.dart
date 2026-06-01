@@ -22,6 +22,15 @@ class SettingPage extends ConsumerStatefulWidget {
 }
 
 class _SettingPageState extends ConsumerState<SettingPage> {
+  bool _imageRefreshing = false;
+
+  Future<void> _refreshUserImage() async {
+    if (_imageRefreshing) return; // 무한 재시도 방지
+    _imageRefreshing = true;
+    await ref.read(loginProvider.notifier).restoreSession();
+    _imageRefreshing = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginProvider);
@@ -77,6 +86,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       ? SettingProfileCardWidget(
                           user: user,
                           onEditTap: getProfileImage,
+                          onImageError: _refreshUserImage,
                         )
                       : SettingLoginCardWidget(
                           onLoginTap: () => context.push(AppRoute.login.path),
