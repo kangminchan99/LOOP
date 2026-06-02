@@ -11,4 +11,14 @@ class PostApi {
   ) {
     return _dio.post<Map<String, dynamic>>('/posts', data: requset.toJson());
   }
+
+  Future<Response<Map<String, dynamic>>> getPosts({
+    int limit = 20,
+    int? cursor,
+  }) {
+    return _dio.get<Map<String, dynamic>>(
+      '/posts',
+      queryParameters: {'limit': limit, if (cursor != null) 'cursor': cursor},
+    );
+  }
 }

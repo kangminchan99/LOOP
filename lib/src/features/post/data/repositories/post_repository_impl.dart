@@ -6,7 +6,9 @@ import 'package:loop/src/features/post/data/data_sources/remote/post_api.dart';
 import 'package:loop/src/features/post/domain/models/create_post_request_model.dart';
 import 'package:loop/src/features/post/domain/models/create_post_response_model.dart';
 import 'package:loop/src/features/post/domain/models/post_detail_model.dart';
+import 'package:loop/src/features/post/domain/models/post_list_model.dart';
 import 'package:loop/src/features/post/domain/repositories/abstract_post_repository.dart';
+import 'package:loop/src/shared/domain/models/cursor_paginated_response.dart';
 
 class PostRepositoryImpl implements AbstractPostRepository {
   final PostApi _postApi;
@@ -34,6 +36,30 @@ class PostRepositoryImpl implements AbstractPostRepository {
           content: parsed.content,
           authorId: parsed.authorId,
           updatedAt: parsed.updatedAt,
+        ),
+      );
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> getPosts({
+    int? cursor,
+  }) async {
+    try {
+      final response = await _postApi.getPosts(cursor: cursor);
+      final data = response.data;
+      if (data == null) return const Left(ServerFailure('응답 데이터가 없습니다.', 500));
+
+      return Right(
+        CursorPaginatedResponse.fromJson(
+          json: data,
+          itemParser: (e) => PostListModel.fromJson(e),
         ),
       );
     } on DioException catch (e) {
