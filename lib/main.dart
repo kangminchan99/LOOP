@@ -13,7 +13,7 @@ void main() async {
   await dotenv.load(fileName: '.env');
 
   // 모든 초기화 완료 대기
-  await Helpers().initializeApp();
+  // await Helpers().initializeApp();
 
   runApp(const ProviderScope(child: LoopApp()));
 }

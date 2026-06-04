@@ -19,8 +19,10 @@ abstract class CursorPaginationNotifier<T>
 
     final result = await fetchPage(null);
     result.match(
-      (failure) =>
-          state.copyWith(isLoading: false, errorMessage: failure.errorMessage),
+      (failure) => state = state.copyWith(
+        isLoading: false,
+        errorMessage: failure.errorMessage,
+      ),
       (data) => state = CursorPaginationState<T>(
         items: data.items,
         nextCursor: data.nextCursor,

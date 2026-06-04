@@ -5,10 +5,11 @@ import 'package:loop/src/features/post/domain/repositories/abstract_post_reposit
 import 'package:loop/src/shared/domain/models/cursor_paginated_response.dart';
 import 'package:loop/src/shared/presentation/providers/cursor_pagination_notifier.dart';
 
-class PostListNotifier
-    extends CursorPaginationNotifier<PostListModel> {
+class PostListNotifier extends CursorPaginationNotifier<PostListModel> {
   final AbstractPostRepository _repository;
-  PostListNotifier(this._repository);
+  PostListNotifier(this._repository) {
+    load();
+  }
 
   @override
   Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> fetchPage(

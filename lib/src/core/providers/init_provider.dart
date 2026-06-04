@@ -23,9 +23,9 @@ final dioProvider = Provider<Dio>((ref) {
   return DioNetwork.appAPI;
 });
 
-final initializationProvider = FutureProvider<void>((ref) async {
-  // 모든 provider 초기화
-  ref.watch(loggerProvider);
-  ref.watch(secureStorageProvider);
-  ref.watch(dioProvider);
-});
+// final initializationProvider = FutureProvider<void>((ref) async {
+//   // 모든 provider 초기화
+//   ref.watch(loggerProvider);
+//   ref.watch(secureStorageProvider);
+//   ref.watch(dioProvider);
+// });
