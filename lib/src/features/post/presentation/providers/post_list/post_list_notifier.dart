@@ -17,4 +17,10 @@ class PostListNotifier extends CursorPaginationNotifier<PostListModel> {
   ) {
     return _repository.getPosts(cursor: cursor);
   }
+
+  void removePost(int postId) {
+    state = state.copyWith(
+      items: state.items.where((p) => p.postId != postId).toList(),
+    );
+  }
 }

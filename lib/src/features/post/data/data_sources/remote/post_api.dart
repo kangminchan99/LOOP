@@ -25,4 +25,8 @@ class PostApi {
   Future<Response<Map<String, dynamic>>> getPostById(int postId) {
     return _dio.get<Map<String, dynamic>>('/posts/$postId');
   }
+
+  Future<Response<void>> deletePost(int postId) {
+    return _dio.delete<void>('/posts/$postId');
+  }
 }

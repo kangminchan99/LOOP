@@ -15,4 +15,6 @@ abstract class AbstractPostRepository {
   });
 
   Future<Either<Failure, PostDetailModel>> getPostById(int postId);
+
+  Future<Either<Failure, void>> deletePost(int postId);
 }

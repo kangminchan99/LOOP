@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/core/utils/helpers/initializer.dart';
+import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
+import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
+import 'package:loop/src/features/post/presentation/providers/post_detail/post_detail_state.dart';
 import 'package:loop/src/features/post/presentation/providers/post_providers.dart';
 
 class BoardDetailPage extends ConsumerWidget {
@@ -11,14 +15,42 @@ class BoardDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncPost = ref.watch(postDetailProvider(postId));
+    final state = ref.watch(postDetailProvider(postId));
+
+    final loginState = ref.watch(loginProvider);
+    final myId = loginState is LoginSuccess ? loginState.user.id : null;
+
+    ref.listen(postDetailProvider(postId), (_, next) {
+      if (next is PostDetailDeleted) {
+        ref.read(postListProvider.notifier).removePost(postId);
+        context.pop();
+      }
+      if (next is PostDetailError) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.message)));
+      }
+    });
 
     return DefaultLayout(
       appBarTitle: '게시글',
-      child: asyncPost.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(e.toString())),
-        data: (post) => SingleChildScrollView(
+      actions: [
+        if (state is PostDetailSuccess &&
+            myId != null &&
+            state.post.authorId == myId)
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () => _confirmDelete(context, ref),
+          ),
+      ],
+      child: switch (state) {
+        PostDetailLoading() => const Center(child: CircularProgressIndicator()),
+        PostDetailDeleting() => const Center(
+          child: CircularProgressIndicator(),
+        ),
+        PostDetailError(:final message) => Center(child: Text(message)),
+        PostDetailSuccess(:final post) ||
+        PostDetailDeleting(:final post) => SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,6 +75,27 @@ class BoardDetailPage extends ConsumerWidget {
             ],
           ),
         ),
+        _ => const SizedBox.shrink(),
+      },
+    );
+  }
+
+  void _confirmDelete(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('게시글 삭제'),
+        content: const Text('정말 삭제하시겠습니까?'),
+        actions: [
+          TextButton(onPressed: () => context.pop(), child: const Text('취소')),
+          TextButton(
+            onPressed: () {
+              context.pop();
+              ref.read(postDetailProvider(postId).notifier).delete();
+            },
+            child: const Text('삭제', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

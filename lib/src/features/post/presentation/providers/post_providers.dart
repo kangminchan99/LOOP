@@ -2,11 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
 import 'package:loop/src/features/post/data/data_sources/remote/post_api.dart';
 import 'package:loop/src/features/post/data/repositories/post_repository_impl.dart';
-import 'package:loop/src/features/post/domain/models/post_detail_model.dart';
 import 'package:loop/src/features/post/domain/models/post_list_model.dart';
 import 'package:loop/src/features/post/domain/repositories/abstract_post_repository.dart';
 import 'package:loop/src/features/post/presentation/providers/create_post/create_post_state.dart';
 import 'package:loop/src/features/post/presentation/providers/create_post/create_post_state_notifier.dart';
+import 'package:loop/src/features/post/presentation/providers/post_detail/post_detail_notifier.dart';
+import 'package:loop/src/features/post/presentation/providers/post_detail/post_detail_state.dart';
 import 'package:loop/src/features/post/presentation/providers/post_list/post_list_notifier.dart';
 import 'package:loop/src/shared/presentation/providers/cursor_pagination_state.dart';
 
@@ -35,14 +36,13 @@ final postListProvider =
       return PostListNotifier(ref.watch(createPostRepositoryProvider));
     });
 
-final postDetailProvider = FutureProvider.family<PostDetailModel, int>((
-  ref,
-  postId,
-) async {
-  final repository = ref.watch(createPostRepositoryProvider);
-  final result = await repository.getPostById(postId);
-  return result.fold(
-    (failure) => throw Exception(failure.errorMessage),
-    (post) => post,
-  );
-});
+final postDetailProvider =
+    StateNotifierProvider.family<PostDetailNotifier, PostDetailState, int>((
+      ref,
+      postId,
+    ) {
+      return PostDetailNotifier(
+        ref.watch(createPostRepositoryProvider),
+        postId,
+      );
+    });

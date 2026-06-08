@@ -86,4 +86,18 @@ class PostRepositoryImpl implements AbstractPostRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deletePost(int postId) async {
+    try {
+      await _postApi.deletePost(postId);
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }
