@@ -48,7 +48,13 @@ class BoardPage extends ConsumerWidget {
             hasNext: state.hasNext,
             isLoadingMore: state.isLoadingMore,
             onLoadMore: () => ref.read(postListProvider.notifier).loadMore(),
-            itemBuilder: (context, post, index) => PostCardWidget(post: post),
+            itemBuilder: (context, post, index) => PostCardWidget(
+              post: post,
+              onTap: () => context.pushNamed(
+                AppRoute.postDetail.name,
+                pathParameters: {'postId': post.postId.toString()},
+              ),
+            ),
           );
         },
       ),

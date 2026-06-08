@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
 import 'package:loop/src/features/post/data/data_sources/remote/post_api.dart';
 import 'package:loop/src/features/post/data/repositories/post_repository_impl.dart';
+import 'package:loop/src/features/post/domain/models/post_detail_model.dart';
 import 'package:loop/src/features/post/domain/models/post_list_model.dart';
 import 'package:loop/src/features/post/domain/repositories/abstract_post_repository.dart';
 import 'package:loop/src/features/post/presentation/providers/create_post/create_post_state.dart';
@@ -33,3 +34,15 @@ final postListProvider =
     >((ref) {
       return PostListNotifier(ref.watch(createPostRepositoryProvider));
     });
+
+final postDetailProvider = FutureProvider.family<PostDetailModel, int>((
+  ref,
+  postId,
+) async {
+  final repository = ref.watch(createPostRepositoryProvider);
+  final result = await repository.getPostById(postId);
+  return result.fold(
+    (failure) => throw Exception(failure.errorMessage),
+    (post) => post,
+  );
+});

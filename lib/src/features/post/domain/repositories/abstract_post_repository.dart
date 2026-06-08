@@ -13,4 +13,6 @@ abstract class AbstractPostRepository {
   Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> getPosts({
     int? cursor,
   });
+
+  Future<Either<Failure, PostDetailModel>> getPostById(int postId);
 }

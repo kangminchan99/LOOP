@@ -21,4 +21,8 @@ class PostApi {
       queryParameters: {'limit': limit, if (cursor != null) 'cursor': cursor},
     );
   }
+
+  Future<Response<Map<String, dynamic>>> getPostById(int postId) {
+    return _dio.get<Map<String, dynamic>>('/posts/$postId');
+  }
 }
