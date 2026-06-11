@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
@@ -16,7 +15,7 @@ class BoardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoggedIn = ref.watch(loginProvider) is LoginSuccess;
-    return DefaultLayout(
+    return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           if (!isLoggedIn) {
@@ -32,7 +31,7 @@ class BoardPage extends ConsumerWidget {
         },
         child: const Icon(Icons.edit),
       ),
-      child: Consumer(
+      body: Consumer(
         builder: (context, ref, _) {
           final state = ref.watch(postListProvider);
 

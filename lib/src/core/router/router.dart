@@ -30,20 +30,6 @@ final routerProvider = Provider((ref) {
         name: AppRoute.write.name,
         builder: (context, state) => const BoardWritePage(),
       ),
-      GoRoute(
-        path: AppRoute.board.path,
-        builder: (context, state) => const BoardPage(),
-        routes: [
-          GoRoute(
-            path: 'posts/:postId',
-            name: AppRoute.postDetail.name,
-            builder: (context, state) {
-              final postId = int.parse(state.pathParameters['postId']!);
-              return BoardDetailPage(postId: postId);
-            },
-          ),
-        ],
-      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return LoopAppShell(
@@ -63,13 +49,16 @@ final routerProvider = Provider((ref) {
               GoRoute(
                 path: AppRoute.board.path,
                 builder: (context, state) => const BoardPage(),
-                // routes: [
-                //   GoRoute(
-                //     path: AppRoute.write.path,
-                //     name: AppRoute.write.name,
-                //     builder: (context, state) => const BoardWritePage(),
-                //   ),
-                // ],
+                routes: [
+                  GoRoute(
+                    path: 'posts/:postId',
+                    name: AppRoute.postDetail.name,
+                    builder: (context, state) {
+                      final postId = int.parse(state.pathParameters['postId']!);
+                      return BoardDetailPage(postId: postId);
+                    },
+                  ),
+                ],
               ),
             ],
           ),

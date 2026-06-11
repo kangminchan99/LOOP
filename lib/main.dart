@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router.dart';
 import 'package:loop/src/core/styles/app_theme.dart';
-import 'package:loop/src/core/utils/helpers/initializer.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 
 void main() async {
