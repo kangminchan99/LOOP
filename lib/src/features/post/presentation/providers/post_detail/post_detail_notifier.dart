@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop/src/features/post/domain/models/post_request_model.dart';
 import 'package:loop/src/features/post/domain/repositories/abstract_post_repository.dart';
 import 'package:loop/src/features/post/presentation/providers/post_detail/post_detail_state.dart';
 
@@ -29,6 +30,18 @@ class PostDetailNotifier extends StateNotifier<PostDetailState> {
     state = result.fold(
       (failure) => PostDetailState.error(failure.errorMessage),
       (_) => const PostDetailState.deleted(),
+    );
+  }
+
+  Future<void> update(PostRequestModel request) async {
+    final current = state;
+    if (current is! PostDetailSuccess) return;
+
+    final result = await _repository.updatePost(_postId, request);
+
+    state = result.fold(
+      (failure) => PostDetailState.error(failure.errorMessage),
+      (updatedPost) => PostDetailState.success(updatedPost),
     );
   }
 }

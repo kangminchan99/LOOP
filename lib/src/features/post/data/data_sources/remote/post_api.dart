@@ -1,14 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:loop/src/features/post/domain/models/create_post_request_model.dart';
+import 'package:loop/src/features/post/domain/models/post_request_model.dart';
 
 class PostApi {
   final Dio _dio;
 
   PostApi(this._dio);
 
-  Future<Response<Map<String, dynamic>>> createPost(
-    CreatePostRequestModel requset,
-  ) {
+  Future<Response<Map<String, dynamic>>> createPost(PostRequestModel requset) {
     return _dio.post<Map<String, dynamic>>('/posts', data: requset.toJson());
   }
 
@@ -28,5 +26,15 @@ class PostApi {
 
   Future<Response<void>> deletePost(int postId) {
     return _dio.delete<void>('/posts/$postId');
+  }
+
+  Future<Response<Map<String, dynamic>>> updatePost(
+    int postId,
+    PostRequestModel request,
+  ) {
+    return _dio.patch<Map<String, dynamic>>(
+      '/posts/$postId',
+      data: request.toJson(),
+    );
   }
 }

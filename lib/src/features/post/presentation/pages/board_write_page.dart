@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
+import 'package:loop/src/features/post/domain/models/post_request_model.dart';
 import 'package:loop/src/features/post/presentation/providers/create_post/create_post_state.dart';
 import 'package:loop/src/features/post/presentation/providers/post_providers.dart';
 
@@ -35,7 +36,7 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
     } else {
       await ref
           .read(createPostProvider.notifier)
-          .submitPost(title: title, content: content);
+          .submitPost(PostRequestModel(title: title, content: content));
     }
   }
 
