@@ -6,6 +6,7 @@ import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/pages/login_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_detail_page.dart';
+import 'package:loop/src/features/post/presentation/pages/board_edit_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_write_page.dart';
 import 'package:loop/src/features/settings/presentation/pages/setting_page.dart';
@@ -30,6 +31,7 @@ final routerProvider = Provider((ref) {
         name: AppRoute.write.name,
         builder: (context, state) => const BoardWritePage(),
       ),
+
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return LoopAppShell(
@@ -57,6 +59,18 @@ final routerProvider = Provider((ref) {
                       final postId = int.parse(state.pathParameters['postId']!);
                       return BoardDetailPage(postId: postId);
                     },
+                    routes: [
+                      GoRoute(
+                        path: 'edit',
+                        name: AppRoute.postEdit.name,
+                        builder: (context, state) {
+                          final postId = int.parse(
+                            state.pathParameters['postId']!,
+                          );
+                          return BoardEditPage(postId: postId);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

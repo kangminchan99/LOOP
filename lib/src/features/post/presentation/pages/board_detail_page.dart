@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
+import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/utils/helpers/initializer.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
@@ -37,11 +38,21 @@ class BoardDetailPage extends ConsumerWidget {
       actions: [
         if (state is PostDetailSuccess &&
             myId != null &&
-            state.post.authorId == myId)
+            state.post.authorId == myId) ...[
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            onPressed: () {
+              context.pushNamed(
+                AppRoute.postEdit.name,
+                pathParameters: {'postId': postId.toString()},
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: () => _confirmDelete(context, ref),
           ),
+        ],
       ],
       child: switch (state) {
         PostDetailLoading() => const Center(child: CircularProgressIndicator()),

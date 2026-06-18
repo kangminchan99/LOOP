@@ -23,4 +23,15 @@ class PostListNotifier extends CursorPaginationNotifier<PostListModel> {
       items: state.items.where((p) => p.postId != postId).toList(),
     );
   }
+
+  void updatePost(PostListModel updatedPost) {
+    state = state.copyWith(
+      items: state.items.map((post) {
+        if (post.postId == updatedPost.postId) {
+          return updatedPost;
+        }
+        return post;
+      }).toList(),
+    );
+  }
 }

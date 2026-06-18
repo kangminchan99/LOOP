@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:loop/src/features/post/domain/models/post_detail_model.dart';
 
 part 'post_list_model.freezed.dart';
 part 'post_list_model.g.dart';
