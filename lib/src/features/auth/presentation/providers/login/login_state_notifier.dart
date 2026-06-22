@@ -52,6 +52,15 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
     );
   }
 
+  // 출석 체크 후 포인트 업데이트
+  void updatePoint(int point) {
+    final current = state;
+
+    if (current is! LoginSuccess) return;
+
+    state = LoginState.success(current.user.copyWith(point: point));
+  }
+
   void reset() {
     state = const LoginState.initial();
   }

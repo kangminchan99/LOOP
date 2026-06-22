@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
+import 'package:loop/src/features/attendance/presentation/widgets/attendance_dialog_widget.dart';
 import 'package:loop/src/features/settings/domain/models/setting_model.dart';
 
 import 'setting_item_widget.dart';
@@ -46,7 +47,17 @@ class SettingSectionWidget extends StatelessWidget {
                 icon: item.icon,
                 label: item.label,
                 value: item.value.isNotEmpty ? item.value : null,
-                onTap: item.onTap,
+                onTap: () {
+                  if (item.label == '출석 체크') {
+                    showDialog(
+                      context: context,
+                      builder: (_) => const AttendanceDialog(),
+                    );
+                    return;
+                  }
+
+                  item.onTap?.call();
+                },
                 showDivider: !isLast,
               );
             }),

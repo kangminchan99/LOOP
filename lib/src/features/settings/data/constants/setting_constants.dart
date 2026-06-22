@@ -7,7 +7,7 @@ class SettingConstants {
       title: '계정',
       items: [
         SettingItem(icon: '👤', label: '프로필 편집'),
-        SettingItem(icon: '🔐', label: '로그인 및 보안'),
+        SettingItem(icon: '🎯', label: '출석 체크'),
         SettingItem(icon: '🪪', label: '계정 정보'),
       ],
     ),

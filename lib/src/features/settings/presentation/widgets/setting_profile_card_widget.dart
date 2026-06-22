@@ -91,6 +91,11 @@ class SettingProfileCardWidget extends StatelessWidget {
                     color: AppColors.textSecondary,
                   ),
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  '${user.point} 포인트',
+                  style: TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                ),
               ],
             ),
           ),
