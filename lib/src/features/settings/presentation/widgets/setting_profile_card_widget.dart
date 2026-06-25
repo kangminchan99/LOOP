@@ -85,7 +85,7 @@ class SettingProfileCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  user.email,
+                  user.email ?? '이메일 없음',
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,

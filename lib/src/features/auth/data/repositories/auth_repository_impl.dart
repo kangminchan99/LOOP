@@ -79,6 +79,40 @@ class AuthRepositoryImpl implements AbstractAuthRepository {
   }
 
   @override
+  Future<Either<Failure, UserModel>> kakaoLogin({
+    required String kakaoAccessToken,
+  }) async {
+    try {
+      final response = await _authApi.kakaoLogin(kakaoAccessToken);
+      final data = response.data;
+
+      if (data == null) {
+        return const Left(ServerFailure('응답 데이터가 없습니다.', 500));
+      }
+
+      final parsed = AuthResponseModel.fromJson(data);
+
+      await _secureStorage.write(
+        key: kAccessTokenKey,
+        value: parsed.accessToken,
+      );
+
+      await _secureStorage.write(
+        key: kRefreshTokenKey,
+        value: parsed.refreshToken,
+      );
+
+      return Right(parsed.user);
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
+
+  @override
   Future<void> logout() async {
     await _secureStorage.delete(key: kAccessTokenKey);
     await _secureStorage.delete(key: kRefreshTokenKey);

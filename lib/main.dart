@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router.dart';
 import 'package:loop/src/core/styles/app_theme.dart';
@@ -10,6 +11,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: '.env');
+
+  KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '');
+
+  // // key hash 확인용 코드
+  // final keyHash = await KakaoSdk.origin;
+  // print('KAKAO KEY HASH: $keyHash');
 
   // 모든 초기화 완료 대기
   // await Helpers().initializeApp();

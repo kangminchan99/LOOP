@@ -20,6 +20,14 @@ class AuthApi {
     );
   }
 
+  // kakao login
+  Future<Response<Map<String, dynamic>>> kakaoLogin(String kakaoAccessToken) {
+    return _dio.post<Map<String, dynamic>>(
+      '/auth/kakao',
+      data: {'kakaoAccessToken': kakaoAccessToken},
+    );
+  }
+
   Future<Response<Map<String, dynamic>>> getMe() {
     return _dio.get<Map<String, dynamic>>('/users/me');
   }

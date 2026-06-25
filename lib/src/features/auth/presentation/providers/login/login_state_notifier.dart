@@ -1,5 +1,7 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:loop/src/core/utils/constant/network_constant.dart';
 import 'package:loop/src/features/auth/domain/models/login_request_model.dart';
 import 'package:loop/src/features/auth/domain/repositories/abstract_auth_repository.dart';
@@ -24,6 +26,39 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
       (failure) => LoginState.error(failure.errorMessage),
       (user) => LoginState.success(user),
     );
+  }
+
+  Future<void> kakaoLogin() async {
+    state = const LoginState.loading();
+
+    try {
+      OAuthToken kakaoToken;
+
+      if (await isKakaoTalkInstalled()) {
+        try {
+          kakaoToken = await UserApi.instance.loginWithKakaoTalk();
+        } catch (e) {
+          if (e is PlatformException && e.code == 'CANCELED') {
+            state = const LoginState.initial();
+            return;
+          }
+
+          kakaoToken = await UserApi.instance.loginWithKakaoAccount();
+        }
+      } else {
+        kakaoToken = await UserApi.instance.loginWithKakaoAccount();
+      }
+      final result = await _authRepository.kakaoLogin(
+        kakaoAccessToken: kakaoToken.accessToken,
+      );
+
+      state = result.match(
+        (failure) => LoginState.error(failure.errorMessage),
+        (user) => LoginState.success(user),
+      );
+    } catch (e) {
+      state = LoginState.error('카카오 로그인 중 오류가 발생했습니다: $e');
+    }
   }
 
   Future<void> logout() async {
