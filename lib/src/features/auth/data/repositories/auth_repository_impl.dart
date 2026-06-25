@@ -5,6 +5,7 @@ import 'package:loop/src/core/network/error/dio_error_handler.dart';
 import 'package:loop/src/core/network/error/failures.dart';
 import 'package:loop/src/core/utils/constant/network_constant.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/auth_api.dart';
+import 'package:loop/src/features/auth/data/data_sources/remote/kakao_auth_data_source.dart';
 import 'package:loop/src/features/auth/domain/models/auth_response_model.dart';
 import 'package:loop/src/features/auth/domain/models/login_request_model.dart';
 import 'package:loop/src/features/auth/domain/models/sign_up_request_model.dart';
@@ -14,7 +15,12 @@ import 'package:loop/src/shared/domain/models/user_model.dart';
 class AuthRepositoryImpl implements AbstractAuthRepository {
   final AuthApi _authApi;
   final FlutterSecureStorage _secureStorage;
-  AuthRepositoryImpl(this._authApi, this._secureStorage);
+  final KakaoAuthDataSource _kakaoAuthDataSource;
+  AuthRepositoryImpl(
+    this._authApi,
+    this._secureStorage,
+    this._kakaoAuthDataSource,
+  );
   @override
   Future<Either<Failure, UserModel>> signUp(SignUpRequestModel request) async {
     try {
@@ -79,10 +85,10 @@ class AuthRepositoryImpl implements AbstractAuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserModel>> kakaoLogin({
-    required String kakaoAccessToken,
-  }) async {
+  Future<Either<Failure, UserModel>> loginWithKakao() async {
     try {
+      final kakaoAccessToken = await _kakaoAuthDataSource.login();
+
       final response = await _authApi.kakaoLogin(kakaoAccessToken);
       final data = response.data;
 

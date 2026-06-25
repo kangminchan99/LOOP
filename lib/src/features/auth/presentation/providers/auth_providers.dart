@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/auth_api.dart';
+import 'package:loop/src/features/auth/data/data_sources/remote/kakao_auth_data_source.dart';
 import 'package:loop/src/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:loop/src/features/auth/domain/repositories/abstract_auth_repository.dart';
+import 'package:loop/src/features/auth/domain/usecases/login_with_kakao_usecase.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state_notifier.dart';
 import 'package:loop/src/features/auth/presentation/providers/sign_up/sign_up_state.dart';
@@ -14,11 +16,22 @@ final authApiProvider = Provider<AuthApi>((ref) {
   return AuthApi(dio);
 });
 
+final kakaoAuthDataSourceProvider = Provider<KakaoAuthDataSource>((ref) {
+  return KakaoAuthDataSource();
+});
+
 // 인터페이스 -> 구현체 주입
 final authRepositoryProvider = Provider<AbstractAuthRepository>((ref) {
   final api = ref.watch(authApiProvider);
   final secureStorage = ref.watch(secureStorageProvider);
-  return AuthRepositoryImpl(api, secureStorage);
+  final kakaoAuthDataSourece = ref.watch(kakaoAuthDataSourceProvider);
+  return AuthRepositoryImpl(api, secureStorage, kakaoAuthDataSourece);
+});
+
+final loginWithKakaoUseCaseProvider = Provider<LoginWithKakaoUsecase>((ref) {
+  final repository = ref.watch(authRepositoryProvider);
+
+  return LoginWithKakaoUsecase(authRepository: repository);
 });
 
 final signUpProvider = StateNotifierProvider<SignUpStateNotifier, SignUpState>((
@@ -33,5 +46,6 @@ final loginProvider = StateNotifierProvider<LoginStateNotifier, LoginState>((
 ) {
   final repository = ref.watch(authRepositoryProvider);
   final secureStorage = ref.watch(secureStorageProvider);
-  return LoginStateNotifier(repository, secureStorage);
+  final loginWithKakaoUsecase = ref.watch(loginWithKakaoUseCaseProvider);
+  return LoginStateNotifier(repository, secureStorage, loginWithKakaoUsecase);
 });

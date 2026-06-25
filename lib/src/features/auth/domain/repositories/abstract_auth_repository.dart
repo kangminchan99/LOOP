@@ -9,9 +9,7 @@ abstract class AbstractAuthRepository {
 
   Future<Either<Failure, UserModel>> login(LoginRequestModel request);
 
-  Future<Either<Failure, UserModel>> kakaoLogin({
-    required String kakaoAccessToken,
-  });
+  Future<Either<Failure, UserModel>> loginWithKakao();
 
   Future<Either<Failure, UserModel>> getMe();
 
