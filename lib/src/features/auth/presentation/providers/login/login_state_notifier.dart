@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loop/src/core/utils/constant/network_constant.dart';
 import 'package:loop/src/features/auth/domain/models/login_request_model.dart';
 import 'package:loop/src/features/auth/domain/repositories/abstract_auth_repository.dart';
+import 'package:loop/src/features/auth/domain/usecases/login_with_google_usecase.dart';
 import 'package:loop/src/features/auth/domain/usecases/login_with_kakao_usecase.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
 import 'package:loop/src/shared/domain/models/user_model.dart';
@@ -11,11 +12,13 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
   final AbstractAuthRepository _authRepository;
   final FlutterSecureStorage _secureStorage;
   final LoginWithKakaoUsecase _loginWithKakaoUsecase;
+  final LoginWithGoogleUsecase _loginWithGoogleUsecase;
 
   LoginStateNotifier(
     this._authRepository,
     this._secureStorage,
     this._loginWithKakaoUsecase,
+    this._loginWithGoogleUsecase,
   ) : super(const LoginState.initial());
 
   Future<void> login({required String email, required String password}) async {
@@ -35,6 +38,17 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
     state = const LoginState.loading();
 
     final result = await _loginWithKakaoUsecase();
+
+    state = result.match(
+      (failure) => LoginState.error(failure.errorMessage),
+      (user) => LoginState.success(user),
+    );
+  }
+
+  Future<void> googleLogin() async {
+    state = const LoginState.loading();
+
+    final result = await _loginWithGoogleUsecase();
 
     state = result.match(
       (failure) => LoginState.error(failure.errorMessage),

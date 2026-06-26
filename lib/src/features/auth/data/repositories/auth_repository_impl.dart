@@ -5,6 +5,7 @@ import 'package:loop/src/core/network/error/dio_error_handler.dart';
 import 'package:loop/src/core/network/error/failures.dart';
 import 'package:loop/src/core/utils/constant/network_constant.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/auth_api.dart';
+import 'package:loop/src/features/auth/data/data_sources/remote/google_auth_data_source.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/kakao_auth_data_source.dart';
 import 'package:loop/src/features/auth/domain/models/auth_response_model.dart';
 import 'package:loop/src/features/auth/domain/models/login_request_model.dart';
@@ -16,10 +17,12 @@ class AuthRepositoryImpl implements AbstractAuthRepository {
   final AuthApi _authApi;
   final FlutterSecureStorage _secureStorage;
   final KakaoAuthDataSource _kakaoAuthDataSource;
+  final GoogleAuthDataSource _googleAuthDataSource;
   AuthRepositoryImpl(
     this._authApi,
     this._secureStorage,
     this._kakaoAuthDataSource,
+    this._googleAuthDataSource,
   );
   @override
   Future<Either<Failure, UserModel>> signUp(SignUpRequestModel request) async {
@@ -90,6 +93,40 @@ class AuthRepositoryImpl implements AbstractAuthRepository {
       final kakaoAccessToken = await _kakaoAuthDataSource.login();
 
       final response = await _authApi.kakaoLogin(kakaoAccessToken);
+      final data = response.data;
+
+      if (data == null) {
+        return const Left(ServerFailure('응답 데이터가 없습니다.', 500));
+      }
+
+      final parsed = AuthResponseModel.fromJson(data);
+
+      await _secureStorage.write(
+        key: kAccessTokenKey,
+        value: parsed.accessToken,
+      );
+
+      await _secureStorage.write(
+        key: kRefreshTokenKey,
+        value: parsed.refreshToken,
+      );
+
+      return Right(parsed.user);
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserModel>> loginWithGoogle() async {
+    try {
+      final googleIdToken = await _googleAuthDataSource.login();
+
+      final response = await _authApi.googleLogin(googleIdToken);
       final data = response.data;
 
       if (data == null) {

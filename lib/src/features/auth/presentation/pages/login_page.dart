@@ -48,6 +48,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     await ref.read(loginProvider.notifier).kakaoLogin();
   }
 
+  Future<void> _onGoogleLogin() async {
+    await ref.read(loginProvider.notifier).googleLogin();
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen<LoginState>(loginProvider, (previous, next) {
@@ -229,6 +233,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       passwordController: _passwordController,
                       onLogin: _onLogin,
                       onKakaoLogin: _onKakaoLogin,
+                      onGoogleLogin: _onGoogleLogin,
                       isLoading: isLoading,
                     ),
                     SizedBox(height: h * 0.02),

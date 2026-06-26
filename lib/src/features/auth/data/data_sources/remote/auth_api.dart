@@ -28,6 +28,14 @@ class AuthApi {
     );
   }
 
+  // google login
+  Future<Response<Map<String, dynamic>>> googleLogin(String googleIdToken) {
+    return _dio.post<Map<String, dynamic>>(
+      '/auth/google',
+      data: {'googleIdToken': googleIdToken},
+    );
+  }
+
   Future<Response<Map<String, dynamic>>> getMe() {
     return _dio.get<Map<String, dynamic>>('/users/me');
   }

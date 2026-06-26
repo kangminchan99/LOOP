@@ -10,6 +10,7 @@ class LoginCardWidget extends StatefulWidget {
     required this.onLogin,
     required this.isLoading,
     required this.onKakaoLogin,
+    required this.onGoogleLogin,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class LoginCardWidget extends StatefulWidget {
   final TextEditingController passwordController;
   final VoidCallback onLogin;
   final VoidCallback onKakaoLogin;
+  final VoidCallback onGoogleLogin;
   final bool isLoading;
 
   @override
@@ -169,6 +171,28 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                   '카카오로 간편 로그인',
                   style: TextStyle(
                     color: AppColors.black,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          GestureDetector(
+            onTap: widget.onGoogleLogin,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              height: 56,
+              child: Center(
+                child: const Text(
+                  '구글로 간편 로그인',
+                  style: TextStyle(
+                    color: AppColors.white,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

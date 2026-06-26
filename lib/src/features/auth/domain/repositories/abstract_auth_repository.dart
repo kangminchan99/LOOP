@@ -11,6 +11,8 @@ abstract class AbstractAuthRepository {
 
   Future<Either<Failure, UserModel>> loginWithKakao();
 
+  Future<Either<Failure, UserModel>> loginWithGoogle();
+
   Future<Either<Failure, UserModel>> getMe();
 
   Future<void> logout();
