@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:loop/firebase_options.dart';
 import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router.dart';
 import 'package:loop/src/core/styles/app_theme.dart';
@@ -9,6 +11,8 @@ import 'package:loop/src/features/auth/presentation/providers/auth_providers.dar
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await dotenv.load(fileName: '.env');
 

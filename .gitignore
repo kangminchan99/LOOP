@@ -101,3 +101,13 @@ windows/flutter/ephemeral/
 
 # Linux
 linux/flutter/ephemeral/
+
+# Firebase Admin SDK private keys
+firebase-service-account.json
+*service-account*.json
+*firebase-adminsdk*.json
+
+# Firebase client config
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
