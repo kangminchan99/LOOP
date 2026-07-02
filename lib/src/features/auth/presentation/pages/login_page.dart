@@ -9,6 +9,7 @@ import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
 import 'package:loop/src/features/auth/presentation/widgets/login_card_widget.dart';
+import 'package:loop/src/features/notifications/presentation/providers/notification_providers.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -56,10 +57,24 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     ref.listen<LoginState>(loginProvider, (previous, next) {
       next.whenOrNull(
-        success: (user) {
+        success: (user) async {
+          final result = await ref.read(registerFcmTokenUseCaseProvider)();
+
+          result.match(
+            (failure) {
+              debugPrint('FCM token 등록 실패: ${failure.errorMessage}');
+            },
+            (_) {
+              debugPrint('FCM token 등록 성공');
+            },
+          );
+
+          if (!context.mounted) return;
+
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('${user.nickname}님 환영합니다!')));
+
           if (context.canPop()) {
             context.pop();
           } else {
