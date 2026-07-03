@@ -8,8 +8,12 @@ class FcmTokenDataSource {
 
   final FirebaseMessaging _messaging;
 
-  Future<void> requestPermission() async {
-    await _messaging.requestPermission(alert: true, badge: true, sound: true);
+  Future<NotificationSettings> requestPermission()  {
+    return _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   Future<String?> getToken() {

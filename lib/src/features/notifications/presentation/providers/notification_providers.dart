@@ -4,6 +4,7 @@ import 'package:loop/src/features/notifications/data/data_sources/local/fcm_toke
 import 'package:loop/src/features/notifications/data/data_sources/remote/notifications_api.dart';
 import 'package:loop/src/features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:loop/src/features/notifications/domain/repositories/abstract_notifications_repository.dart';
+import 'package:loop/src/features/notifications/domain/usecases/delete_fcm_token_usecase.dart';
 import 'package:loop/src/features/notifications/domain/usecases/register_fcm_token_usecase.dart';
 
 final fcmTokenDataSourceProvider = Provider<FcmTokenDataSource>((ref) {
@@ -32,4 +33,10 @@ final registerFcmTokenUseCaseProvider = Provider<RegisterFcmTokenUseCase>((
   final repository = ref.watch(notificationsRepositoryProvider);
 
   return RegisterFcmTokenUseCase(notificationsRepository: repository);
+});
+
+final deleteFcmTokenUseCaseProvider = Provider<DeleteFcmTokenUseCase>((ref) {
+  final repository = ref.watch(notificationsRepositoryProvider);
+
+  return DeleteFcmTokenUseCase(notificationsRepository: repository);
 });

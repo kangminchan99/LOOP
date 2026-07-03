@@ -7,6 +7,7 @@ import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
+import 'package:loop/src/features/notifications/presentation/providers/notification_providers.dart';
 import 'package:loop/src/features/settings/data/constants/setting_constants.dart';
 import 'package:loop/src/features/settings/domain/models/profile_request_model.dart';
 import 'package:loop/src/features/settings/presentation/providers/setting_providers.dart';
@@ -107,8 +108,25 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       children: [
                         GestureDetector(
                           onTap: () async {
+                            final result = await ref.read(
+                              deleteFcmTokenUseCaseProvider,
+                            )();
+
+                            result.match(
+                              (failure) {
+                                debugPrint(
+                                  'FCM token 삭제 실패: ${failure.errorMessage}',
+                                );
+                              },
+                              (_) {
+                                debugPrint('FCM token 삭제 성공');
+                              },
+                            );
+
                             await ref.read(loginProvider.notifier).logout();
+
                             if (!context.mounted) return;
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('로그아웃 되었습니다.')),
                             );

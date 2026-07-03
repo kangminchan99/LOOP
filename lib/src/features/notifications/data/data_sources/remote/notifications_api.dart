@@ -14,4 +14,14 @@ class NotificationsApi {
       data: {'token': token, 'platform': platform},
     );
   }
+
+  // 알림 삭제
+  Future<Response<Map<String, dynamic>>> deleteFcmToken({
+    required String token,
+  }) {
+    return _dio.delete<Map<String, dynamic>>(
+      '/notifications/fcm-token',
+      data: {'token': token},
+    );
+  }
 }
