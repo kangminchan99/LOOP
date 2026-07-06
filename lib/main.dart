@@ -8,11 +8,14 @@ import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router.dart';
 import 'package:loop/src/core/styles/app_theme.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
+import 'package:loop/src/features/notifications/presentation/handlers/notification_navigation_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await NotificationNavigationHandler.initialize();
 
   await dotenv.load(fileName: '.env');
 
