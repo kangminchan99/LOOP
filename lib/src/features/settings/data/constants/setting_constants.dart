@@ -8,7 +8,7 @@ class SettingConstants {
       items: [
         SettingItem(icon: '👤', label: '프로필 편집'),
         SettingItem(icon: '🎯', label: '출석 체크'),
-        SettingItem(icon: '🪪', label: '계정 정보'),
+        SettingItem(icon: '🔔', label: '알림 목록'),
       ],
     ),
     SettingSection(

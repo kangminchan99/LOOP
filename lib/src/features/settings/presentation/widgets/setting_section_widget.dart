@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/features/attendance/presentation/widgets/attendance_dialog_widget.dart';
 import 'package:loop/src/features/settings/domain/models/setting_model.dart';
@@ -53,6 +55,10 @@ class SettingSectionWidget extends StatelessWidget {
                       context: context,
                       builder: (_) => const AttendanceDialog(),
                     );
+                    return;
+                  } else if (item.label == '알림 목록') {
+                    // Navigate to the notification list page
+                    context.pushNamed(AppRoute.notifications.name);
                     return;
                   }
 

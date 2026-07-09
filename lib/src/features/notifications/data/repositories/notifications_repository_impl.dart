@@ -5,6 +5,7 @@ import 'package:loop/src/core/network/error/dio_error_handler.dart';
 import 'package:loop/src/core/network/error/failures.dart';
 import 'package:loop/src/features/notifications/data/data_sources/local/fcm_token_data_source.dart';
 import 'package:loop/src/features/notifications/data/data_sources/remote/notifications_api.dart';
+import 'package:loop/src/features/notifications/domain/models/notification_model.dart';
 import 'package:loop/src/features/notifications/domain/repositories/abstract_notifications_repository.dart';
 
 class NotificationsRepositoryImpl implements AbstractNotificationsRepository {
@@ -61,6 +62,88 @@ class NotificationsRepositoryImpl implements AbstractNotificationsRepository {
       }
 
       await _notificationsApi.deleteFcmToken(token: token);
+
+      return const Right(unit);
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<NotificationModel>>> getNotifications() async {
+    try {
+      final response = await _notificationsApi.getNotifications();
+
+      final data = response.data ?? [];
+
+      final notifications = data
+          .map(
+            (json) => NotificationModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+
+      return Right(notifications);
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> getUnreadCount() async {
+    try {
+      final response = await _notificationsApi.getUnreadCount();
+
+      final count = response.data?['count'] as int? ?? 0;
+
+      return Right(count);
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
+
+  @override
+  Future<Either<Failure, NotificationModel>> markAsRead({
+    required int notificationId,
+  }) async {
+    try {
+      final response = await _notificationsApi.markAsRead(
+        notificationId: notificationId,
+      );
+
+      final data = response.data;
+
+      if (data == null) {
+        return const Left(ServerFailure('알림 읽음 처리 응답이 비어있습니다.', null));
+      }
+
+      final notification = NotificationModel.fromJson(data);
+
+      return Right(notification);
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> markAllAsRead() async {
+    try {
+      await _notificationsApi.markAllAsRead();
 
       return const Right(unit);
     } on DioException catch (e) {

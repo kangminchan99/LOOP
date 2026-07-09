@@ -5,6 +5,7 @@ import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/pages/login_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/sign_up_page.dart';
+import 'package:loop/src/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_detail_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_edit_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_page.dart';
@@ -31,6 +32,29 @@ final routerProvider = Provider((ref) {
         name: AppRoute.write.name,
         builder: (context, state) => const BoardWritePage(),
       ),
+      GoRoute(
+        path: AppRoute.notifications.path,
+        name: AppRoute.notifications.name,
+        builder: (context, state) => const NotificationsPage(),
+      ),
+      GoRoute(
+        path: AppRoute.postDetail.path,
+        name: AppRoute.postDetail.name,
+        builder: (context, state) {
+          final postId = int.parse(state.pathParameters['postId']!);
+          return BoardDetailPage(postId: postId);
+        },
+        routes: [
+          GoRoute(
+            path: 'edit',
+            name: AppRoute.postEdit.name,
+            builder: (context, state) {
+              final postId = int.parse(state.pathParameters['postId']!);
+              return BoardEditPage(postId: postId);
+            },
+          ),
+        ],
+      ),
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -47,36 +71,16 @@ final routerProvider = Provider((ref) {
         },
         branches: [
           StatefulShellBranch(
+            navigatorKey: boardBranchNavigatorKey,
             routes: [
               GoRoute(
                 path: AppRoute.board.path,
                 builder: (context, state) => const BoardPage(),
-                routes: [
-                  GoRoute(
-                    path: 'posts/:postId',
-                    name: AppRoute.postDetail.name,
-                    builder: (context, state) {
-                      final postId = int.parse(state.pathParameters['postId']!);
-                      return BoardDetailPage(postId: postId);
-                    },
-                    routes: [
-                      GoRoute(
-                        path: 'edit',
-                        name: AppRoute.postEdit.name,
-                        builder: (context, state) {
-                          final postId = int.parse(
-                            state.pathParameters['postId']!,
-                          );
-                          return BoardEditPage(postId: postId);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ],
           ),
           StatefulShellBranch(
+            navigatorKey: settingsBranchNavigatorKey,
             routes: [
               GoRoute(
                 path: AppRoute.settings.path,

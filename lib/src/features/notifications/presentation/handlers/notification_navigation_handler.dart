@@ -114,7 +114,7 @@ class NotificationNavigationHandler {
     final context = navigatorKey.currentContext;
     if (context == null) return;
 
-    context.pushNamed(
+    context.goNamed(
       AppRoute.postDetail.name,
       pathParameters: {'postId': postId.toString()},
     );

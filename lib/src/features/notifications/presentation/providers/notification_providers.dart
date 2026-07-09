@@ -5,7 +5,13 @@ import 'package:loop/src/features/notifications/data/data_sources/remote/notific
 import 'package:loop/src/features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:loop/src/features/notifications/domain/repositories/abstract_notifications_repository.dart';
 import 'package:loop/src/features/notifications/domain/usecases/delete_fcm_token_usecase.dart';
+import 'package:loop/src/features/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'package:loop/src/features/notifications/domain/usecases/get_unread_count_usecase.dart';
+import 'package:loop/src/features/notifications/domain/usecases/mark_all_notifications_as_read_usecase.dart';
+import 'package:loop/src/features/notifications/domain/usecases/mark_notification_as_read_usecase.dart';
 import 'package:loop/src/features/notifications/domain/usecases/register_fcm_token_usecase.dart';
+import 'package:loop/src/features/notifications/presentation/providers/notification_notifier.dart';
+import 'package:loop/src/features/notifications/presentation/providers/notification_state.dart';
 
 final fcmTokenDataSourceProvider = Provider<FcmTokenDataSource>((ref) {
   return FcmTokenDataSource();
@@ -40,3 +46,52 @@ final deleteFcmTokenUseCaseProvider = Provider<DeleteFcmTokenUseCase>((ref) {
 
   return DeleteFcmTokenUseCase(notificationsRepository: repository);
 });
+
+final getNotificationsUseCaseProvider = Provider<GetNotificationsUseCase>((
+  ref,
+) {
+  final repository = ref.watch(notificationsRepositoryProvider);
+
+  return GetNotificationsUseCase(repository);
+});
+
+final getUnreadCountUseCaseProvider = Provider<GetUnreadCountUseCase>((ref) {
+  final repository = ref.watch(notificationsRepositoryProvider);
+
+  return GetUnreadCountUseCase(repository);
+});
+
+final markNotificationAsReadUseCaseProvider =
+    Provider<MarkNotificationAsReadUseCase>((ref) {
+      final repository = ref.watch(notificationsRepositoryProvider);
+
+      return MarkNotificationAsReadUseCase(repository);
+    });
+
+final markAllNotificationsAsReadUseCaseProvider =
+    Provider<MarkAllNotificationsAsReadUseCase>((ref) {
+      final repository = ref.watch(notificationsRepositoryProvider);
+
+      return MarkAllNotificationsAsReadUseCase(repository);
+    });
+
+final notificationProvider =
+    StateNotifierProvider<NotificationNotifier, NotificationState>((ref) {
+      final getNotificationsUseCase = ref.watch(
+        getNotificationsUseCaseProvider,
+      );
+      final getUnreadCountUseCase = ref.watch(getUnreadCountUseCaseProvider);
+      final markNotificationAsReadUseCase = ref.watch(
+        markNotificationAsReadUseCaseProvider,
+      );
+      final markAllNotificationsAsReadUseCase = ref.watch(
+        markAllNotificationsAsReadUseCaseProvider,
+      );
+
+      return NotificationNotifier(
+        getNotificationsUseCase: getNotificationsUseCase,
+        getUnreadCountUseCase: getUnreadCountUseCase,
+        markNotificationAsReadUseCase: markNotificationAsReadUseCase,
+        markAllNotificationsAsReadUseCase: markAllNotificationsAsReadUseCase,
+      );
+    });
