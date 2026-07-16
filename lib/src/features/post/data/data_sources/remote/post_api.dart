@@ -37,4 +37,20 @@ class PostApi {
       data: request.toJson(),
     );
   }
+
+  // 게시글 검색 api
+  Future<Response<Map<String, dynamic>>> searchPosts({
+    required String keyword,
+    int limit = 20,
+    String? cursor,
+  }) {
+    return _dio.get<Map<String, dynamic>>(
+      '/posts/search',
+      queryParameters: {
+        'keyword': keyword,
+        'limit': limit,
+        if (cursor != null) 'cursor': cursor,
+      },
+    );
+  }
 }

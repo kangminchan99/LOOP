@@ -20,4 +20,9 @@ abstract class AbstractPostRepository {
     int postId,
     PostRequestModel request,
   );
+
+  Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> searchPosts({
+    required String keyword,
+    String? cursor,
+  });
 }

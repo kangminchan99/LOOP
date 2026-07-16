@@ -134,4 +134,36 @@ class PostRepositoryImpl implements AbstractPostRepository {
       return Left(ServerFailure(e.toString(), null));
     }
   }
+
+  @override
+  Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> searchPosts({
+    required String keyword,
+    String? cursor,
+  }) async {
+    try {
+      final response = await _postApi.searchPosts(
+        keyword: keyword,
+        cursor: cursor,
+      );
+
+      final data = response.data;
+
+      if (data == null) {
+        return const Left(ServerFailure('응답 데이터가 없습니다.', 500));
+      }
+
+      return Right(
+        CursorPaginatedResponse.fromJson(
+          json: data,
+          itemParser: (e) => PostListModel.fromJson(e),
+        ),
+      );
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(extractDioErrorMessage(e), e.response?.statusCode),
+      );
+    } catch (e) {
+      return Left(ServerFailure(e.toString(), null));
+    }
+  }
 }

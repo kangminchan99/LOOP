@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,13 +11,94 @@ import 'package:loop/src/features/post/presentation/providers/post_providers.dar
 import 'package:loop/src/features/post/presentation/widgets/post_card_widget.dart';
 import 'package:loop/src/shared/presentation/widgets/cursor_paginated_list_view.dart';
 
-class BoardPage extends ConsumerWidget {
+class BoardPage extends ConsumerStatefulWidget {
   const BoardPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BoardPage> createState() => _BoardPageState();
+}
+
+class _BoardPageState extends ConsumerState<BoardPage> {
+  final _searchController = TextEditingController();
+
+  Timer? _debounce;
+
+  bool get _hasSearchText => _searchController.text.trim().isNotEmpty;
+  bool _isSearchMode = false;
+  bool _hasSearched = false;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {});
+
+    _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 400), () async {
+      final keyword = value.trim();
+
+      if (keyword.isEmpty) {
+        ref.read(searchPostProvider.notifier).clear();
+
+        if (!mounted) return;
+
+        setState(() {
+          _isSearchMode = false;
+          _hasSearched = false;
+        });
+
+        return;
+      }
+
+      setState(() {
+        _isSearchMode = true;
+      });
+
+      await ref.read(searchPostProvider.notifier).search(keyword);
+
+      if (!mounted) return;
+
+      setState(() {
+        _hasSearched = true;
+      });
+    });
+  }
+
+  void _clearSearch() {
+    _debounce?.cancel();
+    _searchController.clear();
+    ref.read(searchPostProvider.notifier).clear();
+    setState(() {
+      _isSearchMode = false;
+      _hasSearched = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final isLoggedIn = ref.watch(loginProvider) is LoginSuccess;
     return Scaffold(
+      appBar: AppBar(
+        title: TextField(
+          controller: _searchController,
+          decoration: const InputDecoration(
+            hintText: '게시글 검색',
+            border: InputBorder.none,
+          ),
+          textInputAction: TextInputAction.search,
+          onChanged: _onSearchChanged,
+        ),
+        actions: [
+          if (_hasSearchText)
+            IconButton(icon: const Icon(Icons.close), onPressed: _clearSearch),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           if (!isLoggedIn) {
@@ -33,9 +116,12 @@ class BoardPage extends ConsumerWidget {
       ),
       body: Consumer(
         builder: (context, ref, _) {
-          final state = ref.watch(postListProvider);
+          final normalState = ref.watch(postListProvider);
+          final searchState = ref.watch(searchPostProvider);
 
-          ref.listen(postListProvider, (_, __) {});
+          final state = _isSearchMode && _hasSearched
+              ? searchState
+              : normalState;
 
           if (state.isLoading) return const CircularProgressIndicator();
           if (state.errorMessage != null && state.items.isEmpty) {
@@ -46,7 +132,17 @@ class BoardPage extends ConsumerWidget {
             items: state.items,
             hasNext: state.hasNext,
             isLoadingMore: state.isLoadingMore,
-            onLoadMore: () => ref.read(postListProvider.notifier).loadMore(),
+            emptyWidget: Center(
+              child: Text(_isSearchMode ? '검색 결과가 없습니다.' : '게시글이 없습니다.'),
+            ),
+            onLoadMore: () {
+              if (_isSearchMode) {
+                ref.read(searchPostProvider.notifier).loadMore();
+                return;
+              }
+
+              ref.read(postListProvider.notifier).loadMore();
+            },
             itemBuilder: (context, post, index) => PostCardWidget(
               post: post,
               onTap: () => context.pushNamed(
