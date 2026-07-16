@@ -12,7 +12,7 @@ class PostApi {
 
   Future<Response<Map<String, dynamic>>> getPosts({
     int limit = 20,
-    int? cursor,
+    String? cursor,
   }) {
     return _dio.get<Map<String, dynamic>>(
       '/posts',

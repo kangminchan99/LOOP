@@ -9,7 +9,7 @@ abstract class AbstractPostRepository {
   Future<Either<Failure, PostDetailModel>> createPost(PostRequestModel request);
 
   Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> getPosts({
-    int? cursor,
+    String? cursor,
   });
 
   Future<Either<Failure, PostDetailModel>> getPostById(int postId);

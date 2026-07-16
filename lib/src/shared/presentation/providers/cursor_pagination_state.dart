@@ -9,7 +9,7 @@ class CursorPaginationState<T> {
   });
 
   final List<T> items;
-  final int? nextCursor;
+  final String? nextCursor;
   final bool hasNext;
   final bool isLoading; // 첫 로드
   final bool isLoadingMore; // 추가 로드
@@ -17,7 +17,7 @@ class CursorPaginationState<T> {
 
   CursorPaginationState<T> copyWith({
     List<T>? items,
-    int? nextCursor,
+    String? nextCursor,
     bool? hasNext,
     bool? isLoading,
     bool? isLoadingMore,

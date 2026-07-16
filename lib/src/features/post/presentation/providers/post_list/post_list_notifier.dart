@@ -13,7 +13,7 @@ class PostListNotifier extends CursorPaginationNotifier<PostListModel> {
 
   @override
   Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> fetchPage(
-    int? cursor,
+    String? cursor,
   ) {
     return _repository.getPosts(cursor: cursor);
   }

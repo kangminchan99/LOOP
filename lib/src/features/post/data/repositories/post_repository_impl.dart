@@ -49,7 +49,7 @@ class PostRepositoryImpl implements AbstractPostRepository {
 
   @override
   Future<Either<Failure, CursorPaginatedResponse<PostListModel>>> getPosts({
-    int? cursor,
+    String? cursor,
   }) async {
     try {
       final response = await _postApi.getPosts(cursor: cursor);

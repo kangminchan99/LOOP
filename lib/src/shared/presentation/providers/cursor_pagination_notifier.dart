@@ -10,7 +10,7 @@ abstract class CursorPaginationNotifier<T>
   CursorPaginationNotifier() : super(const CursorPaginationState());
 
   // 각 피쳐에서 구현 - cursor가 null이면 첫 페이지
-  Future<Either<Failure, CursorPaginatedResponse<T>>> fetchPage(int? curosr);
+  Future<Either<Failure, CursorPaginatedResponse<T>>> fetchPage(String? curosr);
 
   // 첫 로딩
   Future<void> load() async {

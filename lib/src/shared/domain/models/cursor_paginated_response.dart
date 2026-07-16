@@ -7,7 +7,7 @@ class CursorPaginatedResponse<T> {
   });
 
   final List<T> items;
-  final int? nextCursor;
+  final String? nextCursor;
   final bool hasNext;
 
   factory CursorPaginatedResponse.fromJson({
@@ -19,7 +19,7 @@ class CursorPaginatedResponse<T> {
           .map((e) => itemParser(e as Map<String, dynamic>))
           .toList(),
       hasNext: json['hasNext'] as bool,
-      nextCursor: json['nextCursor'] as int?,
+      nextCursor: json['nextCursor'] as String?,
     );
   }
 }
