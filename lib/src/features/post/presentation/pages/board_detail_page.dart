@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
+import 'package:loop/src/core/layout/max_width_container.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/utils/helpers/initializer.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
@@ -61,29 +62,33 @@ class BoardDetailPage extends ConsumerWidget {
         ),
         PostDetailError(:final message) => Center(child: Text(message)),
         PostDetailSuccess(:final post) ||
-        PostDetailDeleting(:final post) => SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                post.title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+        PostDetailDeleting(:final post) => MaxWidthContainer(
+          maxWidth: 720,
+          padding: EdgeInsets.zero,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  post.title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                Helpers().formatDate(post.updatedAt),
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-              const Divider(height: 32),
-              Text(
-                post.content,
-                style: const TextStyle(fontSize: 16, height: 1.6),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  Helpers().formatDate(post.updatedAt),
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                const Divider(height: 32),
+                Text(
+                  post.content,
+                  style: const TextStyle(fontSize: 16, height: 1.6),
+                ),
+              ],
+            ),
           ),
         ),
         _ => const SizedBox.shrink(),

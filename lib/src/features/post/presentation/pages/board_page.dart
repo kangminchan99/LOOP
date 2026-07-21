@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loop/src/core/layout/max_width_container.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
@@ -114,44 +115,49 @@ class _BoardPageState extends ConsumerState<BoardPage> {
         },
         child: const Icon(Icons.edit),
       ),
-      body: Consumer(
-        builder: (context, ref, _) {
-          final normalState = ref.watch(postListProvider);
-          final searchState = ref.watch(searchPostProvider);
+      body: MaxWidthContainer(
+        maxWidth: 720,
+        child: Consumer(
+          builder: (context, ref, _) {
+            final normalState = ref.watch(postListProvider);
+            final searchState = ref.watch(searchPostProvider);
 
-          final state = _isSearchMode && _hasSearched
-              ? searchState
-              : normalState;
+            final state = _isSearchMode && _hasSearched
+                ? searchState
+                : normalState;
 
-          if (state.isLoading) return const CircularProgressIndicator();
-          if (state.errorMessage != null && state.items.isEmpty) {
-            return Center(child: Text(state.errorMessage!));
-          }
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state.errorMessage != null && state.items.isEmpty) {
+              return Center(child: Text(state.errorMessage!));
+            }
 
-          return CursorPaginatedListView<PostListModel>(
-            items: state.items,
-            hasNext: state.hasNext,
-            isLoadingMore: state.isLoadingMore,
-            emptyWidget: Center(
-              child: Text(_isSearchMode ? '검색 결과가 없습니다.' : '게시글이 없습니다.'),
-            ),
-            onLoadMore: () {
-              if (_isSearchMode) {
-                ref.read(searchPostProvider.notifier).loadMore();
-                return;
-              }
-
-              ref.read(postListProvider.notifier).loadMore();
-            },
-            itemBuilder: (context, post, index) => PostCardWidget(
-              post: post,
-              onTap: () => context.pushNamed(
-                AppRoute.postDetail.name,
-                pathParameters: {'postId': post.postId.toString()},
+            return CursorPaginatedListView<PostListModel>(
+              items: state.items,
+              hasNext: state.hasNext,
+              isLoadingMore: state.isLoadingMore,
+              emptyWidget: Center(
+                child: Text(_isSearchMode ? '검색 결과가 없습니다.' : '게시글이 없습니다.'),
               ),
-            ),
-          );
-        },
+              onLoadMore: () {
+                if (_isSearchMode) {
+                  ref.read(searchPostProvider.notifier).loadMore();
+                  return;
+                }
+
+                ref.read(postListProvider.notifier).loadMore();
+              },
+              itemBuilder: (context, post, index) => PostCardWidget(
+                post: post,
+                onTap: () => context.pushNamed(
+                  AppRoute.postDetail.name,
+                  pathParameters: {'postId': post.postId.toString()},
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
