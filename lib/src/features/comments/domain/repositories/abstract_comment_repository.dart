@@ -2,6 +2,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:loop/src/core/network/error/failures.dart';
 import 'package:loop/src/features/comments/domain/models/comment_model.dart';
 import 'package:loop/src/features/comments/domain/models/comment_request_model.dart';
+import 'package:loop/src/features/comments/domain/models/my_comment_model.dart';
 import 'package:loop/src/shared/domain/models/cursor_paginated_response.dart';
 
 abstract interface class AbstractCommentRepository {
@@ -19,4 +20,7 @@ abstract interface class AbstractCommentRepository {
     required int postId,
     required int commentId,
   });
+
+  Future<Either<Failure, CursorPaginatedResponse<MyCommentModel>>>
+  getMyComments({String? cursor});
 }

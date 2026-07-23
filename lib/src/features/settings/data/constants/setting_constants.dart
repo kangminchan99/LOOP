@@ -6,7 +6,7 @@ class SettingConstants {
     SettingSection(
       title: '계정',
       items: [
-        SettingItem(icon: '👤', label: '프로필 편집'),
+        SettingItem(icon: '💬', label: '내 댓글'),
         SettingItem(icon: '🎯', label: '출석 체크'),
         SettingItem(icon: '🔔', label: '알림 목록'),
       ],
@@ -16,7 +16,7 @@ class SettingConstants {
       items: [
         SettingItem(icon: '🛡️', label: '차단한 사용자'),
         SettingItem(icon: '📌', label: '저장한 글'),
-        SettingItem(icon: '💬', label: '내 댓글'),
+        SettingItem(icon: '', label: ''),
       ],
     ),
     SettingSection(

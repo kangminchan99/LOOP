@@ -56,6 +56,9 @@ class SettingSectionWidget extends StatelessWidget {
                       builder: (_) => const AttendanceDialog(),
                     );
                     return;
+                  } else if (item.label == '내 댓글') {
+                    context.pushNamed(AppRoute.commentList.name);
+                    return;
                   } else if (item.label == '알림 목록') {
                     // Navigate to the notification list page
                     context.pushNamed(AppRoute.notifications.name);

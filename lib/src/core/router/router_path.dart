@@ -7,6 +7,7 @@ enum AppRoute {
   postDetail,
   postEdit,
   notifications,
+  commentList,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -28,6 +29,8 @@ extension AppRouteExtension on AppRoute {
         return '/posts/:postId/edit';
       case AppRoute.notifications:
         return '/notifications';
+      case AppRoute.commentList:
+        return '/comment-list';
     }
   }
 
@@ -49,6 +52,8 @@ extension AppRouteExtension on AppRoute {
         return 'postEdit';
       case AppRoute.notifications:
         return 'notifications';
+      case AppRoute.commentList:
+        return 'commentList';
     }
   }
 }

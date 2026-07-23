@@ -17,6 +17,17 @@ class CommentApi {
     );
   }
 
+  // 내 댓글 가져오기
+  Future<Response<Map<String, dynamic>>> getMyComments({
+    int limit = 20,
+    String? cursor,
+  }) {
+    return _dio.get<Map<String, dynamic>>(
+      '/comments/me',
+      queryParameters: {'limit': limit, if (cursor != null) 'cursor': cursor},
+    );
+  }
+
   Future<Response<Map<String, dynamic>>> createComment({
     required int postId,
     required CommentRequestModel request,
