@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop/src/core/analytics/analytics_providers.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/auth_api.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/google_auth_data_source.dart';
@@ -56,7 +57,8 @@ final signUpProvider = StateNotifierProvider<SignUpStateNotifier, SignUpState>((
   ref,
 ) {
   final repository = ref.watch(authRepositoryProvider);
-  return SignUpStateNotifier(repository);
+  final analyticsService = ref.watch(analyticsServiceProvider);
+  return SignUpStateNotifier(repository, analyticsService);
 });
 
 final loginProvider = StateNotifierProvider<LoginStateNotifier, LoginState>((
@@ -66,10 +68,13 @@ final loginProvider = StateNotifierProvider<LoginStateNotifier, LoginState>((
   final secureStorage = ref.watch(secureStorageProvider);
   final loginWithKakaoUsecase = ref.watch(loginWithKakaoUseCaseProvider);
   final loginWithGoogleUsecase = ref.watch(loginWithGoogleUseCaseProvider);
+  final analyticsService = ref.watch(analyticsServiceProvider);
+
   return LoginStateNotifier(
     repository,
     secureStorage,
     loginWithKakaoUsecase,
     loginWithGoogleUsecase,
+    analyticsService,
   );
 });

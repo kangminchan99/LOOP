@@ -1,23 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop/src/core/analytics/analytics_service.dart';
 import 'package:loop/src/features/post/domain/models/post_request_model.dart';
 import 'package:loop/src/features/post/domain/repositories/abstract_post_repository.dart';
 import 'package:loop/src/features/post/presentation/providers/post_detail/post_detail_state.dart';
 
 class PostDetailNotifier extends StateNotifier<PostDetailState> {
-  PostDetailNotifier(this._repository, this._postId)
+  final AbstractPostRepository _repository;
+  final int _postId;
+  final AnalyticsService _analyticsService;
+  PostDetailNotifier(this._repository, this._postId, this._analyticsService)
     : super(const PostDetailState.initial()) {
     load();
   }
 
-  final AbstractPostRepository _repository;
-  final int _postId;
-
   Future<void> load() async {
     state = const PostDetailState.loading();
+
     final result = await _repository.getPostById(_postId);
-    state = result.fold(
-      (failure) => PostDetailState.error(failure.errorMessage),
-      (post) => PostDetailState.success(post),
+
+    await result.match(
+      (failure) async {
+        state = PostDetailState.error(failure.errorMessage);
+      },
+      (post) async {
+        state = PostDetailState.success(post);
+        await _analyticsService.logPostView(postId: post.id);
+      },
     );
   }
 

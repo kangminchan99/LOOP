@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:loop/src/core/analytics/analytics_service.dart';
 import 'package:loop/src/core/network/error/failures.dart';
 import 'package:loop/src/features/comments/domain/models/comment_model.dart';
 import 'package:loop/src/features/comments/domain/usecases/create_comment_usecase.dart';
@@ -12,15 +13,18 @@ class CommentListNotifier extends CursorPaginationNotifier<CommentModel> {
   final GetCommentsUseCase _getCommentsUseCase;
   final CreateCommentUseCase _createCommentUseCase;
   final DeleteCommentUseCase _deleteCommentUseCase;
+  final AnalyticsService _analyticsService;
 
   CommentListNotifier({
     required this.postId,
     required GetCommentsUseCase getCommentsUseCase,
     required CreateCommentUseCase createCommentUseCase,
     required DeleteCommentUseCase deleteCommentUseCase,
+    required AnalyticsService analyticsService,
   }) : _getCommentsUseCase = getCommentsUseCase,
        _createCommentUseCase = createCommentUseCase,
-       _deleteCommentUseCase = deleteCommentUseCase {
+       _deleteCommentUseCase = deleteCommentUseCase,
+       _analyticsService = analyticsService {
     load();
   }
 
@@ -37,8 +41,9 @@ class CommentListNotifier extends CursorPaginationNotifier<CommentModel> {
       content: content,
     );
 
-    result.match((_) {}, (comment) {
+    await result.match((_) async {}, (comment) async {
       state = state.copyWith(items: [comment, ...state.items]);
+      await _analyticsService.logCommentCreate(postId: postId);
     });
 
     return result;

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop/src/core/analytics/analytics_providers.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
 import 'package:loop/src/features/comments/data/data_sources/remote/comment_api.dart';
 import 'package:loop/src/features/comments/data/repositories/comment_repository_impl.dart';
@@ -49,6 +50,7 @@ final commentListProvider =
         getCommentsUseCase: ref.watch(getCommentsUseCaseProvider),
         createCommentUseCase: ref.watch(createCommentUseCaseProvider),
         deleteCommentUseCase: ref.watch(deleteCommentUseCaseProvider),
+        analyticsService: ref.watch(analyticsServiceProvider),
       );
     });
 

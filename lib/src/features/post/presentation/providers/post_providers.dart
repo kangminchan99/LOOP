@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop/src/core/analytics/analytics_providers.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
 import 'package:loop/src/features/post/data/data_sources/remote/post_api.dart';
 import 'package:loop/src/features/post/data/repositories/post_repository_impl.dart';
@@ -26,8 +27,9 @@ final createPostRepositoryProvider = Provider<AbstractPostRepository>((ref) {
 final createPostProvider =
     StateNotifierProvider<CreatePostStateNotifier, CreatePostState>((ref) {
       final repository = ref.watch(createPostRepositoryProvider);
+      final analyticsService = ref.watch(analyticsServiceProvider);
 
-      return CreatePostStateNotifier(repository);
+      return CreatePostStateNotifier(repository, analyticsService);
     });
 
 final postListProvider =
@@ -43,10 +45,10 @@ final postDetailProvider =
       ref,
       postId,
     ) {
-      return PostDetailNotifier(
-        ref.watch(createPostRepositoryProvider),
-        postId,
-      );
+      final repository = ref.watch(createPostRepositoryProvider);
+      final analyticsService = ref.watch(analyticsServiceProvider);
+
+      return PostDetailNotifier(repository, postId, analyticsService);
     });
 
 final searchPostsUseCaseProvider = Provider<SearchPostsUseCase>((ref) {

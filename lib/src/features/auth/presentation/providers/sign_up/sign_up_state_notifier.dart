@@ -1,12 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop/src/core/analytics/analytics_service.dart';
 import 'package:loop/src/features/auth/domain/models/sign_up_request_model.dart';
 import 'package:loop/src/features/auth/domain/repositories/abstract_auth_repository.dart';
 import 'package:loop/src/features/auth/presentation/providers/sign_up/sign_up_state.dart';
 
 class SignUpStateNotifier extends StateNotifier<SignUpState> {
   final AbstractAuthRepository _authRepository;
+  final AnalyticsService _analyticsService;
 
-  SignUpStateNotifier(this._authRepository)
+  SignUpStateNotifier(this._authRepository, this._analyticsService)
     : super(const SignUpState.initial());
 
   Future<void> signUp({
@@ -20,9 +22,14 @@ class SignUpStateNotifier extends StateNotifier<SignUpState> {
       SignUpRequestModel(email: email, password: password, nickname: nickname),
     );
 
-    state = result.match(
-      (failure) => SignUpState.error(failure.errorMessage),
-      (user) => SignUpState.success(user),
+    await result.match(
+      (failure) async {
+        state = SignUpState.error(failure.errorMessage);
+      },
+      (user) async {
+        state = SignUpState.success(user);
+        await _analyticsService.logSignUp(method: 'email');
+      },
     );
   }
 
