@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 
@@ -28,6 +29,8 @@ class LoginCardWidget extends StatefulWidget {
 class _LoginCardWidgetState extends State<LoginCardWidget> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       padding: const EdgeInsets.all(24),
       margin: EdgeInsets.all(20),
@@ -48,7 +51,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
         children: [
           /// Title
           Text(
-            '시작하기',
+            l10n.loginStartTitle,
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
@@ -57,7 +60,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
           const SizedBox(height: 8),
 
           Text(
-            '나와 비슷한 생각을 가진 사람들과 가볍게 연결돼요.',
+            l10n.loginStartDescription,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
 
@@ -71,7 +74,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
               controller: widget.emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                hintText: '아이디 또는 이메일',
+                hintText: l10n.loginIdOrEmailHint,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 16,
@@ -102,7 +105,7 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
               controller: widget.passwordController,
               obscureText: true,
               decoration: InputDecoration(
-                hintText: '비밀번호',
+                hintText: l10n.loginPasswordHint,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 16,
@@ -145,9 +148,9 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text(
-                        '로그인',
-                        style: TextStyle(
+                    : Text(
+                        l10n.loginButton,
+                        style: const TextStyle(
                           color: AppColors.white,
                           fontWeight: FontWeight.w700,
                         ),
@@ -167,9 +170,9 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
               ),
               height: 56,
               child: Center(
-                child: const Text(
-                  '카카오로 간편 로그인',
-                  style: TextStyle(
+                child: Text(
+                  l10n.loginWithKakao,
+                  style: const TextStyle(
                     color: AppColors.black,
                     fontWeight: FontWeight.w700,
                   ),
@@ -189,9 +192,9 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
               ),
               height: 56,
               child: Center(
-                child: const Text(
-                  '구글로 간편 로그인',
-                  style: TextStyle(
+                child: Text(
+                  l10n.loginWithGoogle,
+                  style: const TextStyle(
                     color: AppColors.white,
                     fontWeight: FontWeight.w700,
                   ),
@@ -207,15 +210,15 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '아직 계정이 없나요?',
+                l10n.signUpQuestion,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(width: 4),
               GestureDetector(
                 onTap: () => context.push(AppRoute.signUp.path),
-                child: const Text(
-                  '회원가입',
-                  style: TextStyle(
+                child: Text(
+                  l10n.signUp,
+                  style: const TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 
 class SettingLoginCardWidget extends StatelessWidget {
@@ -8,6 +9,8 @@ class SettingLoginCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
@@ -43,9 +46,9 @@ class SettingLoginCardWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '로그인이 필요해요',
-                      style: TextStyle(
+                    Text(
+                      l10n.settingsLoginRequiredTitle,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                         color: AppColors.textPrimary,
@@ -53,7 +56,7 @@ class SettingLoginCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '글 작성, 저장한 글, 내 댓글\n관리는 로그인 후 이용할 수 있어요.',
+                      l10n.settingsLoginRequiredDescription,
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -81,10 +84,10 @@ class SettingLoginCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  '로그인 / 회원가입',
-                  style: TextStyle(
+                  l10n.settingsLoginSignup,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

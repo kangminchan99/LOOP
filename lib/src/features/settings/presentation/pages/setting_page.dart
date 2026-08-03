@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
@@ -11,6 +12,7 @@ import 'package:loop/src/features/notifications/presentation/providers/notificat
 import 'package:loop/src/features/settings/data/constants/setting_constants.dart';
 import 'package:loop/src/features/settings/domain/models/profile_request_model.dart';
 import 'package:loop/src/features/settings/presentation/providers/setting_providers.dart';
+import 'package:loop/src/features/settings/presentation/widgets/language_dialog_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_login_card_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_profile_card_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_section_widget.dart';
@@ -32,17 +34,23 @@ class _SettingPageState extends ConsumerState<SettingPage> {
     _imageRefreshing = false;
   }
 
+  void _showLanguageDialog() {
+    showDialog(context: context, builder: (_) => const LanguageDialogWidget());
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final loginState = ref.watch(loginProvider);
     final user = loginState.maybeWhen(
       success: (user) => user,
       orElse: () => null,
     );
     final isLoggedIn = user != null;
-    final sections = isLoggedIn
-        ? SettingConstants.loggedInSections
-        : SettingConstants.notLoggedInSections;
+    final sections =
+        isLoggedIn
+            ? SettingConstants.loggedInSections
+            : SettingConstants.notLoggedInSections;
 
     Future<void> getProfileImage() async {
       final picker = ImagePicker();
@@ -57,7 +65,11 @@ class _SettingPageState extends ConsumerState<SettingPage> {
 
       result.match(
         (failure) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('업로드 실패: ${failure.errorMessage}')),
+          SnackBar(
+            content: Text(
+              '${l10n.settingsUploadFailed}: ${failure.errorMessage}',
+            ),
+          ),
         ),
         (updatedUser) {
           // 상태 갱신 로직 (예: Provider/Notifier에 반영)
@@ -85,19 +97,22 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   // Profile or Login Card
                   isLoggedIn
                       ? SettingProfileCardWidget(
-                          user: user,
-                          onEditTap: getProfileImage,
-                          onImageError: _refreshUserImage,
-                        )
+                        user: user,
+                        onEditTap: getProfileImage,
+                        onImageError: _refreshUserImage,
+                      )
                       : SettingLoginCardWidget(
-                          onLoginTap: () => context.push(AppRoute.login.path),
-                        ),
+                        onLoginTap: () => context.push(AppRoute.login.path),
+                      ),
                   const SizedBox(height: 24),
                   // Settings Sections
                   ...sections.map(
                     (section) => Column(
                       children: [
-                        SettingSectionWidget(section: section),
+                        SettingSectionWidget(
+                          section: section,
+                          onLanguageTap: _showLanguageDialog,
+                        ),
                         const SizedBox(height: 24),
                       ],
                     ),
@@ -108,9 +123,8 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            final result = await ref.read(
-                              deleteFcmTokenUseCaseProvider,
-                            )();
+                            final result =
+                                await ref.read(deleteFcmTokenUseCaseProvider)();
 
                             result.match(
                               (failure) {
@@ -128,7 +142,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                             if (!context.mounted) return;
 
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('로그아웃 되었습니다.')),
+                              SnackBar(
+                                content: Text(l10n.settingsLogoutComplete),
+                              ),
                             );
                           },
                           child: Container(
@@ -150,7 +166,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                             ),
                             child: Center(
                               child: Text(
-                                '로그아웃',
+                                l10n.settingsLogout,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

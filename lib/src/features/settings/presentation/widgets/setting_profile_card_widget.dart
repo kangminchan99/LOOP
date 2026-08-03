@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/shared/domain/models/user_model.dart';
 
@@ -17,6 +18,8 @@ class SettingProfileCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
@@ -35,41 +38,41 @@ class SettingProfileCardWidget extends StatelessWidget {
         children: [
           user.profileImageUrl == null
               ? Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: AppColors.primaryGradient,
-                    ),
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: AppColors.primaryGradient,
                   ),
-                  child: Center(
-                    child: Text(
-                      '없음',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                )
-              : Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        user.profileImageUrl!,
-                        errorListener: (_) => onImageError?.call(),
-                      ),
-                      fit: BoxFit.cover,
+                ),
+                child: Center(
+                  child: Text(
+                    l10n.settingsNoProfileImage,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ),
+              )
+              : Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                      user.profileImageUrl!,
+                      errorListener: (_) => onImageError?.call(),
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -85,7 +88,7 @@ class SettingProfileCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  user.email ?? '이메일 없음',
+                  user.email ?? l10n.settingsNoEmail,
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
@@ -93,7 +96,7 @@ class SettingProfileCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${user.point} 포인트',
+                  '${user.point} ${l10n.settingsPoints}',
                   style: TextStyle(fontSize: 12, color: AppColors.textPrimary),
                 ),
               ],
@@ -107,9 +110,9 @@ class SettingProfileCardWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 color: AppColors.primaryLight,
               ),
-              child: const Text(
-                '수정',
-                style: TextStyle(
+              child: Text(
+                l10n.settingsEdit,
+                style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary,
