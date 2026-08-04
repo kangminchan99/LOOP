@@ -9,6 +9,7 @@ import 'package:loop/src/core/localization/locale_provider.dart';
 import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router.dart';
 import 'package:loop/src/core/styles/app_theme.dart';
+import 'package:loop/src/core/theme/theme_mode_provider.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/notifications/presentation/handlers/notification_navigation_handler.dart';
 
@@ -52,12 +53,13 @@ class _LoopAppState extends ConsumerState<LoopApp> {
   Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp.router(
       title: 'Loop',
       scaffoldMessengerKey: snackBarKey,
       theme: lightAppTheme,
       darkTheme: darkAppTheme,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       // 앱에서 지원할 언어 목록
       supportedLocales: AppLocalizations.supportedLocales,
       // flutter 기본 위젯들의 번역 설명

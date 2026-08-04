@@ -20,6 +20,8 @@ class BoardDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final state = ref.watch(postDetailProvider(postId));
 
     final loginState = ref.watch(loginProvider);
@@ -83,8 +85,11 @@ class BoardDetailPage extends ConsumerWidget {
                     padding: const EdgeInsets.all(16),
                     margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
-                      color: Colors.purple.withValues(alpha: 0.08),
+                      color: colorScheme.primary.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: colorScheme.primary.withValues(alpha: 0.16),
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +113,7 @@ class BoardDetailPage extends ConsumerWidget {
                 const SizedBox(height: 8),
                 Text(
                   Helpers().formatDate(post.updatedAt),
-                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 13),
                 ),
                 const Divider(height: 32),
                 Text(
@@ -200,20 +205,24 @@ class BoardDetailPage extends ConsumerWidget {
   void _confirmDelete(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('게시글 삭제'),
-        content: const Text('정말 삭제하시겠습니까?'),
-        actions: [
-          TextButton(onPressed: () => context.pop(), child: const Text('취소')),
-          TextButton(
-            onPressed: () {
-              context.pop();
-              ref.read(postDetailProvider(postId).notifier).delete();
-            },
-            child: const Text('삭제', style: TextStyle(color: Colors.red)),
+      builder:
+          (_) => AlertDialog(
+            title: const Text('게시글 삭제'),
+            content: const Text('정말 삭제하시겠습니까?'),
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: const Text('취소'),
+              ),
+              TextButton(
+                onPressed: () {
+                  context.pop();
+                  ref.read(postDetailProvider(postId).notifier).delete();
+                },
+                child: const Text('삭제', style: TextStyle(color: Colors.red)),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

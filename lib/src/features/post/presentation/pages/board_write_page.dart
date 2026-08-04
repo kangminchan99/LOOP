@@ -42,6 +42,9 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     ref.listen(createPostProvider, (previous, next) {
       next.whenOrNull(
         success: (post) {
@@ -59,11 +62,10 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
     });
     return DefaultLayout(
       appBarTitle: '글 작성',
-      backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
       leading: IconButton(
-        icon: const Icon(Icons.close, color: Colors.black),
+        icon: Icon(Icons.close, color: colorScheme.onSurface),
         onPressed: () => context.pop(),
       ),
       actions: [
@@ -92,8 +94,9 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: theme.dividerColor),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
@@ -121,8 +124,9 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: theme.dividerColor),
                     ),
                     child: TextField(
                       controller: _titleController,
@@ -143,8 +147,9 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
                     height: 300,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: theme.dividerColor),
                     ),
                     child: TextField(
                       controller: _contentController,
@@ -163,8 +168,9 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: theme.dividerColor),
                     ),
                     child: Row(
                       children: [
@@ -172,35 +178,35 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
                           width: 68,
                           height: 68,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF1F3F5),
+                            color: colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: const Color(0xFFE5E7EB)),
+                            border: Border.all(color: theme.dividerColor),
                           ),
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.camera_alt_outlined,
-                                color: Colors.black54,
+                                color: colorScheme.onSurfaceVariant,
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Text(
                                 '사진',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.black54,
+                                  color: colorScheme.onSurfaceVariant,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             '사진을 추가해 게시글을 더 자세히 보여줄 수 있어요.',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.black54,
+                              color: colorScheme.onSurfaceVariant,
                               height: 1.4,
                             ),
                           ),
@@ -215,7 +221,7 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
 
           Container(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            color: Colors.white,
+            color: colorScheme.surface,
             child: SizedBox(
               width: double.infinity,
               height: 52,

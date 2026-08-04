@@ -13,11 +13,13 @@ import 'setting_item_widget.dart';
 class SettingSectionWidget extends ConsumerWidget {
   final SettingSection section;
   final VoidCallback? onLanguageTap;
+  final VoidCallback? onThemeModeTap;
 
   const SettingSectionWidget({
     super.key,
     required this.section,
     this.onLanguageTap,
+    this.onThemeModeTap,
   });
 
   String _sectionTitle(AppLocalizations l10n, String title) {
@@ -66,6 +68,7 @@ class SettingSectionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final currentLocale = ref.watch(localeProvider);
 
@@ -79,18 +82,17 @@ class SettingSectionWidget extends ConsumerWidget {
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: AppColors.textSecondary,
-            ),
+            ).copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
         ),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: AppColors.surface,
-            border: Border.all(color: AppColors.border, width: 1),
+            color: theme.colorScheme.surface,
+            border: Border.all(color: theme.dividerColor, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: theme.shadowColor.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -124,6 +126,9 @@ class SettingSectionWidget extends ConsumerWidget {
                     return;
                   } else if (item.label == '언어') {
                     onLanguageTap?.call();
+                    return;
+                  } else if (item.label == '화면 모드') {
+                    onThemeModeTap?.call();
                     return;
                   }
 

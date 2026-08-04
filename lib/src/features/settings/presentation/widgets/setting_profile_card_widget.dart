@@ -18,16 +18,18 @@ class SettingProfileCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        color: AppColors.surface,
-        border: Border.all(color: Colors.white70, width: 1),
+        color: colorScheme.surface,
+        border: Border.all(color: theme.dividerColor, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: theme.shadowColor.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -83,7 +85,7 @@ class SettingProfileCardWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
-                    color: AppColors.textPrimary,
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -91,13 +93,13 @@ class SettingProfileCardWidget extends StatelessWidget {
                   user.email ?? l10n.settingsNoEmail,
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '${user.point} ${l10n.settingsPoints}',
-                  style: TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                  style: TextStyle(fontSize: 12, color: colorScheme.onSurface),
                 ),
               ],
             ),
@@ -108,7 +110,7 @@ class SettingProfileCardWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: AppColors.primaryLight,
+                color: colorScheme.primary.withValues(alpha: 0.12),
               ),
               child: Text(
                 l10n.settingsEdit,

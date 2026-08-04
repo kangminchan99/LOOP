@@ -66,6 +66,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     ref.listen<SignUpState>(signUpProvider, (previous, next) {
       next.whenOrNull(
         success: (user) {
@@ -147,11 +150,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(32),
-                      color: AppColors.surface,
-                      border: Border.all(color: Colors.white70, width: 1),
+                      color: colorScheme.surface,
+                      border: Border.all(color: theme.dividerColor, width: 1),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
+                          color: theme.shadowColor.withValues(alpha: 0.1),
                           blurRadius: 24,
                           offset: const Offset(0, 4),
                         ),
@@ -209,35 +212,41 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                             height: 56,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-                              color: isLoading
-                                  ? AppColors.textPrimary.withValues(alpha: 0.6)
-                                  : AppColors.textPrimary,
+                              color:
+                                  isLoading
+                                      ? colorScheme.inverseSurface.withValues(
+                                        alpha: 0.6,
+                                      )
+                                      : colorScheme.inverseSurface,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.2),
+                                  color: theme.shadowColor.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
                             child: Center(
-                              child: isLoading
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
+                              child:
+                                  isLoading
+                                      ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : Text(
+                                        '가입하고 시작하기',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: colorScheme.onInverseSurface,
+                                        ),
                                       ),
-                                    )
-                                  : const Text(
-                                      '가입하고 시작하기',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
                             ),
                           ),
                         ),
@@ -250,7 +259,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                               '이미 계정이 있나요?',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: AppColors.textSecondary,
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
                             const SizedBox(width: 4),

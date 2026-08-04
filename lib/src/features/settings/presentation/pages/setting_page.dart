@@ -16,6 +16,7 @@ import 'package:loop/src/features/settings/presentation/widgets/language_dialog_
 import 'package:loop/src/features/settings/presentation/widgets/setting_login_card_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_profile_card_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_section_widget.dart';
+import 'package:loop/src/features/settings/presentation/widgets/theme_mode_dialog_widget.dart';
 
 class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
@@ -38,8 +39,13 @@ class _SettingPageState extends ConsumerState<SettingPage> {
     showDialog(context: context, builder: (_) => const LanguageDialogWidget());
   }
 
+  void _showThemeModeDialog() {
+    showDialog(context: context, builder: (_) => const ThemeModeDialogWidget());
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final loginState = ref.watch(loginProvider);
     final user = loginState.maybeWhen(
@@ -112,6 +118,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                         SettingSectionWidget(
                           section: section,
                           onLanguageTap: _showLanguageDialog,
+                          onThemeModeTap: _showThemeModeDialog,
                         ),
                         const SizedBox(height: 24),
                       ],
@@ -151,14 +158,16 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                             height: 56,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-                              color: AppColors.surface,
+                              color: theme.colorScheme.surface,
                               border: Border.all(
                                 color: AppColors.error.withValues(alpha: 0.3),
                                 width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.05),
+                                  color: theme.shadowColor.withValues(
+                                    alpha: 0.05,
+                                  ),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),

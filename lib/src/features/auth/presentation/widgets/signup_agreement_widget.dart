@@ -26,6 +26,9 @@ class _SignupAgreementWidgetState extends State<SignupAgreementWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -36,7 +39,7 @@ class _SignupAgreementWidgetState extends State<SignupAgreementWidget> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          color: AppColors.primaryLight,
+          color: colorScheme.primary.withValues(alpha: 0.12),
         ),
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -49,22 +52,23 @@ class _SignupAgreementWidgetState extends State<SignupAgreementWidget> {
                 borderRadius: BorderRadius.circular(6),
                 color: _isAgreed ? AppColors.primary : Colors.transparent,
                 border: Border.all(
-                  color: _isAgreed ? AppColors.primary : AppColors.border,
+                  color: _isAgreed ? AppColors.primary : theme.dividerColor,
                   width: 2,
                 ),
               ),
-              child: _isAgreed
-                  ? const Center(
-                      child: Text(
-                        '✓',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+              child:
+                  _isAgreed
+                      ? const Center(
+                        child: Text(
+                          '✓',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    )
-                  : null,
+                      )
+                      : null,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -72,7 +76,7 @@ class _SignupAgreementWidgetState extends State<SignupAgreementWidget> {
                 'loop 이용약관과 개인정보 처리방침에 동의합니다.',
                 style: TextStyle(
                   fontSize: 12,
-                  color: AppColors.textSecondary,
+                  color: colorScheme.onSurfaceVariant,
                   height: 1.4,
                 ),
               ),

@@ -18,6 +18,8 @@ class CommentItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -40,12 +42,14 @@ class CommentItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       comment.authorNickname,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       Helpers().formatDate(comment.createdAt),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: theme.textTheme.bodySmall?.copyWith(fontSize: 12),
                     ),
                     const Spacer(),
                     if (_isMine)
@@ -57,7 +61,10 @@ class CommentItemWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(comment.content, style: const TextStyle(height: 1.4)),
+                Text(
+                  comment.content,
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
+                ),
               ],
             ),
           ),

@@ -1,5 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:loop/src/core/styles/app_colors.dart';
+import 'package:flutter/material.dart';
 import 'package:loop/src/core/utils/helpers/initializer.dart';
 import 'package:loop/src/features/post/domain/models/post_list_model.dart';
 
@@ -11,14 +10,17 @@ class PostCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: colorScheme.surface,
           border: Border(
-            bottom: BorderSide(color: AppColors.divider, width: 1),
+            bottom: BorderSide(color: theme.dividerColor, width: 1),
           ),
         ),
         child: Column(
@@ -26,10 +28,9 @@ class PostCardWidget extends StatelessWidget {
           children: [
             Text(
               post.title,
-              style: const TextStyle(
+              style: theme.textTheme.bodyLarge?.copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -39,27 +40,21 @@ class PostCardWidget extends StatelessWidget {
               children: [
                 Text(
                   post.authorNickname,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 13),
                 ),
                 const SizedBox(width: 8),
                 Container(
                   width: 2,
                   height: 2,
-                  decoration: const BoxDecoration(
-                    color: AppColors.textHint,
+                  decoration: BoxDecoration(
+                    color: theme.hintColor,
                     shape: BoxShape.circle,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   Helpers().formatDate(post.createdAt),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textHint,
-                  ),
+                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 13),
                 ),
               ],
             ),

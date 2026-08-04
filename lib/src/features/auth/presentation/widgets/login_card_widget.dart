@@ -29,17 +29,19 @@ class LoginCardWidget extends StatefulWidget {
 class _LoginCardWidgetState extends State<LoginCardWidget> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     return Container(
       padding: const EdgeInsets.all(24),
       margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: theme.shadowColor.withValues(alpha: 0.08),
             blurRadius: 32,
             offset: const Offset(0, 16),
           ),
@@ -81,11 +83,11 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: theme.dividerColor),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: theme.dividerColor),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
@@ -112,11 +114,11 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: theme.dividerColor),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: theme.dividerColor),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
@@ -132,29 +134,31 @@ class _LoginCardWidgetState extends State<LoginCardWidget> {
             onTap: widget.isLoading ? null : widget.onLogin,
             child: Container(
               decoration: BoxDecoration(
-                color: widget.isLoading
-                    ? AppColors.secondary.withValues(alpha: 0.6)
-                    : AppColors.secondary,
+                color:
+                    widget.isLoading
+                        ? AppColors.secondary.withValues(alpha: 0.6)
+                        : AppColors.secondary,
                 borderRadius: BorderRadius.circular(12),
               ),
               height: 56,
               child: Center(
-                child: widget.isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
+                child:
+                    widget.isLoading
+                        ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                        : Text(
+                          l10n.loginButton,
+                          style: const TextStyle(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      )
-                    : Text(
-                        l10n.loginButton,
-                        style: const TextStyle(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
               ),
             ),
           ),

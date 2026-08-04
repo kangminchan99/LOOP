@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loop/src/core/styles/app_colors.dart';
 
 class SettingItemWidget extends StatelessWidget {
   final String icon;
@@ -19,6 +18,9 @@ class SettingItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       children: [
         GestureDetector(
@@ -32,7 +34,7 @@ class SettingItemWidget extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: AppColors.primaryLight,
+                    color: colorScheme.primary.withValues(alpha: 0.12),
                   ),
                   child: Center(
                     child: Text(icon, style: const TextStyle(fontSize: 18)),
@@ -42,26 +44,23 @@ class SettingItemWidget extends StatelessWidget {
                 Expanded(
                   child: Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
                 if (value != null && value!.isNotEmpty)
                   Text(
                     value!,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textHint,
-                    ),
+                    style: TextStyle(fontSize: 12, color: theme.hintColor),
                   ),
                 if (value != null && value!.isNotEmpty)
                   const SizedBox(width: 8),
-                const Text(
+                Text(
                   '›',
-                  style: TextStyle(fontSize: 20, color: AppColors.border),
+                  style: TextStyle(fontSize: 20, color: theme.dividerColor),
                 ),
               ],
             ),
@@ -70,7 +69,7 @@ class SettingItemWidget extends StatelessWidget {
         if (showDivider)
           Divider(
             height: 1,
-            color: AppColors.divider,
+            color: theme.dividerColor,
             indent: 16,
             endIndent: 16,
           ),

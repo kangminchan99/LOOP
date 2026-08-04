@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loop/src/core/styles/app_colors.dart';
 
 class SignupInputFieldWidget extends StatefulWidget {
   final String label;
@@ -32,15 +31,18 @@ class _SignupInputFieldWidgetState extends State<SignupInputFieldWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 8),
@@ -48,8 +50,8 @@ class _SignupInputFieldWidgetState extends State<SignupInputFieldWidget> {
           height: 56,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            color: AppColors.surfaceVariant,
-            border: Border.all(color: AppColors.border, width: 1),
+            color: colorScheme.surfaceContainerHighest,
+            border: Border.all(color: theme.dividerColor, width: 1),
           ),
           child: Row(
             children: [
@@ -63,16 +65,10 @@ class _SignupInputFieldWidgetState extends State<SignupInputFieldWidget> {
                       vertical: 12,
                     ),
                     hintText: widget.placeholder,
-                    hintStyle: const TextStyle(
-                      fontSize: 15,
-                      color: AppColors.textHint,
-                    ),
+                    hintStyle: TextStyle(fontSize: 15, color: theme.hintColor),
                     border: InputBorder.none,
                   ),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: TextStyle(fontSize: 15, color: colorScheme.onSurface),
                 ),
               ),
               if (widget.isPasswordField)
@@ -86,10 +82,7 @@ class _SignupInputFieldWidgetState extends State<SignupInputFieldWidget> {
                     },
                     child: Text(
                       _obscureText ? '보기' : '숨기기',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textHint,
-                      ),
+                      style: TextStyle(fontSize: 12, color: theme.hintColor),
                     ),
                   ),
                 ),

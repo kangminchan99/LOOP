@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:loop/l10n/app_localizations.dart';
-import 'package:loop/src/core/styles/app_colors.dart';
 
 class SettingLoginCardWidget extends StatelessWidget {
   final VoidCallback? onLoginTap;
@@ -9,16 +8,18 @@ class SettingLoginCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        color: AppColors.surface,
-        border: Border.all(color: Colors.white70, width: 1),
+        color: colorScheme.surface,
+        border: Border.all(color: theme.dividerColor, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: theme.shadowColor.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -35,7 +36,7 @@ class SettingLoginCardWidget extends StatelessWidget {
                 height: 64,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
-                  color: AppColors.primaryLight,
+                  color: colorScheme.primary.withValues(alpha: 0.12),
                 ),
                 child: const Center(
                   child: Text('👋', style: TextStyle(fontSize: 32)),
@@ -48,10 +49,10 @@ class SettingLoginCardWidget extends StatelessWidget {
                   children: [
                     Text(
                       l10n.settingsLoginRequiredTitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.textPrimary,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -59,7 +60,7 @@ class SettingLoginCardWidget extends StatelessWidget {
                       l10n.settingsLoginRequiredDescription,
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: colorScheme.onSurfaceVariant,
                         height: 1.5,
                       ),
                     ),
@@ -75,10 +76,10 @@ class SettingLoginCardWidget extends StatelessWidget {
               height: 56,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
-                color: AppColors.textPrimary,
+                color: colorScheme.inverseSurface,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
+                    color: theme.shadowColor.withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -90,8 +91,7 @@ class SettingLoginCardWidget extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  ).copyWith(color: colorScheme.onInverseSurface),
                 ),
               ),
             ),

@@ -105,11 +105,12 @@ class _NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final isUnread = notification.readAt == null;
 
     return ListTile(
       onTap: onTap,
-      tileColor: isUnread ? Colors.blue.withValues(alpha: 0.06) : null,
+      tileColor: isUnread ? colorScheme.primary.withValues(alpha: 0.08) : null,
       title: Text(
         notification.title,
         style: TextStyle(
@@ -117,16 +118,17 @@ class _NotificationTile extends StatelessWidget {
         ),
       ),
       subtitle: Text(notification.body),
-      trailing: isUnread
-          ? Container(
-              width: 8,
-              height: 8,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            )
-          : null,
+      trailing:
+          isUnread
+              ? Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+              )
+              : null,
     );
   }
 }

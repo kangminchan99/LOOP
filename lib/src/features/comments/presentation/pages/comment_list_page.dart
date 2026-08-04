@@ -13,6 +13,7 @@ class CommentListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final state = ref.watch(myCommentsProvider);
 
     return DefaultLayout(
@@ -45,7 +46,7 @@ class CommentListPage extends ConsumerWidget {
                 const SizedBox(height: 4),
                 Text(
                   Helpers().formatDate(comment.createdAt),
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: theme.textTheme.bodySmall?.copyWith(fontSize: 12),
                 ),
               ],
             ),
