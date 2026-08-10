@@ -351,6 +351,100 @@ DefaultLayout(appBarTitle: 'Title', child: SafeArea(top: false, child: MyContent
 
 ---
 
+## 반응형 UI 작성 규칙
+
+반응형 UI는 화면 크기에 비례해 모든 요소를 확대·축소하는 것이 아니라, 주어진 제약에 따라 배치를 바꾸는 것이다.
+
+### 핵심 원칙
+
+- 글자, 버튼, 입력창, 기본 여백을 `MediaQuery.sizeOf(context).width * 0.8` 처럼 화면 비율로 일괄 확대·축소하는 방식은 기본적으로 피한다.
+- 글자, 버튼, 아이콘, 기본 여백은 논리 픽셀 기준의 일관된 크기를 유지한다.
+- 작은 화면에서는 `Flexible`, `Expanded`, `Wrap`, `ListView`, `SingleChildScrollView`로 줄바꿈과 스크롤을 허용한다.
+- 큰 화면에서는 콘텐츠를 계속 늘리지 않고 `MaxWidthContainer` 또는 `ConstrainedBox` 안에 배치한다.
+- 네비게이션이나 컬럼 수처럼 레이아웃 구조가 바뀌 때만 `ResponsiveLayout` breakpoint를 사용한다.
+- 텍스트 확대, 번역 문구, 긴 닉네임을 고려해 `Row` 안의 텍스트에 `Flexible`/`Expanded`를 적용하거나 `Wrap`을 사용한다.
+
+### 프로젝트 공용 레이아웃
+
+```dart
+// 화면 넓이에 따라 네비게이션 구조를 변경
+ResponsiveLayout(
+  mobile: MobileContent(),
+  tablet: TabletContent(),
+  desktop: DesktopContent(),
+)
+
+// 리스트·상세·폼이 넓은 화면 전체로 늘어나지 않게 제한
+// 720은 현재 프로젝트의 기본값이며 콘텐츠와 디자인에 따라 조정 가능
+MaxWidthContainer(
+  maxWidth: 720,
+  child: MyContent(),
+)
+
+// 로그인·회원가입처럼 집중도가 필요한 좁은 폼
+// 480 또한 Flutter 공식 고정값이 아닌 프로젝트 기본값
+MaxWidthContainer(
+  maxWidth: 480,
+  child: AuthForm(),
+)
+```
+
+전체 화면 배경이나 gradient는 화면 너비를 모두 사용해도 되지만, 실제 콘텐츠는 배경 안에서 최대 너비를 제한한다.
+
+### MediaQuery 사용 기준
+
+`MediaQuery`를 사용하는 것 자체가 금지는 아니다. 전체 앱 창의 크기와 환경 정보는 `MediaQuery`로 확인하고, 특정 위젯이 부모로부터 받은 가용 공간은 `LayoutBuilder`로 확인한다. UI 크기를 비율로 계산할 때는 그 비율 자체가 디자인 요구인지 먼저 확인한다.
+
+```dart
+// ✅ 시스템 안전 영역, 키보드, 텍스트 확대 등 환경 정보 확인
+final padding = MediaQuery.paddingOf(context);
+final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+final textScaler = MediaQuery.textScalerOf(context);
+
+// ❌ 명확한 디자인 의도 없이 콘텐츠·글자·버튼·여백을 일괄 확대/축소
+final width = MediaQuery.sizeOf(context).width;
+SizedBox(width: width * 0.8, height: width * 0.1);
+
+// ✅ 창 너비에 따라 전체 레이아웃 구조를 분기
+final windowWidth = MediaQuery.sizeOf(context).width;
+final useNavigationRail = windowWidth >= 600;
+```
+
+배경의 원·빛 효과 같은 **순수 장식 요소**, 진행률, 화면의 일정 비율을 차지하도록 의도된 패널 등은 비율 크기를 사용해도 된다. 단, 콘텐츠 배치나 접근성에 영향을 주지 않는지 확인한다.
+
+### 오버플로 대응
+
+```dart
+// ❌ 자식이 제약을 받지 못해 Row overflow 발생 가능
+Row(children: [SizedBox(width: 350, child: MyButton())])
+
+// ✅ Row가 자식에게 maxWidth 제약을 전달
+Row(children: [Flexible(child: SizedBox(width: 350, child: MyButton()))])
+
+// ✅ 자동 줄바꿈이 적합한 여러 항목
+Wrap(spacing: 8, runSpacing: 8, children: chips)
+```
+
+오버플로가 발생했을 때 화면 넓이의 비율로 자식을 줄이기 전에, 부모가 올바른 제약을 전달하고 있는지 먼저 확인한다.
+
+### 크기 지정 및 접근성
+
+- `48~56`은 버튼과 입력창에 자주 사용하는 높이 범위이지만, 모든 위젯에 적용하는 Flutter 공식 고정값은 아니다.
+- 정확한 `height: 56`을 사용해도 되지만 텍스트 확대·번역 문구에서 잘림이 없는지 검증한다. 내용이 늘어날 수 있다면 `minimumSize` 또는 `BoxConstraints(minHeight: 56)`를 사용한다.
+- 입력창·버튼·카드의 높이를 화면 높이의 비율로 계산하지 않는다.
+- 이미지는 필요한 비율을 `AspectRatio` 위젯으로 유지한다.
+
+### UI 작성 후 확인 목록
+
+- 360px 내외의 작은 화면에서 overflow가 없는가?
+- 600px breakpoint 전후에서 `NavigationBar`/`NavigationRail` 전환이 자연스러운가?
+- 태블릿·데스크톱에서 폼과 텍스트가 너무 넓게 늘어나지 않는가?
+- 시스템 텍스트 크기를 200%로 높여도 잘림과 overflow가 없는가?
+- 한국어·영어와 긴 사용자 콘텐츠에서도 `Row`가 넘치지 않는가?
+- 가로·세로 방향 전환 후에도 레이아웃이 유지되는가?
+
+---
+
 ## 공용 위젯
 
 ```dart
