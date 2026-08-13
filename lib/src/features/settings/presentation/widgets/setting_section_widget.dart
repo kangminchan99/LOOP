@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/localization/locale_provider.dart';
 import 'package:loop/src/core/router/router_path.dart';
-import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/features/attendance/presentation/widgets/attendance_dialog_widget.dart';
 import 'package:loop/src/features/settings/domain/models/setting_model.dart';
 
