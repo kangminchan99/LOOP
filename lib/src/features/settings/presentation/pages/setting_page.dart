@@ -53,10 +53,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
       orElse: () => null,
     );
     final isLoggedIn = user != null;
-    final sections =
-        isLoggedIn
-            ? SettingConstants.loggedInSections
-            : SettingConstants.notLoggedInSections;
+    final sections = isLoggedIn
+        ? SettingConstants.loggedInSections
+        : SettingConstants.notLoggedInSections;
 
     Future<void> getProfileImage() async {
       final picker = ImagePicker();
@@ -85,6 +84,11 @@ class _SettingPageState extends ConsumerState<SettingPage> {
     }
 
     return DefaultLayout(
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'settings_bluetooth_fab',
+        onPressed: () => context.push(AppRoute.bluetooth.path),
+        child: Icon(Icons.bluetooth),
+      ),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -103,13 +107,13 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   // Profile or Login Card
                   isLoggedIn
                       ? SettingProfileCardWidget(
-                        user: user,
-                        onEditTap: getProfileImage,
-                        onImageError: _refreshUserImage,
-                      )
+                          user: user,
+                          onEditTap: getProfileImage,
+                          onImageError: _refreshUserImage,
+                        )
                       : SettingLoginCardWidget(
-                        onLoginTap: () => context.push(AppRoute.login.path),
-                      ),
+                          onLoginTap: () => context.push(AppRoute.login.path),
+                        ),
                   const SizedBox(height: 24),
                   // Settings Sections
                   ...sections.map(
@@ -130,8 +134,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            final result =
-                                await ref.read(deleteFcmTokenUseCaseProvider)();
+                            final result = await ref.read(
+                              deleteFcmTokenUseCaseProvider,
+                            )();
 
                             result.match(
                               (failure) {

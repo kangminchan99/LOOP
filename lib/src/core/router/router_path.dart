@@ -8,6 +8,7 @@ enum AppRoute {
   postEdit,
   notifications,
   commentList,
+  bluetooth,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -31,6 +32,8 @@ extension AppRouteExtension on AppRoute {
         return '/notifications';
       case AppRoute.commentList:
         return '/comment-list';
+      case AppRoute.bluetooth:
+        return '/bluetooth';
     }
   }
 
@@ -54,6 +57,8 @@ extension AppRouteExtension on AppRoute {
         return 'notifications';
       case AppRoute.commentList:
         return 'commentList';
+      case AppRoute.bluetooth:
+        return 'bluetooth';
     }
   }
 }

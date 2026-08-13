@@ -5,6 +5,7 @@ import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/pages/login_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/sign_up_page.dart';
+import 'package:loop/src/features/bluetooth/presentation/pages/ble_page.dart';
 import 'package:loop/src/features/comments/presentation/pages/comment_list_page.dart';
 import 'package:loop/src/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_detail_page.dart';
@@ -37,6 +38,11 @@ final routerProvider = Provider((ref) {
         path: AppRoute.notifications.path,
         name: AppRoute.notifications.name,
         builder: (context, state) => const NotificationsPage(),
+      ),
+      GoRoute(
+        path: AppRoute.bluetooth.path,
+        name: AppRoute.bluetooth.name,
+        builder: (context, state) => BlePage(),
       ),
       GoRoute(
         path: AppRoute.postDetail.path,
