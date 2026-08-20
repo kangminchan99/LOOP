@@ -119,6 +119,9 @@ class SettingSectionWidget extends ConsumerWidget {
                   } else if (item.label == '내 댓글') {
                     context.pushNamed(AppRoute.commentList.name);
                     return;
+                  } else if (item.label == '채팅') {
+                    context.pushNamed(AppRoute.chatRooms.name);
+                    return;
                   } else if (item.label == '알림 목록') {
                     // Navigate to the notification list page
                     context.pushNamed(AppRoute.notifications.name);

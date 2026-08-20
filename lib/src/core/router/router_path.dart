@@ -9,6 +9,8 @@ enum AppRoute {
   notifications,
   commentList,
   bluetooth,
+  chatRooms,
+  chatRoomDetail,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -34,6 +36,10 @@ extension AppRouteExtension on AppRoute {
         return '/comment-list';
       case AppRoute.bluetooth:
         return '/bluetooth';
+      case AppRoute.chatRooms:
+        return '/chat/rooms';
+      case AppRoute.chatRoomDetail:
+        return '/chat/rooms/:roomId';
     }
   }
 
@@ -59,6 +65,10 @@ extension AppRouteExtension on AppRoute {
         return 'commentList';
       case AppRoute.bluetooth:
         return 'bluetooth';
+      case AppRoute.chatRooms:
+        return 'chatRooms';
+      case AppRoute.chatRoomDetail:
+        return 'chatRoomDetail';
     }
   }
 }

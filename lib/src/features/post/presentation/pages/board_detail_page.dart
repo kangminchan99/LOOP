@@ -7,6 +7,7 @@ import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/utils/helpers/initializer.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
+import 'package:loop/src/features/chat/presentation/providers/chat_providers.dart';
 import 'package:loop/src/features/comments/presentation/providers/comment_provider.dart';
 import 'package:loop/src/features/comments/presentation/widgets/comment_input_widget.dart';
 import 'package:loop/src/features/comments/presentation/widgets/comment_item_widget.dart';
@@ -115,6 +116,22 @@ class BoardDetailPage extends ConsumerWidget {
                   Helpers().formatDate(post.updatedAt),
                   style: theme.textTheme.bodySmall?.copyWith(fontSize: 13),
                 ),
+                if (isLoggedIn && post.authorId != myId) ...[
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed:
+                          () => _startChatWithAuthor(
+                            context: context,
+                            ref: ref,
+                            targetUserId: post.authorId,
+                          ),
+                      icon: const Icon(Icons.chat_bubble_outline),
+                      label: const Text('작성자와 채팅하기'),
+                    ),
+                  ),
+                ],
                 const Divider(height: 32),
                 Text(
                   post.content,
@@ -198,6 +215,32 @@ class BoardDetailPage extends ConsumerWidget {
           ),
         ),
         _ => const SizedBox.shrink(),
+      },
+    );
+  }
+
+  Future<void> _startChatWithAuthor({
+    required BuildContext context,
+    required WidgetRef ref,
+    required int targetUserId,
+  }) async {
+    final result = await ref
+        .read(chatUseCaseProvider)
+        .createDirectRoom(targetUserId: targetUserId);
+
+    if (!context.mounted) return;
+
+    result.match(
+      (failure) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(failure.errorMessage)));
+      },
+      (room) {
+        context.pushNamed(
+          AppRoute.chatRoomDetail.name,
+          pathParameters: {'roomId': room.id.toString()},
+        );
       },
     );
   }

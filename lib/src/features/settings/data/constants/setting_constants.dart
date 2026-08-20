@@ -7,6 +7,7 @@ class SettingConstants {
       title: '계정',
       items: [
         SettingItem(icon: '💬', label: '내 댓글'),
+        SettingItem(icon: '💭', label: '채팅'),
         SettingItem(icon: '🎯', label: '출석 체크'),
         SettingItem(icon: '🔔', label: '알림 목록'),
       ],
