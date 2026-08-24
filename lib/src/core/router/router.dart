@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loop/loop_app_shell.dart';
 import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router_path.dart';
+import 'package:loop/src/features/admin/presentation/pages/admin_webview_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/login_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:loop/src/features/bluetooth/presentation/pages/ble_page.dart';
@@ -58,6 +59,11 @@ final routerProvider = Provider((ref) {
           final roomId = int.parse(state.pathParameters['roomId']!);
           return ChatRoomDetailPage(roomId: roomId);
         },
+      ),
+      GoRoute(
+        path: AppRoute.adminWebView.path,
+        name: AppRoute.adminWebView.name,
+        builder: (context, state) => const AdminWebViewPage(),
       ),
       GoRoute(
         path: AppRoute.postDetail.path,

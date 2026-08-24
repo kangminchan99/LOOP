@@ -53,6 +53,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
       orElse: () => null,
     );
     final isLoggedIn = user != null;
+    final isAdmin = user?.role == 'ADMIN';
     final sections = isLoggedIn
         ? SettingConstants.loggedInSections
         : SettingConstants.notLoggedInSections;
@@ -128,6 +129,57 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       ],
                     ),
                   ),
+                  if (isAdmin)
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed(AppRoute.adminWebView.name);
+                          },
+                          child: Container(
+                            height: 56,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              color: theme.colorScheme.surface,
+                              border: Border.all(
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.3,
+                                ),
+                                width: 1,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: theme.shadowColor.withValues(
+                                    alpha: 0.05,
+                                  ),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.admin_panel_settings,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '관리자 모드',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
                   // Logout Button
                   if (isLoggedIn)
                     Column(

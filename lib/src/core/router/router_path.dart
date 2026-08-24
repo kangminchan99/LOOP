@@ -11,6 +11,7 @@ enum AppRoute {
   bluetooth,
   chatRooms,
   chatRoomDetail,
+  adminWebView,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -40,6 +41,8 @@ extension AppRouteExtension on AppRoute {
         return '/chat/rooms';
       case AppRoute.chatRoomDetail:
         return '/chat/rooms/:roomId';
+      case AppRoute.adminWebView:
+        return '/admin-webview';
     }
   }
 
@@ -69,6 +72,8 @@ extension AppRouteExtension on AppRoute {
         return 'chatRooms';
       case AppRoute.chatRoomDetail:
         return 'chatRoomDetail';
+      case AppRoute.adminWebView:
+        return 'adminWebView';
     }
   }
 }
