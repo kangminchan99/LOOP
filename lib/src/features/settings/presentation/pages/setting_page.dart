@@ -54,9 +54,10 @@ class _SettingPageState extends ConsumerState<SettingPage> {
     );
     final isLoggedIn = user != null;
     final isAdmin = user?.role == 'ADMIN';
-    final sections = isLoggedIn
-        ? SettingConstants.loggedInSections
-        : SettingConstants.notLoggedInSections;
+    final sections =
+        isLoggedIn
+            ? SettingConstants.loggedInSections
+            : SettingConstants.notLoggedInSections;
 
     Future<void> getProfileImage() async {
       final picker = ImagePicker();
@@ -108,13 +109,13 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   // Profile or Login Card
                   isLoggedIn
                       ? SettingProfileCardWidget(
-                          user: user,
-                          onEditTap: getProfileImage,
-                          onImageError: _refreshUserImage,
-                        )
+                        user: user,
+                        onEditTap: getProfileImage,
+                        onImageError: _refreshUserImage,
+                      )
                       : SettingLoginCardWidget(
-                          onLoginTap: () => context.push(AppRoute.login.path),
-                        ),
+                        onLoginTap: () => context.push(AppRoute.login.path),
+                      ),
                   const SizedBox(height: 24),
                   // Settings Sections
                   ...sections.map(
@@ -132,50 +133,20 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   if (isAdmin)
                     Column(
                       children: [
-                        GestureDetector(
+                        _AdminActionButton(
+                          icon: Icons.admin_panel_settings,
+                          label: '관리자 웹뷰',
                           onTap: () {
                             context.pushNamed(AppRoute.adminWebView.name);
                           },
-                          child: Container(
-                            height: 56,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: theme.colorScheme.surface,
-                              border: Border.all(
-                                color: theme.colorScheme.primary.withValues(
-                                  alpha: 0.3,
-                                ),
-                                width: 1,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: theme.shadowColor.withValues(
-                                    alpha: 0.05,
-                                  ),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.admin_panel_settings,
-                                  color: theme.colorScheme.primary,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '관리자 모드',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _AdminActionButton(
+                          icon: Icons.monitor_heart,
+                          label: '서버 상태',
+                          onTap: () {
+                            context.pushNamed(AppRoute.adminServerStatus.name);
+                          },
                         ),
                         const SizedBox(height: 24),
                       ],
@@ -186,9 +157,8 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            final result = await ref.read(
-                              deleteFcmTokenUseCaseProvider,
-                            )();
+                            final result =
+                                await ref.read(deleteFcmTokenUseCaseProvider)();
 
                             result.match(
                               (failure) {
@@ -258,6 +228,60 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminActionButton extends StatelessWidget {
+  const _AdminActionButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 56,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: theme.colorScheme.surface,
+          border: Border.all(
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ],
         ),
       ),
     );

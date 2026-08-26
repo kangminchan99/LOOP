@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loop/loop_app_shell.dart';
 import 'package:loop/src/core/router/navigator_key.dart';
 import 'package:loop/src/core/router/router_path.dart';
+import 'package:loop/src/features/admin/presentation/pages/admin_server_status_page.dart';
 import 'package:loop/src/features/admin/presentation/pages/admin_webview_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/login_page.dart';
 import 'package:loop/src/features/auth/presentation/pages/sign_up_page.dart';
@@ -64,6 +65,11 @@ final routerProvider = Provider((ref) {
         path: AppRoute.adminWebView.path,
         name: AppRoute.adminWebView.name,
         builder: (context, state) => const AdminWebViewPage(),
+      ),
+      GoRoute(
+        path: AppRoute.adminServerStatus.path,
+        name: AppRoute.adminServerStatus.name,
+        builder: (context, state) => const AdminServerStatusPage(),
       ),
       GoRoute(
         path: AppRoute.postDetail.path,

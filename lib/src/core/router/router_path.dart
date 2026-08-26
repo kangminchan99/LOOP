@@ -12,6 +12,7 @@ enum AppRoute {
   chatRooms,
   chatRoomDetail,
   adminWebView,
+  adminServerStatus,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -43,6 +44,8 @@ extension AppRouteExtension on AppRoute {
         return '/chat/rooms/:roomId';
       case AppRoute.adminWebView:
         return '/admin-webview';
+      case AppRoute.adminServerStatus:
+        return '/admin/server-status';
     }
   }
 
@@ -74,6 +77,8 @@ extension AppRouteExtension on AppRoute {
         return 'chatRoomDetail';
       case AppRoute.adminWebView:
         return 'adminWebView';
+      case AppRoute.adminServerStatus:
+        return 'adminServerStatus';
     }
   }
 }
