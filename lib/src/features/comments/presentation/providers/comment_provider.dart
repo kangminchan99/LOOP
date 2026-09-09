@@ -39,12 +39,11 @@ final deleteCommentUseCaseProvider = Provider<DeleteCommentUseCase>((ref) {
   return DeleteCommentUseCase(repository);
 });
 
-final commentListProvider =
-    StateNotifierProvider.family<
-      CommentListNotifier,
-      CursorPaginationState<CommentModel>,
-      int
-    >((ref, postId) {
+final commentListProvider = StateNotifierProvider.autoDispose
+    .family<CommentListNotifier, CursorPaginationState<CommentModel>, int>((
+      ref,
+      postId,
+    ) {
       return CommentListNotifier(
         postId: postId,
         getCommentsUseCase: ref.watch(getCommentsUseCaseProvider),

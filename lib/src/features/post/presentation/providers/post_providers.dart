@@ -45,11 +45,8 @@ final postListProvider =
       return PostListNotifier(ref.watch(createPostRepositoryProvider));
     });
 
-final postDetailProvider =
-    StateNotifierProvider.family<PostDetailNotifier, PostDetailState, int>((
-      ref,
-      postId,
-    ) {
+final postDetailProvider = StateNotifierProvider.autoDispose
+    .family<PostDetailNotifier, PostDetailState, int>((ref, postId) {
       final repository = ref.watch(createPostRepositoryProvider);
       final analyticsService = ref.watch(analyticsServiceProvider);
 

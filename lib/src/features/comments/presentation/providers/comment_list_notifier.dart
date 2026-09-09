@@ -40,6 +40,7 @@ class CommentListNotifier extends CursorPaginationNotifier<CommentModel> {
       postId: postId,
       content: content,
     );
+    if (!mounted) return result;
 
     await result.match((_) async {}, (comment) async {
       state = state.copyWith(items: [comment, ...state.items]);
@@ -54,6 +55,7 @@ class CommentListNotifier extends CursorPaginationNotifier<CommentModel> {
       postId: postId,
       commentId: commentId,
     );
+    if (!mounted) return result;
 
     result.match((_) {}, (_) {
       state = state.copyWith(

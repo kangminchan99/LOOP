@@ -14,6 +14,10 @@ class PostDetailNotifier extends StateNotifier<PostDetailState> {
   }
 
   Future<void> load() async {
+    // 재시도 연타와 삭제 중 조회를 방지.
+    if (!mounted || state is PostDetailLoading || state is PostDetailDeleting) {
+      return;
+    }
     state = const PostDetailState.loading();
 
     final result = await _repository.getPostById(_postId);

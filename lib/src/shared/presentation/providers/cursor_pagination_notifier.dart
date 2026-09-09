@@ -14,10 +14,11 @@ abstract class CursorPaginationNotifier<T>
 
   // 첫 로딩
   Future<void> load() async {
-    if (state.isLoading) return;
+    if (!mounted || state.isLoading || state.isLoadingMore) return;
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final result = await fetchPage(null);
+    if (!mounted) return;
     result.match(
       (failure) => state = state.copyWith(
         isLoading: false,
@@ -33,12 +34,13 @@ abstract class CursorPaginationNotifier<T>
 
   // 추가 로드 (무한스크롤)
   Future<void> loadMore() async {
-    if (state.isLoadingMore || state.isLoading) return;
+    if (!mounted || state.isLoadingMore || state.isLoading) return;
     if (!state.hasNext || state.nextCursor == null) return;
 
     state = state.copyWith(isLoadingMore: true, errorMessage: null);
 
     final result = await fetchPage(state.nextCursor);
+    if (!mounted) return;
     result.match(
       (failure) => state = state.copyWith(
         isLoadingMore: false,
