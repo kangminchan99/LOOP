@@ -37,6 +37,9 @@ class _BoardEditPageState extends ConsumerState<BoardEditPage> {
       if (!_isSubmitted) return;
 
       if (next is PostDetailSuccess) {
+        ref
+            .read(postListProvider.notifier)
+            .updateTitle(widget.postId, next.post.title);
         ref.read(postListProvider.notifier).load();
 
         if (context.mounted) {

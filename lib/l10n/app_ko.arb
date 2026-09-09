@@ -42,5 +42,10 @@
   "settingsPoints": "포인트",
   "settingsEdit": "수정",
   "languageDialogTitle": "언어 설정",
-  "languageDialogClose": "닫기"
+  "languageDialogClose": "닫기",
+  "postsConnectionUnavailable": "서버에 연결할 수 없어요. 이미 불러온 게시글만 볼 수 있어요.",
+  "postsRefreshFailed": "게시글을 갱신하지 못했어요. 다시 시도해주세요.",
+  "postsShowingCache": "기기에 저장된 게시글을 보여주고 있어요.",
+  "postsRetry": "다시 시도",
+  "postsRefresh": "새로고침"
 }

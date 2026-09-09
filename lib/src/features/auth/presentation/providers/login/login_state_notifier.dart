@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:logging/logging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loop/src/core/analytics/analytics_service.dart';
@@ -15,14 +17,26 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
   final LoginWithKakaoUsecase _loginWithKakaoUsecase;
   final LoginWithGoogleUsecase _loginWithGoogleUsecase;
   final AnalyticsService _analyticsService;
+  final Future<void> Function()? _onSessionChanged;
+  final _logger = Logger('LoginStateNotifier');
+
+  Future<void> _clearSessionCache() async {
+    try {
+      await _onSessionChanged?.call();
+    } catch (error, stack) {
+      _logger.warning('로그인 캐시 정리 실패', error, stack);
+    }
+  }
 
   LoginStateNotifier(
     this._authRepository,
     this._secureStorage,
     this._loginWithKakaoUsecase,
     this._loginWithGoogleUsecase,
-    this._analyticsService,
-  ) : super(const LoginState.initial());
+    this._analyticsService, {
+    Future<void> Function()? onSessionChanged,
+  }) : _onSessionChanged = onSessionChanged,
+       super(const LoginState.initial());
 
   Future<void> login({required String email, required String password}) async {
     state = const LoginState.loading();
@@ -36,6 +50,8 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
         state = LoginState.error(failure.errorMessage);
       },
       (user) async {
+        await _clearSessionCache();
+        if (!mounted) return;
         state = LoginState.success(user);
         await _analyticsService.logLogin(method: 'email');
         await _analyticsService.setUserId(user.id);
@@ -53,6 +69,8 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
         state = LoginState.error(failure.errorMessage);
       },
       (user) async {
+        await _clearSessionCache();
+        if (!mounted) return;
         state = LoginState.success(user);
         await _analyticsService.logLogin(method: 'kakao');
         await _analyticsService.setUserId(user.id);
@@ -70,6 +88,8 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
         state = LoginState.error(failure.errorMessage);
       },
       (user) async {
+        await _clearSessionCache();
+        if (!mounted) return;
         state = LoginState.success(user);
         await _analyticsService.logLogin(method: 'google');
         await _analyticsService.setUserId(user.id);
@@ -79,11 +99,18 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
 
   Future<void> logout() async {
     await _authRepository.logout();
-    await _analyticsService.setUserId(null);
+    await _clearSessionCache();
+    if (!mounted) return;
     state = const LoginState.initial();
+    await _analyticsService.setUserId(null);
   }
 
   Future<void> updateUser(UserModel user) async {
+    final current = state;
+    if (current is! LoginSuccess || current.user.id != user.id) {
+      await _clearSessionCache();
+      if (!mounted) return;
+    }
     state = LoginState.success(user);
   }
 
@@ -119,6 +146,7 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
   }
 
   void reset() {
+    unawaited(_clearSessionCache());
     state = const LoginState.initial();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop/src/core/analytics/analytics_providers.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
+import 'package:loop/src/features/post/data/data_sources/local/post_cache_providers.dart';
 import 'package:loop/src/features/post/data/data_sources/remote/post_api.dart';
 import 'package:loop/src/features/post/data/repositories/post_repository_impl.dart';
 import 'package:loop/src/features/post/domain/models/post_list_model.dart';
@@ -20,8 +21,12 @@ final postApiProvider = Provider<PostApi>((ref) {
 });
 
 final createPostRepositoryProvider = Provider<AbstractPostRepository>((ref) {
+  ref.watch(postCacheSessionProvider);
   final api = ref.watch(postApiProvider);
-  return PostRepositoryImpl(api);
+  final localDataSource = ref.watch(postLocalDataSourceProvider);
+
+  // repository가 서버와 로컬 db 양쪽을 사용할 수 있도록 연결
+  return PostRepositoryImpl(api, localDataSource);
 });
 
 final createPostProvider =

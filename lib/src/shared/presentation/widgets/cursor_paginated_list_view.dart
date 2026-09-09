@@ -57,6 +57,7 @@ class _CursorPaginatedListViewState<T>
       return widget.emptyWidget ?? const SizedBox.shrink();
     }
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
       itemCount: widget.items.length + (widget.isLoadingMore ? 1 : 0),
       separatorBuilder:

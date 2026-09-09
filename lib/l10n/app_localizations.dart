@@ -355,6 +355,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'닫기'**
   String get languageDialogClose;
+
+  /// No description provided for @postsConnectionUnavailable.
+  ///
+  /// In ko, this message translates to:
+  /// **'서버에 연결할 수 없어요. 이미 불러온 게시글만 볼 수 있어요.'**
+  String get postsConnectionUnavailable;
+
+  /// No description provided for @postsRefreshFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'게시글을 갱신하지 못했어요. 다시 시도해주세요.'**
+  String get postsRefreshFailed;
+
+  /// No description provided for @postsShowingCache.
+  ///
+  /// In ko, this message translates to:
+  /// **'기기에 저장된 게시글을 보여주고 있어요.'**
+  String get postsShowingCache;
+
+  /// No description provided for @postsRetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 시도'**
+  String get postsRetry;
+
+  /// No description provided for @postsRefresh.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로고침'**
+  String get postsRefresh;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop/src/core/analytics/analytics_providers.dart';
 import 'package:loop/src/core/providers/init_provider.dart';
+import 'package:loop/src/features/post/data/data_sources/local/post_cache_providers.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/auth_api.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/google_auth_data_source.dart';
 import 'package:loop/src/features/auth/data/data_sources/remote/kakao_auth_data_source.dart';
@@ -76,5 +77,13 @@ final loginProvider = StateNotifierProvider<LoginStateNotifier, LoginState>((
     loginWithKakaoUsecase,
     loginWithGoogleUsecase,
     analyticsService,
+    onSessionChanged: () async {
+      final clearing = ref.read(postLocalDataSourceProvider).clear();
+      try {
+        await clearing;
+      } finally {
+        ref.read(postCacheSessionProvider.notifier).state++;
+      }
+    },
   );
 });

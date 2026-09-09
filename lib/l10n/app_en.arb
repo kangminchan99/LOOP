@@ -42,5 +42,10 @@
   "settingsPoints": "points",
   "settingsEdit": "Edit",
   "languageDialogTitle": "Language",
-  "languageDialogClose": "Close"
+  "languageDialogClose": "Close",
+  "postsConnectionUnavailable": "Cannot reach the server. Only previously loaded posts are available.",
+  "postsRefreshFailed": "Could not refresh posts. Please try again.",
+  "postsShowingCache": "Showing posts saved on this device.",
+  "postsRetry": "Retry",
+  "postsRefresh": "Refresh"
 }

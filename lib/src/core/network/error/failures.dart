@@ -27,3 +27,13 @@ class CancelTokenFailure extends Failure {
 
   const CancelTokenFailure(super.errorMessage, this.statusCode);
 }
+
+// 기기 내부 캐시 조회,저장,삭제 오류.
+class CacheFailure extends Failure {
+  const CacheFailure(super.errorMessage);
+}
+
+// 응답 코드가 있는 서버 오류와 연결 실패를 구분.
+class NetworkFailure extends Failure {
+  const NetworkFailure(super.errorMessage);
+}

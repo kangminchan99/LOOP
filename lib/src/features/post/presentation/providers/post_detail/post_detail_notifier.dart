@@ -17,6 +17,7 @@ class PostDetailNotifier extends StateNotifier<PostDetailState> {
     state = const PostDetailState.loading();
 
     final result = await _repository.getPostById(_postId);
+    if (!mounted) return;
 
     await result.match(
       (failure) async {
@@ -35,6 +36,7 @@ class PostDetailNotifier extends StateNotifier<PostDetailState> {
 
     state = PostDetailState.deleting(current.post);
     final result = await _repository.deletePost(_postId);
+    if (!mounted) return;
     state = result.fold(
       (failure) => PostDetailState.error(failure.errorMessage),
       (_) => const PostDetailState.deleted(),
@@ -46,6 +48,7 @@ class PostDetailNotifier extends StateNotifier<PostDetailState> {
     if (current is! PostDetailSuccess) return;
 
     final result = await _repository.updatePost(_postId, request);
+    if (!mounted) return;
 
     state = result.fold(
       (failure) => PostDetailState.error(failure.errorMessage),

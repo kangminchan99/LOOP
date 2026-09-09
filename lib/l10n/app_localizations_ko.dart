@@ -137,4 +137,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get languageDialogClose => '닫기';
+
+  @override
+  String get postsConnectionUnavailable =>
+      '서버에 연결할 수 없어요. 이미 불러온 게시글만 볼 수 있어요.';
+
+  @override
+  String get postsRefreshFailed => '게시글을 갱신하지 못했어요. 다시 시도해주세요.';
+
+  @override
+  String get postsShowingCache => '기기에 저장된 게시글을 보여주고 있어요.';
+
+  @override
+  String get postsRetry => '다시 시도';
+
+  @override
+  String get postsRefresh => '새로고침';
 }

@@ -138,4 +138,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageDialogClose => 'Close';
+
+  @override
+  String get postsConnectionUnavailable =>
+      'Cannot reach the server. Only previously loaded posts are available.';
+
+  @override
+  String get postsRefreshFailed => 'Could not refresh posts. Please try again.';
+
+  @override
+  String get postsShowingCache => 'Showing posts saved on this device.';
+
+  @override
+  String get postsRetry => 'Retry';
+
+  @override
+  String get postsRefresh => 'Refresh';
 }

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loop/l10n/app_localizations.dart';
+import 'package:loop/src/features/post/presentation/widgets/post_cache_status.dart';
 import 'package:loop/src/core/layout/max_width_container.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
@@ -19,7 +21,21 @@ class BoardPage extends ConsumerStatefulWidget {
   ConsumerState<BoardPage> createState() => _BoardPageState();
 }
 
-class _BoardPageState extends ConsumerState<BoardPage> {
+class _BoardPageState extends ConsumerState<BoardPage>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted && !_isSearchMode) {
+      unawaited(ref.read(postListProvider.notifier).load());
+    }
+  }
+
   final _searchController = TextEditingController();
 
   Timer? _debounce;
@@ -30,6 +46,7 @@ class _BoardPageState extends ConsumerState<BoardPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
@@ -96,6 +113,12 @@ class _BoardPageState extends ConsumerState<BoardPage> {
           onChanged: _onSearchChanged,
         ),
         actions: [
+          if (!_isSearchMode)
+            IconButton(
+              tooltip: AppLocalizations.of(context).postsRefresh,
+              icon: const Icon(Icons.refresh),
+              onPressed: () => ref.read(postListProvider.notifier).load(),
+            ),
           if (_hasSearchText)
             IconButton(icon: const Icon(Icons.close), onPressed: _clearSearch),
         ],
@@ -125,17 +148,22 @@ class _BoardPageState extends ConsumerState<BoardPage> {
             final state = _isSearchMode && _hasSearched
                 ? searchState
                 : normalState;
-
-            if (state.isLoading) {
+            // 변경 후: 보여줄 목록이 없을 때만 전체 로딩 표시.
+            if (state.isLoading && state.items.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (state.errorMessage != null && state.items.isEmpty) {
+            if (_isSearchMode &&
+                state.errorMessage != null &&
+                state.items.isEmpty) {
               return Center(child: Text(state.errorMessage!));
             }
 
-            return CursorPaginatedListView<PostListModel>(
+            final list = CursorPaginatedListView<PostListModel>(
               items: state.items,
-              hasNext: state.hasNext,
+              hasNext:
+                  state.hasNext &&
+                  !state.isLoading &&
+                  state.errorMessage == null,
               isLoadingMore: state.isLoadingMore,
               emptyWidget: Center(
                 child: Text(_isSearchMode ? '검색 결과가 없습니다.' : '게시글이 없습니다.'),
@@ -155,6 +183,45 @@ class _BoardPageState extends ConsumerState<BoardPage> {
                   pathParameters: {'postId': post.postId.toString()},
                 ),
               ),
+            );
+            if (_isSearchMode) return list;
+            return Column(
+              children: [
+                if (state.isLoading && state.items.isNotEmpty)
+                  const LinearProgressIndicator(minHeight: 2),
+                if (state.isFromCache || state.errorMessage != null)
+                  PostCacheStatus(
+                    isFromCache: state.isFromCache,
+                    isOffline: state.isOffline,
+                    isBusy: state.isLoading || state.isLoadingMore,
+                    hasError: state.errorMessage != null,
+                    onRetry: () => ref.read(postListProvider.notifier).retry(),
+                  ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () => ref.read(postListProvider.notifier).load(),
+                    child: state.items.isEmpty
+                        ? ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(32),
+                                child: Center(
+                                  child: Text(
+                                    state.errorMessage == null
+                                        ? '게시글이 없습니다.'
+                                        : AppLocalizations.of(
+                                            context,
+                                          ).postsRefreshFailed,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : list,
+                  ),
+                ),
+              ],
             );
           },
         ),
