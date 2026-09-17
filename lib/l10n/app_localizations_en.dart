@@ -154,4 +154,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postsRefresh => 'Refresh';
+
+  @override
+  String get appLockTitle => 'App locked';
+
+  @override
+  String get appLockDescription => 'Authenticate to access the app.';
+
+  @override
+  String get appLockChecking => 'Checking authentication status…';
+
+  @override
+  String get appLockUnlock => 'Unlock';
+
+  @override
+  String get appLockRetry => 'Retry';
+
+  @override
+  String get appLockError =>
+      'Could not verify authentication or lock settings. Please try again.';
+
+  @override
+  String get appLockReason => 'Authenticate to unlock the app.';
 }

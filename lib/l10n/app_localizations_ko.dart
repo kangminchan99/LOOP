@@ -153,4 +153,25 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get postsRefresh => '새로고침';
+
+  @override
+  String get appLockTitle => '앱 잠금';
+
+  @override
+  String get appLockDescription => '앱을 사용하려면 본인 인증을 진행해주세요.';
+
+  @override
+  String get appLockChecking => '인증 상태를 확인하고 있어요.';
+
+  @override
+  String get appLockUnlock => '잠금 해제';
+
+  @override
+  String get appLockRetry => '다시 확인';
+
+  @override
+  String get appLockError => '인증 또는 설정 확인에 문제가 발생했습니다. 다시 시도해주세요.';
+
+  @override
+  String get appLockReason => '앱 잠금을 해제하려면 인증해주세요.';
 }

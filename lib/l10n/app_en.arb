@@ -47,5 +47,12 @@
   "postsRefreshFailed": "Could not refresh posts. Please try again.",
   "postsShowingCache": "Showing posts saved on this device.",
   "postsRetry": "Retry",
-  "postsRefresh": "Refresh"
+  "postsRefresh": "Refresh",
+  "appLockTitle": "App locked",
+  "appLockDescription": "Authenticate to access the app.",
+  "appLockChecking": "Checking authentication status…",
+  "appLockUnlock": "Unlock",
+  "appLockRetry": "Retry",
+  "appLockError": "Could not verify authentication or lock settings. Please try again.",
+  "appLockReason": "Authenticate to unlock the app."
 }

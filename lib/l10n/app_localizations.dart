@@ -385,6 +385,48 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'새로고침'**
   String get postsRefresh;
+
+  /// No description provided for @appLockTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 잠금'**
+  String get appLockTitle;
+
+  /// No description provided for @appLockDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱을 사용하려면 본인 인증을 진행해주세요.'**
+  String get appLockDescription;
+
+  /// No description provided for @appLockChecking.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 상태를 확인하고 있어요.'**
+  String get appLockChecking;
+
+  /// No description provided for @appLockUnlock.
+  ///
+  /// In ko, this message translates to:
+  /// **'잠금 해제'**
+  String get appLockUnlock;
+
+  /// No description provided for @appLockRetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 확인'**
+  String get appLockRetry;
+
+  /// No description provided for @appLockError.
+  ///
+  /// In ko, this message translates to:
+  /// **'인증 또는 설정 확인에 문제가 발생했습니다. 다시 시도해주세요.'**
+  String get appLockError;
+
+  /// No description provided for @appLockReason.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 잠금을 해제하려면 인증해주세요.'**
+  String get appLockReason;
 }
 
 class _AppLocalizationsDelegate
