@@ -14,11 +14,16 @@ class AppLockNotifier extends StateNotifier<AppLockState> {
   // 이전 요청의 결과가 최신 상태를 덮어쓰지 않도록 구분
   int _requestId = 0;
 
+  // 인증·설정 변경 중 앱을 나갔는지 기억한다.
+  bool _lockRequested = false;
+
   AppLockNotifier(this._repository, this._authenticate, this._changeSetting)
     : super(const AppLockState());
 
   Future<void> initialize(int userId) async {
     if (!mounted) return;
+
+    _lockRequested = false;
 
     final requestId = ++_requestId;
 
@@ -85,11 +90,14 @@ class AppLockNotifier extends StateNotifier<AppLockState> {
       (authenticated) {
         state = state.copyWith(
           isProcessing: false,
-          isLocked: !authenticated,
+          // 인증에 성공해도 도중에 앱을 나갔다면 잠금을 유지한다.
+          isLocked: !authenticated || _lockRequested,
           failure: null,
         );
       },
     );
+
+    _lockRequested = false;
   }
 
   Future<void> changeEnabled({
@@ -140,24 +148,47 @@ class AppLockNotifier extends StateNotifier<AppLockState> {
       },
       (changed) {
         if (!changed) {
-          // 취소한 경우 기존 설정 유지
-          state = state.copyWith(isProcessing: false);
+          // 취소하면 기존 설정을 유지하되, 필요한 재잠금은 반영한다.
+          state = state.copyWith(
+            isProcessing: false,
+            isLocked:
+                state.isLocked || (_lockRequested && state.isEnabled == true),
+          );
           return;
         }
 
-        // 인증과 저장이 모두 성공한 경우만 반영
         state = state.copyWith(
           isProcessing: false,
           isEnabled: enabled,
-          isLocked: false,
+          // OFF 변경이 성공했다면 재잠금하지 않는다.
+          isLocked: enabled && _lockRequested,
           failure: null,
         );
       },
     );
+    _lockRequested = false;
+  }
+
+  void lock() {
+    if (!mounted || state.userId == null || state.isInitializing) {
+      return;
+    }
+
+    // 처리 중이면 결과가 돌아왔을 때 재잠금을 반영한다.
+    if (state.isProcessing) {
+      _lockRequested = true;
+      return;
+    }
+
+    if (state.isEnabled != true || state.isLocked) return;
+
+    state = state.copyWith(isLocked: true, failure: null);
   }
 
   Future<bool> reset() async {
     if (!mounted) return false;
+
+    _lockRequested = false;
 
     // 진행 중인 이전 요청의 결과를 무효화
     final requestId = ++_requestId;

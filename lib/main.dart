@@ -46,7 +46,7 @@ class LoopApp extends ConsumerStatefulWidget {
   ConsumerState<LoopApp> createState() => _LoopAppState();
 }
 
-class _LoopAppState extends ConsumerState<LoopApp> {
+class _LoopAppState extends ConsumerState<LoopApp> with WidgetsBindingObserver {
   // 이전 계정의 초기화 작업을 구분
   int _sessionSyncId = 0;
   bool _isRestoringSession = true;
@@ -54,6 +54,7 @@ class _LoopAppState extends ConsumerState<LoopApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     // 로그인 성공 상태에서 계정 ID만 관찰
     ref.listenManual<int?>(
@@ -68,6 +69,22 @@ class _LoopAppState extends ConsumerState<LoopApp> {
 
     // 리스너를 연결한 다음 세션 복원
     unawaited(_restoreSession());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+
+    // Android·iOS에서 앱이 백그라운드로 이동하면 잠근다.
+    if (state == AppLifecycleState.paused) {
+      ref.read(appLockProvider.notifier).lock();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> _restoreSession() async {
@@ -145,7 +162,7 @@ class _LoopAppState extends ConsumerState<LoopApp> {
           return AppLockGate(
             state: lock,
             userId: login is LoginSuccess ? login.user.id : null,
-            isRestoringSession: _isRestoringSession || login is LoginLoading,
+            isRestoringSession: _isRestoringSession,
             sessionRestoreFailed: _sessionRestoreFailed,
             onUnlock: () => unawaited(
               ref

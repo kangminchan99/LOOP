@@ -6,6 +6,7 @@ import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/styles/app_colors.dart';
+import 'package:loop/src/features/app_lock/presentation/widgets/app_lock_setting_tile.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
 import 'package:loop/src/features/notifications/presentation/providers/notification_providers.dart';
@@ -54,10 +55,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
     );
     final isLoggedIn = user != null;
     final isAdmin = user?.role == 'ADMIN';
-    final sections =
-        isLoggedIn
-            ? SettingConstants.loggedInSections
-            : SettingConstants.notLoggedInSections;
+    final sections = isLoggedIn
+        ? SettingConstants.loggedInSections
+        : SettingConstants.notLoggedInSections;
 
     Future<void> getProfileImage() async {
       final picker = ImagePicker();
@@ -109,13 +109,13 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                   // Profile or Login Card
                   isLoggedIn
                       ? SettingProfileCardWidget(
-                        user: user,
-                        onEditTap: getProfileImage,
-                        onImageError: _refreshUserImage,
-                      )
+                          user: user,
+                          onEditTap: getProfileImage,
+                          onImageError: _refreshUserImage,
+                        )
                       : SettingLoginCardWidget(
-                        onLoginTap: () => context.push(AppRoute.login.path),
-                      ),
+                          onLoginTap: () => context.push(AppRoute.login.path),
+                        ),
                   const SizedBox(height: 24),
                   // Settings Sections
                   ...sections.map(
@@ -130,6 +130,11 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       ],
                     ),
                   ),
+                  // 로그인한 사용자에게만 앱 잠금 설정 표시
+                  if (user != null) ...[
+                    AppLockSettingTile(userId: user.id),
+                    const SizedBox(height: 24),
+                  ],
                   if (isAdmin)
                     Column(
                       children: [
@@ -157,8 +162,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            final result =
-                                await ref.read(deleteFcmTokenUseCaseProvider)();
+                            final result = await ref.read(
+                              deleteFcmTokenUseCaseProvider,
+                            )();
 
                             result.match(
                               (failure) {

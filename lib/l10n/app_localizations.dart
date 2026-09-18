@@ -427,6 +427,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'앱 잠금을 해제하려면 인증해주세요.'**
   String get appLockReason;
+
+  /// No description provided for @settingsAppLock.
+  ///
+  /// In ko, this message translates to:
+  /// **'생체 인증 앱 잠금'**
+  String get settingsAppLock;
+
+  /// No description provided for @settingsAppLockDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기기에서 생체 인증으로 앱을 보호합니다.'**
+  String get settingsAppLockDescription;
+
+  /// No description provided for @appLockEnableReason.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 잠금을 켜려면 인증해주세요.'**
+  String get appLockEnableReason;
+
+  /// No description provided for @appLockDisableReason.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 잠금을 끄려면 인증해주세요.'**
+  String get appLockDisableReason;
 }
 
 class _AppLocalizationsDelegate

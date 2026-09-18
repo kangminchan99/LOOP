@@ -54,5 +54,9 @@
   "appLockUnlock": "잠금 해제",
   "appLockRetry": "다시 확인",
   "appLockError": "인증 또는 설정 확인에 문제가 발생했습니다. 다시 시도해주세요.",
-  "appLockReason": "앱 잠금을 해제하려면 인증해주세요."
+  "appLockReason": "앱 잠금을 해제하려면 인증해주세요.",
+  "settingsAppLock": "생체 인증 앱 잠금",
+  "settingsAppLockDescription": "이 기기에서 생체 인증으로 앱을 보호합니다.",
+  "appLockEnableReason": "앱 잠금을 켜려면 인증해주세요.",
+  "appLockDisableReason": "앱 잠금을 끄려면 인증해주세요."
 }

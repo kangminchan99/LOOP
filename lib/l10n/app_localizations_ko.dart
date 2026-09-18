@@ -174,4 +174,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appLockReason => '앱 잠금을 해제하려면 인증해주세요.';
+
+  @override
+  String get settingsAppLock => '생체 인증 앱 잠금';
+
+  @override
+  String get settingsAppLockDescription => '이 기기에서 생체 인증으로 앱을 보호합니다.';
+
+  @override
+  String get appLockEnableReason => '앱 잠금을 켜려면 인증해주세요.';
+
+  @override
+  String get appLockDisableReason => '앱 잠금을 끄려면 인증해주세요.';
 }

@@ -176,4 +176,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLockReason => 'Authenticate to unlock the app.';
+
+  @override
+  String get settingsAppLock => 'Biometric app lock';
+
+  @override
+  String get settingsAppLockDescription =>
+      'Protect the app with biometric authentication on this device.';
+
+  @override
+  String get appLockEnableReason => 'Authenticate to enable app lock.';
+
+  @override
+  String get appLockDisableReason => 'Authenticate to disable app lock.';
 }

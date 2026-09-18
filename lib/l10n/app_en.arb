@@ -54,5 +54,9 @@
   "appLockUnlock": "Unlock",
   "appLockRetry": "Retry",
   "appLockError": "Could not verify authentication or lock settings. Please try again.",
-  "appLockReason": "Authenticate to unlock the app."
+  "appLockReason": "Authenticate to unlock the app.",
+  "settingsAppLock": "Biometric app lock",
+  "settingsAppLockDescription": "Protect the app with biometric authentication on this device.",
+  "appLockEnableReason": "Authenticate to enable app lock.",
+  "appLockDisableReason": "Authenticate to disable app lock."
 }

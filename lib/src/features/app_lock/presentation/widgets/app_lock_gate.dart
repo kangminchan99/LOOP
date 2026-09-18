@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:loop/l10n/app_localizations.dart';
 
-import 'app_lock_screen.dart';
 import '../providers/app_lock_state.dart';
+import 'app_lock_screen.dart';
 
 // Navigator를 유지하면서 화면 노출·포커스·애니메이션을 차단한다.
 class AppLockGate extends StatelessWidget {
@@ -29,6 +29,13 @@ class AppLockGate extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final sameAccount = userId != null && state.userId == userId;
+    // 오류가 있으면 로딩 대신 재시도 화면을 표시한다.
+    final isChecking =
+        !sessionRestoreFailed &&
+        (isRestoringSession ||
+            (userId != null &&
+                state.failure == null &&
+                (!sameAccount || state.isInitializing)));
     final blocked =
         isRestoringSession ||
         sessionRestoreFailed ||
@@ -61,20 +68,29 @@ class AppLockGate extends StatelessWidget {
         ),
         if (blocked)
           Positioned.fill(
-            // 기존 화면의 SnackBar가 잠금 화면에 나타나지 않도록 분리한다.
             child: ScaffoldMessenger(
-              child: AppLockScreen(
-                title: l10n.appLockTitle,
-                description: busy
-                    ? l10n.appLockChecking
-                    : l10n.appLockDescription,
-                buttonLabel: canUnlock ? l10n.appLockUnlock : l10n.appLockRetry,
-                isBusy: busy,
-                errorMessage: sessionRestoreFailed || state.failure != null
-                    ? l10n.appLockError
-                    : null,
-                onPressed: busy ? null : (canUnlock ? onUnlock : onRetry),
-              ),
+              child: isChecking
+                  // 설정 확인 중에는 잠금 안내 없이 로딩만 표시
+                  ? Scaffold(
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      body: const Center(child: CircularProgressIndicator()),
+                    )
+                  // 확인이 끝난 뒤 잠금 또는 오류 화면 표시
+                  : AppLockScreen(
+                      title: l10n.appLockTitle,
+                      description: busy
+                          ? l10n.appLockChecking
+                          : l10n.appLockDescription,
+                      buttonLabel: canUnlock
+                          ? l10n.appLockUnlock
+                          : l10n.appLockRetry,
+                      isBusy: busy,
+
+                      errorMessage: sessionRestoreFailed
+                          ? l10n.appLockError
+                          : state.failure?.errorMessage,
+                      onPressed: busy ? null : (canUnlock ? onUnlock : onRetry),
+                    ),
             ),
           ),
       ],
