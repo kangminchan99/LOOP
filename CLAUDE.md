@@ -2,6 +2,13 @@
 
 Flutter Clean Architecture + Riverpod 기반 멀티플랫폼 앱 초기 세팅 템플릿.
 
+## 성능·동시성 작업 시 참고
+
+- 화면 전환·스크롤·통신·동시 작성 관련 작업 전 [앱 전체 성능 가이드](docs/APP_PERFORMANCE_GUIDE.md)를 읽는다.
+- 현재 SDK와 pubspec.lock 기준 호환성을 확인하고, 최신 문서의 API를 무조건 적용하지 않는다.
+- 실제 측정으로 병목을 확인한 후 하나씩 개선한다. 아래 일반 템플릿의 isolate·상태 관리 예시는 성능 개선을 보장하지 않으며 앱의 실제 구현과 테스트 결과를 우선한다.
+- 가이드의 미구현 설계·체크리스트를 완료된 기능으로 취급하지 않는다.
+
 **핵심 스택**: Flutter 3.x / flutter_riverpod / go_router / Dio / fpdart / freezed / freezed_annotation / flutter_secure_storage / shared_preferences / cached_network_image
 
 ---

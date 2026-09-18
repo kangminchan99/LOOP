@@ -2,6 +2,11 @@
 
 A new Flutter project.
 
+## 프로젝트 가이드
+
+- [앱 전체 성능·트래픽·동시성 검증](docs/APP_PERFORMANCE_GUIDE.md): 화면 전환, 프레임 드랍, 네트워크, 동시 작성 테스트 및 최적화 계획.
+- [게시글 오프라인 캐시](docs/POST_OFFLINE_CACHE.md)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
