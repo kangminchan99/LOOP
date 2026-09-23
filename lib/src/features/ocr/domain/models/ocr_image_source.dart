@@ -1,0 +1,1 @@
+enum OcrImageSource { camera, gallery }

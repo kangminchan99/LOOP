@@ -51,5 +51,9 @@
 		<false/>
 		<key>NSFaceIDUsageDescription</key>
 		<string>앱 잠금을 해제하고 내 정보를 보호하기 위해 Face ID를 사용합니다.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>사진 속 글자를 추출하기 위해 카메라를 사용합니다.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>글자를 추출할 사진을 선택하기 위해 사진 보관함을 사용합니다.</string>
 	</dict>
 </plist>
