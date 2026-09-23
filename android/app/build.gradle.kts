@@ -49,4 +49,7 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    
+    // 사진 속 한국어를 인식하는 ML Kit 모델
+    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
 }

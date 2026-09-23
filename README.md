@@ -6,6 +6,7 @@ A new Flutter project.
 
 - [앱 전체 성능·트래픽·동시성 검증](docs/APP_PERFORMANCE_GUIDE.md): 화면 전환, 프레임 드랍, 네트워크, 동시 작성 테스트 및 최적화 계획.
 - [게시글 오프라인 캐시](docs/POST_OFFLINE_CACHE.md)
+- [사진 속 글자 추출(OCR) 구현 계획](docs/OCR_FEATURE.md): 한국어 OCR 도입 순서, 계층 구조, 권한·수명·테스트 기준.
 
 ## Getting Started
 

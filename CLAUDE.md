@@ -15,6 +15,8 @@ Flutter Clean Architecture + Riverpod 기반 멀티플랫폼 앱 초기 세팅 �
 
 ## 새 기능 추가 순서
 
+- OCR 기능은 [사진 속 글자 추출 구현 계획](docs/OCR_FEATURE.md)을 먼저 읽는다. 이 문서는 미구현 계획이며 단계별 검증 전 완료로 취급하지 않는다.
+
 ```
 1. domain/models/           → 모델 (Freezed + json_serializable)
 2. domain/repositories/     → abstract Repository 인터페이스
