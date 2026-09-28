@@ -16,7 +16,7 @@ class SettingConstants {
       title: '커뮤니티',
       items: [
         SettingItem(icon: '🛡️', label: '차단한 사용자'),
-        SettingItem(icon: '📌', label: '저장한 글'),
+        SettingItem(icon: '🔎', label: 'OCR'),
         SettingItem(icon: '', label: ''),
       ],
     ),

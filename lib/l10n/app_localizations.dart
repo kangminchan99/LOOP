@@ -451,6 +451,84 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'앱 잠금을 끄려면 인증해주세요.'**
   String get appLockDisableReason;
+
+  /// No description provided for @ocrTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진에서 글자 추출'**
+  String get ocrTitle;
+
+  /// No description provided for @ocrSelectImage.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진 선택'**
+  String get ocrSelectImage;
+
+  /// No description provided for @ocrSelectImageHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진을 선택하면 아래에 인식한 텍스트가 표시됩니다.'**
+  String get ocrSelectImageHint;
+
+  /// No description provided for @ocrSelecting.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진을 선택하고 있어요.'**
+  String get ocrSelecting;
+
+  /// No description provided for @ocrRecognizing.
+  ///
+  /// In ko, this message translates to:
+  /// **'텍스트를 인식하고 있어요.'**
+  String get ocrRecognizing;
+
+  /// No description provided for @ocrResultTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'인식한 텍스트'**
+  String get ocrResultTitle;
+
+  /// No description provided for @ocrEmptyResult.
+  ///
+  /// In ko, this message translates to:
+  /// **'인식된 텍스트가 없습니다. 글자가 선명한 사진을 선택해 주세요.'**
+  String get ocrEmptyResult;
+
+  /// No description provided for @ocrUnsupportedPlatform.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기기에서는 텍스트 인식을 지원하지 않습니다.'**
+  String get ocrUnsupportedPlatform;
+
+  /// No description provided for @ocrPermissionDenied.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진 접근 권한을 확인해 주세요.'**
+  String get ocrPermissionDenied;
+
+  /// No description provided for @ocrImageSelectionFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진을 선택하지 못했습니다. 다시 시도해 주세요.'**
+  String get ocrImageSelectionFailed;
+
+  /// No description provided for @ocrInvalidImage.
+  ///
+  /// In ko, this message translates to:
+  /// **'사용할 수 없는 이미지입니다. 다른 사진을 선택해 주세요.'**
+  String get ocrInvalidImage;
+
+  /// No description provided for @ocrRecognitionFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'텍스트를 인식하지 못했습니다. 다시 시도해 주세요.'**
+  String get ocrRecognitionFailed;
+
+  /// No description provided for @ocrPreviewFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'사진 미리보기를 표시하지 못했습니다.'**
+  String get ocrPreviewFailed;
 }
 
 class _AppLocalizationsDelegate

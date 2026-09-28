@@ -186,4 +186,43 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appLockDisableReason => '앱 잠금을 끄려면 인증해주세요.';
+
+  @override
+  String get ocrTitle => '사진에서 글자 추출';
+
+  @override
+  String get ocrSelectImage => '사진 선택';
+
+  @override
+  String get ocrSelectImageHint => '사진을 선택하면 아래에 인식한 텍스트가 표시됩니다.';
+
+  @override
+  String get ocrSelecting => '사진을 선택하고 있어요.';
+
+  @override
+  String get ocrRecognizing => '텍스트를 인식하고 있어요.';
+
+  @override
+  String get ocrResultTitle => '인식한 텍스트';
+
+  @override
+  String get ocrEmptyResult => '인식된 텍스트가 없습니다. 글자가 선명한 사진을 선택해 주세요.';
+
+  @override
+  String get ocrUnsupportedPlatform => '이 기기에서는 텍스트 인식을 지원하지 않습니다.';
+
+  @override
+  String get ocrPermissionDenied => '사진 접근 권한을 확인해 주세요.';
+
+  @override
+  String get ocrImageSelectionFailed => '사진을 선택하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get ocrInvalidImage => '사용할 수 없는 이미지입니다. 다른 사진을 선택해 주세요.';
+
+  @override
+  String get ocrRecognitionFailed => '텍스트를 인식하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get ocrPreviewFailed => '사진 미리보기를 표시하지 못했습니다.';
 }

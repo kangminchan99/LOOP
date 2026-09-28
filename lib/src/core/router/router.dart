@@ -12,6 +12,7 @@ import 'package:loop/src/features/chat/presentation/pages/chat_room_detail_page.
 import 'package:loop/src/features/chat/presentation/pages/chat_room_list_page.dart';
 import 'package:loop/src/features/comments/presentation/pages/comment_list_page.dart';
 import 'package:loop/src/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:loop/src/features/ocr/presentation/pages/ocr_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_detail_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_edit_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_page.dart';
@@ -96,6 +97,12 @@ final routerProvider = Provider((ref) {
         builder: (context, state) {
           return CommentListPage();
         },
+      ),
+
+      GoRoute(
+        path: AppRoute.ocr.path,
+        name: AppRoute.ocr.name,
+        builder: (context, state) => const OcrPage(),
       ),
 
       StatefulShellRoute.indexedStack(

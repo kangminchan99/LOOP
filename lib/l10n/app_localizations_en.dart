@@ -189,4 +189,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLockDisableReason => 'Authenticate to disable app lock.';
+
+  @override
+  String get ocrTitle => 'Extract text from a photo';
+
+  @override
+  String get ocrSelectImage => 'Select photo';
+
+  @override
+  String get ocrSelectImageHint =>
+      'Select a photo to display the recognized text below.';
+
+  @override
+  String get ocrSelecting => 'Selecting a photo.';
+
+  @override
+  String get ocrRecognizing => 'Recognizing text.';
+
+  @override
+  String get ocrResultTitle => 'Recognized text';
+
+  @override
+  String get ocrEmptyResult =>
+      'No text was found. Select a photo with clear text.';
+
+  @override
+  String get ocrUnsupportedPlatform =>
+      'Text recognition is not supported on this device.';
+
+  @override
+  String get ocrPermissionDenied =>
+      'Please check your photo access permission.';
+
+  @override
+  String get ocrImageSelectionFailed =>
+      'Could not select a photo. Please try again.';
+
+  @override
+  String get ocrInvalidImage =>
+      'This image cannot be used. Please select another photo.';
+
+  @override
+  String get ocrRecognitionFailed =>
+      'Could not recognize the text. Please try again.';
+
+  @override
+  String get ocrPreviewFailed => 'Could not display the photo preview.';
 }

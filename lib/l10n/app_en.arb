@@ -58,5 +58,18 @@
   "settingsAppLock": "Biometric app lock",
   "settingsAppLockDescription": "Protect the app with biometric authentication on this device.",
   "appLockEnableReason": "Authenticate to enable app lock.",
-  "appLockDisableReason": "Authenticate to disable app lock."
+  "appLockDisableReason": "Authenticate to disable app lock.",
+  "ocrTitle": "Extract text from a photo",
+  "ocrSelectImage": "Select photo",
+  "ocrSelectImageHint": "Select a photo to display the recognized text below.",
+  "ocrSelecting": "Selecting a photo.",
+  "ocrRecognizing": "Recognizing text.",
+  "ocrResultTitle": "Recognized text",
+  "ocrEmptyResult": "No text was found. Select a photo with clear text.",
+  "ocrUnsupportedPlatform": "Text recognition is not supported on this device.",
+  "ocrPermissionDenied": "Please check your photo access permission.",
+  "ocrImageSelectionFailed": "Could not select a photo. Please try again.",
+  "ocrInvalidImage": "This image cannot be used. Please select another photo.",
+  "ocrRecognitionFailed": "Could not recognize the text. Please try again.",
+  "ocrPreviewFailed": "Could not display the photo preview."
 }

@@ -58,5 +58,18 @@
   "settingsAppLock": "생체 인증 앱 잠금",
   "settingsAppLockDescription": "이 기기에서 생체 인증으로 앱을 보호합니다.",
   "appLockEnableReason": "앱 잠금을 켜려면 인증해주세요.",
-  "appLockDisableReason": "앱 잠금을 끄려면 인증해주세요."
+  "appLockDisableReason": "앱 잠금을 끄려면 인증해주세요.",
+  "ocrTitle": "사진에서 글자 추출",
+  "ocrSelectImage": "사진 선택",
+  "ocrSelectImageHint": "사진을 선택하면 아래에 인식한 텍스트가 표시됩니다.",
+  "ocrSelecting": "사진을 선택하고 있어요.",
+  "ocrRecognizing": "텍스트를 인식하고 있어요.",
+  "ocrResultTitle": "인식한 텍스트",
+  "ocrEmptyResult": "인식된 텍스트가 없습니다. 글자가 선명한 사진을 선택해 주세요.",
+  "ocrUnsupportedPlatform": "이 기기에서는 텍스트 인식을 지원하지 않습니다.",
+  "ocrPermissionDenied": "사진 접근 권한을 확인해 주세요.",
+  "ocrImageSelectionFailed": "사진을 선택하지 못했습니다. 다시 시도해 주세요.",
+  "ocrInvalidImage": "사용할 수 없는 이미지입니다. 다른 사진을 선택해 주세요.",
+  "ocrRecognitionFailed": "텍스트를 인식하지 못했습니다. 다시 시도해 주세요.",
+  "ocrPreviewFailed": "사진 미리보기를 표시하지 못했습니다."
 }
