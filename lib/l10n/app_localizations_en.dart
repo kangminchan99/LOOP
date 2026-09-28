@@ -235,4 +235,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ocrPreviewFailed => 'Could not display the photo preview.';
+
+  @override
+  String get settingsActivity => 'My activity';
+
+  @override
+  String get settingsTools => 'Tools';
+
+  @override
+  String get settingsAdmin => 'Administration';
+
+  @override
+  String get settingsChat => 'Chat';
+
+  @override
+  String get settingsBluetooth => 'Bluetooth devices';
+
+  @override
+  String get settingsAdminWebView => 'Admin web view';
+
+  @override
+  String get settingsServerStatus => 'Server status';
+
+  @override
+  String get settingsComingSoon => 'Coming soon';
+
+  @override
+  String get settingsLight => 'Light';
+
+  @override
+  String get settingsDark => 'Dark';
+
+  @override
+  String get settingsSaveFailed =>
+      'Could not save your settings. Please try again.';
+
+  @override
+  String get settingsProcessing => 'Processing…';
+
+  @override
+  String get settingsProfileUpdateFailed =>
+      'Could not update your photo. Check permissions and your connection.';
+
+  @override
+  String get settingsLogoutFailed =>
+      'Could not complete logout. Please try again.';
+
+  @override
+  String get settingsLogoutDeviceWarning =>
+      'Logged out. Notification unlinking could not be confirmed.';
+
+  @override
+  String settingsPointCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString points';
+  }
 }

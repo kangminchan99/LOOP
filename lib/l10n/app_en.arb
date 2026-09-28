@@ -71,5 +71,24 @@
   "ocrImageSelectionFailed": "Could not select a photo. Please try again.",
   "ocrInvalidImage": "This image cannot be used. Please select another photo.",
   "ocrRecognitionFailed": "Could not recognize the text. Please try again.",
-  "ocrPreviewFailed": "Could not display the photo preview."
+  "ocrPreviewFailed": "Could not display the photo preview.",
+  "settingsActivity": "My activity",
+  "settingsTools": "Tools",
+  "settingsAdmin": "Administration",
+  "settingsChat": "Chat",
+  "settingsBluetooth": "Bluetooth devices",
+  "settingsAdminWebView": "Admin web view",
+  "settingsServerStatus": "Server status",
+  "settingsComingSoon": "Coming soon",
+  "settingsLight": "Light",
+  "settingsDark": "Dark",
+  "settingsSaveFailed": "Could not save your settings. Please try again.",
+  "settingsProcessing": "Processing…",
+  "settingsProfileUpdateFailed": "Could not update your photo. Check permissions and your connection.",
+  "settingsLogoutFailed": "Could not complete logout. Please try again.",
+  "settingsLogoutDeviceWarning": "Logged out. Notification unlinking could not be confirmed.",
+  "settingsPointCount": "{count} points",
+  "@settingsPointCount": {
+    "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
+  }
 }

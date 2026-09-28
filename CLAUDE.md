@@ -161,6 +161,21 @@ context.go(AppRoute.login.path);
 
 ### 메뉴 계약
 
+설정 구현 위치:
+
+| 책임 | 파일 |
+| --- | --- |
+| 메뉴 ID·UI 메타데이터 | `lib/src/features/settings/presentation/models/settings_menu.dart` |
+| 공통 메뉴·노출 조합 | `lib/src/features/settings/presentation/config/settings_sections.dart` |
+| 순수 메뉴 UI·설정값 구독 | `setting_section_widget.dart`, `setting_item_widget.dart`, `settings_menu_tile.dart` |
+| 사진 선택·업로드·로그아웃 조정 | `presentation/providers/settings_actions_notifier.dart`, `settings_actions_provider.dart` |
+| 저장값 초기화·직렬 저장 | `lib/src/core/preferences/persisted_preference_notifier.dart` |
+| 설정 단위·위젯·이동 테스트 | `test/features/settings/` |
+
+위젯·Provider의 축약 경로는 `lib/src/features/settings/` 아래다. 미구현 알림 설정·차단·지원 메뉴는 준비 중으로 표시하며 고정된 '켜짐' 값은 표시하지 않는다. 설정 진입/프로필 이미지 오류로 인증 복원을 실행하지 않는다. 앱 버전의 고정 문자열은 표시하지 않으며, 실제 빌드 메타데이터 노출은 별도 연결 대상이다.
+
+검증 명령: `flutter test test/features/settings`, `flutter test test/features`. OS 권한 복귀·실제 사진 업로드·FCM·실기기 성능 검증은 Fake 기반 테스트와 별도다.
+
 - 안정적인 enum ID로 메뉴를 식별한다. 표시 문구·이모지·목록 index를 기능 식별자로 사용하지 않는다.
 - UI 전용 메뉴 정의는 Presentation에 둔다. 번역과 Flutter 아이콘은 UI에서 해석한다.
 - 공통 메뉴는 한 번 정의하고 로그인·권한·지원 플랫폼에 맞게 섹션을 조합한다. 필터 후 빈 섹션·구분선을 제거한다.

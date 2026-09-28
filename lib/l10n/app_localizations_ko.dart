@@ -225,4 +225,59 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get ocrPreviewFailed => '사진 미리보기를 표시하지 못했습니다.';
+
+  @override
+  String get settingsActivity => '내 활동';
+
+  @override
+  String get settingsTools => '도구';
+
+  @override
+  String get settingsAdmin => '관리자';
+
+  @override
+  String get settingsChat => '채팅';
+
+  @override
+  String get settingsBluetooth => 'Bluetooth 기기';
+
+  @override
+  String get settingsAdminWebView => '관리자 웹뷰';
+
+  @override
+  String get settingsServerStatus => '서버 상태';
+
+  @override
+  String get settingsComingSoon => '준비 중';
+
+  @override
+  String get settingsLight => '라이트';
+
+  @override
+  String get settingsDark => '다크';
+
+  @override
+  String get settingsSaveFailed => '설정을 저장하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get settingsProcessing => '처리 중…';
+
+  @override
+  String get settingsProfileUpdateFailed =>
+      '프로필 사진을 변경하지 못했습니다. 권한과 연결 상태를 확인해 주세요.';
+
+  @override
+  String get settingsLogoutFailed => '로그아웃을 완료하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get settingsLogoutDeviceWarning => '로그아웃되었습니다. 알림 연결 해제는 확인하지 못했습니다.';
+
+  @override
+  String settingsPointCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString 포인트';
+  }
 }

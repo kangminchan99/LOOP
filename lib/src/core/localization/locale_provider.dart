@@ -1,35 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:loop/src/core/preferences/persisted_preference_notifier.dart';
 
-const String _localeStorageKey = 'app_locale';
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>(
+  (ref) => LocaleNotifier(),
+);
 
-final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>((ref) {
-  return LocaleNotifier();
-});
+class LocaleNotifier extends PersistedPreferenceNotifier<Locale> {
+  LocaleNotifier({Future<SharedPreferences> Function()? loadPreferences})
+    : super(
+        const Locale('ko'),
+        storageKey: 'app_locale',
+        loadPreferences: loadPreferences,
+      );
 
-class LocaleNotifier extends StateNotifier<Locale> {
-  LocaleNotifier() : super(const Locale('ko')) {
-    loadSavedLocale();
-  }
-
-  Future<void> loadSavedLocale() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedLanguageCode = prefs.getString(_localeStorageKey);
-
-    if (savedLanguageCode == null || savedLanguageCode.isEmpty) {
-      state = const Locale('ko');
-      return;
+  @override
+  Locale decode(String? value) => Locale(value == 'en' ? 'en' : 'ko');
+  @override
+  String encode(Locale value) => value.languageCode;
+  Future<void> changeLocale(Locale value) {
+    if (!const ['ko', 'en'].contains(value.languageCode)) {
+      return Future.error(ArgumentError.value(value, 'locale'));
     }
-
-    state = Locale(savedLanguageCode);
-  }
-
-  Future<void> changeLocale(Locale locale) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(_localeStorageKey, locale.languageCode);
-
-    state = locale;
+    return save(Locale(value.languageCode));
   }
 }

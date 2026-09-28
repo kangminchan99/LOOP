@@ -529,6 +529,102 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'사진 미리보기를 표시하지 못했습니다.'**
   String get ocrPreviewFailed;
+
+  /// No description provided for @settingsActivity.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 활동'**
+  String get settingsActivity;
+
+  /// No description provided for @settingsTools.
+  ///
+  /// In ko, this message translates to:
+  /// **'도구'**
+  String get settingsTools;
+
+  /// No description provided for @settingsAdmin.
+  ///
+  /// In ko, this message translates to:
+  /// **'관리자'**
+  String get settingsAdmin;
+
+  /// No description provided for @settingsChat.
+  ///
+  /// In ko, this message translates to:
+  /// **'채팅'**
+  String get settingsChat;
+
+  /// No description provided for @settingsBluetooth.
+  ///
+  /// In ko, this message translates to:
+  /// **'Bluetooth 기기'**
+  String get settingsBluetooth;
+
+  /// No description provided for @settingsAdminWebView.
+  ///
+  /// In ko, this message translates to:
+  /// **'관리자 웹뷰'**
+  String get settingsAdminWebView;
+
+  /// No description provided for @settingsServerStatus.
+  ///
+  /// In ko, this message translates to:
+  /// **'서버 상태'**
+  String get settingsServerStatus;
+
+  /// No description provided for @settingsComingSoon.
+  ///
+  /// In ko, this message translates to:
+  /// **'준비 중'**
+  String get settingsComingSoon;
+
+  /// No description provided for @settingsLight.
+  ///
+  /// In ko, this message translates to:
+  /// **'라이트'**
+  String get settingsLight;
+
+  /// No description provided for @settingsDark.
+  ///
+  /// In ko, this message translates to:
+  /// **'다크'**
+  String get settingsDark;
+
+  /// No description provided for @settingsSaveFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정을 저장하지 못했습니다. 다시 시도해 주세요.'**
+  String get settingsSaveFailed;
+
+  /// No description provided for @settingsProcessing.
+  ///
+  /// In ko, this message translates to:
+  /// **'처리 중…'**
+  String get settingsProcessing;
+
+  /// No description provided for @settingsProfileUpdateFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'프로필 사진을 변경하지 못했습니다. 권한과 연결 상태를 확인해 주세요.'**
+  String get settingsProfileUpdateFailed;
+
+  /// No description provided for @settingsLogoutFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃을 완료하지 못했습니다. 다시 시도해 주세요.'**
+  String get settingsLogoutFailed;
+
+  /// No description provided for @settingsLogoutDeviceWarning.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃되었습니다. 알림 연결 해제는 확인하지 못했습니다.'**
+  String get settingsLogoutDeviceWarning;
+
+  /// No description provided for @settingsPointCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count} 포인트'**
+  String settingsPointCount(int count);
 }
 
 class _AppLocalizationsDelegate

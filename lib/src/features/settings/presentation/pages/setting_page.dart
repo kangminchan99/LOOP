@@ -1,293 +1,187 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
+import 'package:loop/src/core/layout/max_width_container.dart';
 import 'package:loop/src/core/router/router_path.dart';
-import 'package:loop/src/core/styles/app_colors.dart';
 import 'package:loop/src/features/app_lock/presentation/widgets/app_lock_setting_tile.dart';
+import 'package:loop/src/features/attendance/presentation/widgets/attendance_dialog_widget.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
-import 'package:loop/src/features/notifications/presentation/providers/notification_providers.dart';
-import 'package:loop/src/features/settings/data/constants/setting_constants.dart';
-import 'package:loop/src/features/settings/domain/models/profile_request_model.dart';
-import 'package:loop/src/features/settings/presentation/providers/setting_providers.dart';
+import 'package:loop/src/features/settings/presentation/config/settings_sections.dart';
+import 'package:loop/src/features/settings/presentation/models/settings_menu.dart';
+import 'package:loop/src/features/settings/presentation/providers/settings_actions_notifier.dart';
+import 'package:loop/src/features/settings/presentation/providers/settings_actions_provider.dart';
 import 'package:loop/src/features/settings/presentation/widgets/language_dialog_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_login_card_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_profile_card_widget.dart';
 import 'package:loop/src/features/settings/presentation/widgets/setting_section_widget.dart';
+import 'package:loop/src/features/settings/presentation/widgets/settings_menu_tile.dart';
 import 'package:loop/src/features/settings/presentation/widgets/theme_mode_dialog_widget.dart';
 
 class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
-
   @override
   ConsumerState<SettingPage> createState() => _SettingPageState();
 }
 
 class _SettingPageState extends ConsumerState<SettingPage> {
-  bool _imageRefreshing = false;
+  bool _opening = false;
 
-  Future<void> _refreshUserImage() async {
-    if (_imageRefreshing) return; // 무한 재시도 방지
-    _imageRefreshing = true;
-    await ref.read(loginProvider.notifier).restoreSession();
-    _imageRefreshing = false;
+  // 이동과 다이얼로그는 Presentation에서만 처리한다.
+  Future<void> _openMenu(SettingsMenuId id) async {
+    if (_opening || !id.isImplemented) return;
+    _opening = true;
+    try {
+      switch (id) {
+        case SettingsMenuId.attendance:
+          await showDialog<void>(
+            context: context,
+            builder: (_) => const AttendanceDialog(),
+          );
+        case SettingsMenuId.language:
+          await showDialog<void>(
+            context: context,
+            builder: (_) => const LanguageDialogWidget(),
+          );
+        case SettingsMenuId.theme:
+          await showDialog<void>(
+            context: context,
+            builder: (_) => const ThemeModeDialogWidget(),
+          );
+        case SettingsMenuId.comments:
+          await context.pushNamed<void>(AppRoute.commentList.name);
+        case SettingsMenuId.chat:
+          await context.pushNamed<void>(AppRoute.chatRooms.name);
+        case SettingsMenuId.notifications:
+          await context.pushNamed<void>(AppRoute.notifications.name);
+        case SettingsMenuId.ocr:
+          await context.pushNamed<void>(AppRoute.ocr.name);
+        case SettingsMenuId.bluetooth:
+          await context.pushNamed<void>(AppRoute.bluetooth.name);
+        case SettingsMenuId.adminWebView:
+          await context.pushNamed<void>(AppRoute.adminWebView.name);
+        case SettingsMenuId.serverStatus:
+          await context.pushNamed<void>(AppRoute.adminServerStatus.name);
+        case SettingsMenuId.blockedUsers:
+        case SettingsMenuId.notificationSettings:
+        case SettingsMenuId.notice:
+        case SettingsMenuId.contact:
+        case SettingsMenuId.terms:
+          return;
+      }
+    } finally {
+      _opening = false;
+    }
   }
 
-  void _showLanguageDialog() {
-    showDialog(context: context, builder: (_) => const LanguageDialogWidget());
+  Future<void> _updateProfile() async {
+    final result =
+        await ref.read(settingsActionsProvider.notifier).updateProfile();
+    if (!mounted || result != SettingsActionResult.failed) return;
+    _message(AppLocalizations.of(context).settingsProfileUpdateFailed);
   }
 
-  void _showThemeModeDialog() {
-    showDialog(context: context, builder: (_) => const ThemeModeDialogWidget());
+  Future<void> _logout() async {
+    final result = await ref.read(settingsActionsProvider.notifier).logout();
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    switch (result) {
+      case SettingsActionResult.success:
+        _message(l10n.settingsLogoutComplete);
+      case SettingsActionResult.logoutWithWarning:
+        _message(l10n.settingsLogoutDeviceWarning);
+      case SettingsActionResult.failed:
+        _message(l10n.settingsLogoutFailed);
+      case SettingsActionResult.cancelled:
+      case SettingsActionResult.ignored:
+        return;
+    }
   }
+
+  void _message(String text) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final loginState = ref.watch(loginProvider);
-    final user = loginState.maybeWhen(
-      success: (user) => user,
-      orElse: () => null,
+    final user = ref.watch(
+      loginProvider.select(
+        (state) => state is LoginSuccess ? state.user : null,
+      ),
     );
-    final isLoggedIn = user != null;
-    final isAdmin = user?.role == 'ADMIN';
-    final sections = isLoggedIn
-        ? SettingConstants.loggedInSections
-        : SettingConstants.notLoggedInSections;
-
-    Future<void> getProfileImage() async {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile == null) return;
-
-      // 서버에 업로드할 request 생성
-      final request = ProfileRequestModel(image: pickedFile.path);
-      final result = await ref
-          .read(settingRepositoryProvider)
-          .updateProfile(request, user!);
-
-      result.match(
-        (failure) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${l10n.settingsUploadFailed}: ${failure.errorMessage}',
-            ),
-          ),
-        ),
-        (updatedUser) {
-          // 상태 갱신 로직 (예: Provider/Notifier에 반영)
-          ref.read(loginProvider.notifier).updateUser(updatedUser);
-        },
-      );
-    }
+    final operation = ref.watch(settingsActionsProvider);
+    final busy = operation != SettingsOperation.idle;
+    final sections = buildSettingsSections(
+      isLoggedIn: user != null,
+      isAdmin: user?.role == 'ADMIN',
+    );
 
     return DefaultLayout(
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'settings_bluetooth_fab',
-        onPressed: () => context.push(AppRoute.bluetooth.path),
-        child: Icon(Icons.bluetooth),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppColors.primaryGradient,
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
-                  // Profile or Login Card
-                  isLoggedIn
-                      ? SettingProfileCardWidget(
-                          user: user,
-                          onEditTap: getProfileImage,
-                          onImageError: _refreshUserImage,
-                        )
-                      : SettingLoginCardWidget(
-                          onLoginTap: () => context.push(AppRoute.login.path),
-                        ),
-                  const SizedBox(height: 24),
-                  // Settings Sections
-                  ...sections.map(
-                    (section) => Column(
-                      children: [
-                        SettingSectionWidget(
-                          section: section,
-                          onLanguageTap: _showLanguageDialog,
-                          onThemeModeTap: _showThemeModeDialog,
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-                  ),
-                  // 로그인한 사용자에게만 앱 잠금 설정 표시
-                  if (user != null) ...[
-                    AppLockSettingTile(userId: user.id),
-                    const SizedBox(height: 24),
+      child: SafeArea(
+        child: MaxWidthContainer(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            children: [
+              if (user != null)
+                SettingProfileCardWidget(
+                  user: user,
+                  isUpdating: operation == SettingsOperation.profile,
+                  onEditTap: busy ? null : _updateProfile,
+                )
+              else
+                SettingLoginCardWidget(
+                  onLoginTap: () => context.push(AppRoute.login.path),
+                ),
+              const SizedBox(height: 24),
+              for (final section in sections) ...[
+                SettingSectionWidget(
+                  title: section.id.label(l10n),
+                  children: [
+                    for (var index = 0; index < section.items.length; index++)
+                      SettingsMenuTile(
+                        key: ValueKey(section.items[index]),
+                        id: section.items[index],
+                        showDivider: index < section.items.length - 1,
+                        onTap: () => _openMenu(section.items[index]),
+                      ),
                   ],
-                  if (isAdmin)
-                    Column(
-                      children: [
-                        _AdminActionButton(
-                          icon: Icons.admin_panel_settings,
-                          label: '관리자 웹뷰',
-                          onTap: () {
-                            context.pushNamed(AppRoute.adminWebView.name);
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        _AdminActionButton(
-                          icon: Icons.monitor_heart,
-                          label: '서버 상태',
-                          onTap: () {
-                            context.pushNamed(AppRoute.adminServerStatus.name);
-                          },
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-                  // Logout Button
-                  if (isLoggedIn)
-                    Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            final result = await ref.read(
-                              deleteFcmTokenUseCaseProvider,
-                            )();
-
-                            result.match(
-                              (failure) {
-                                debugPrint(
-                                  'FCM token 삭제 실패: ${failure.errorMessage}',
-                                );
-                              },
-                              (_) {
-                                debugPrint('FCM token 삭제 성공');
-                              },
-                            );
-
-                            await ref.read(loginProvider.notifier).logout();
-
-                            if (!context.mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.settingsLogoutComplete),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            height: 56,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: theme.colorScheme.surface,
-                              border: Border.all(
-                                color: AppColors.error.withValues(alpha: 0.3),
-                                width: 1,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: theme.shadowColor.withValues(
-                                    alpha: 0.05,
-                                  ),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                l10n.settingsLogout,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.error,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  // Version
-                  Text(
-                    SettingConstants.appVersion,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.6),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                ),
+                if (section.id == SettingsSectionId.preferences &&
+                    user != null) ...[
+                  const SizedBox(height: 12),
+                  AppLockSettingTile(userId: user.id),
                 ],
+                const SizedBox(height: 24),
+              ],
+              if (user != null) ...[
+                OutlinedButton.icon(
+                  onPressed: busy ? null : _logout,
+                  icon:
+                      operation == SettingsOperation.logout
+                          ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(Icons.logout),
+                  label: Text(
+                    operation == SettingsOperation.logout
+                        ? l10n.settingsProcessing
+                        : l10n.settingsLogout,
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+              // 빌드와 불일치하는 고정 버전은 표시하지 않는다.
+              Text(
+                l10n.appTitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall,
               ),
-            ),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AdminActionButton extends StatelessWidget {
-  const _AdminActionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 56,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: theme.colorScheme.surface,
-          border: Border.all(
-            color: theme.colorScheme.primary.withValues(alpha: 0.3),
-            width: 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: theme.shadowColor.withValues(alpha: 0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: theme.colorScheme.primary),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ],
         ),
       ),
     );

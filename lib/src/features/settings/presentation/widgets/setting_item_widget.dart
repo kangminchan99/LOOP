@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 
+// 표시와 클릭 전달만 담당한다. 긴 번역/확대 글씨는 subtitle로 줄바꿈한다.
 class SettingItemWidget extends StatelessWidget {
-  final String icon;
-  final String label;
-  final String? value;
-  final Function()? onTap;
-  final bool showDivider;
-
   const SettingItemWidget({
     super.key,
     required this.icon,
@@ -15,64 +10,29 @@ class SettingItemWidget extends StatelessWidget {
     this.onTap,
     this.showDivider = true,
   });
+  final IconData icon;
+  final String label;
+  final String? value;
+  final VoidCallback? onTap;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Column(
       children: [
-        GestureDetector(
+        ListTile(
+          enabled: onTap != null,
+          leading: Icon(icon),
+          title: Text(label),
+          subtitle: value == null ? null : Text(value!),
+          trailing: onTap == null ? null : const Icon(Icons.chevron_right),
           onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: colorScheme.primary.withValues(alpha: 0.12),
-                  ),
-                  child: Center(
-                    child: Text(icon, style: const TextStyle(fontSize: 18)),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-                if (value != null && value!.isNotEmpty)
-                  Text(
-                    value!,
-                    style: TextStyle(fontSize: 12, color: theme.hintColor),
-                  ),
-                if (value != null && value!.isNotEmpty)
-                  const SizedBox(width: 8),
-                Text(
-                  '›',
-                  style: TextStyle(fontSize: 20, color: theme.dividerColor),
-                ),
-              ],
-            ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
           ),
         ),
-        if (showDivider)
-          Divider(
-            height: 1,
-            color: theme.dividerColor,
-            indent: 16,
-            endIndent: 16,
-          ),
+        if (showDivider) const Divider(height: 1, indent: 16, endIndent: 16),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loop/l10n/app_localizations.dart';
+import 'package:loop/src/core/network/error/failures.dart';
 import 'package:loop/src/features/app_lock/presentation/providers/app_lock_state.dart';
 import 'package:loop/src/features/app_lock/presentation/widgets/app_lock_gate.dart';
 
@@ -57,8 +58,15 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('상세'), findsOneWidget);
     state.value = state.value.copyWith(userId: 2);
-    await tester.pumpAndSettle();
+    // 계정 불일치 중에는 끝나지 않는 로딩 애니메이션이 의도된 상태다.
+    await tester.pump();
     expect(find.text('상세'), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    // 설정 확인 실패가 확정된 경우에만 재시도 버튼을 표시한다.
+    state.value = state.value.copyWith(
+      failure: const CacheFailure('Test settings load failure'),
+    );
+    await tester.pumpAndSettle();
     expect(find.text('다시 확인'), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());
     router.dispose();
