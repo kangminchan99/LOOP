@@ -1,22 +1,20 @@
 # loop
 
-A new Flutter project.
+Flutter 기반 Loop 앱. 문서의 설계·실행 계획과 실제 구현·검증 결과는 구분한다.
 
 ## 프로젝트 가이드
 
+- [앱 아키텍처 및 개발 기준](CLAUDE.md): 레이어·UI 모델, 상태 수명, 설정 메뉴 리팩토링, 다국어, 세션 안전성, 테스트·배포 기준.
 - [앱 전체 성능·트래픽·동시성 검증](docs/APP_PERFORMANCE_GUIDE.md): 화면 전환, 프레임 드랍, 네트워크, 동시 작성 테스트 및 최적화 계획.
 - [게시글 오프라인 캐시](docs/POST_OFFLINE_CACHE.md)
 - [사진 속 글자 추출(OCR) 구현 계획](docs/OCR_FEATURE.md): 한국어 OCR 도입 순서, 계층 구조, 권한·수명·테스트 기준.
+- [BLE 기기 스캔 계획](docs/BLE_FEATURE.md): mock 기반 구현 범위와 단계.
 
-## Getting Started
+설정 화면 리팩토링은 아키텍처 문서의 구성형 화면 기준부터 읽고, 성능 가이드의 SET-01~SET-10으로 검증한다. 문서만으로 대규모 트래픽 처리나 프레임 성능을 검증했다고 판단하지 않는다.
 
-This project is a starting point for a Flutter application.
+## 개발 전 확인
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- 실제 SDK와 패키지 버전은 `flutter --version`, `pubspec.yaml`, `pubspec.lock`에서 확인한다.
+- 환경·플랫폼 설정과 생성 코드가 준비되어 있어야 실행할 수 있다. 의존성·다국어·모델 생성·분석·테스트 명령은 [개발 기준](CLAUDE.md#11-테스트ci배포-기준)을 따른다.
+- 사용자 계정·API 키·토큰·개인정보를 문서, 테스트 fixture, 로그에 포함하지 않는다.
+- 문서의 목표 설계를 전체 구현 완료로 취급하지 않는다. 변경 기능의 테스트 결과와 미검증 항목을 별도로 남긴다.
