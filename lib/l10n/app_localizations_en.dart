@@ -293,4 +293,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
     return '$countString points';
   }
+
+  @override
+  String get couponEventsTitle => 'Coupon events';
+
+  @override
+  String get couponEventsEmpty => 'No coupon events are available.';
+
+  @override
+  String get couponLoginRequired => 'Please sign in to view coupon events.';
+
+  @override
+  String get couponLoadFailed => 'Could not load coupon information.';
+
+  @override
+  String get couponNetworkError => 'Check your connection and try again.';
+
+  @override
+  String get couponRetry => 'Try again';
+
+  @override
+  String get couponRefresh => 'Refresh';
+
+  @override
+  String get couponLoadMore => 'Load more';
+
+  @override
+  String couponRemainingCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString remaining when checked';
+  }
 }

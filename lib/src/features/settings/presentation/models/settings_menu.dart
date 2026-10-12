@@ -17,6 +17,7 @@ enum SettingsMenuId {
   terms,
   adminWebView,
   serverStatus,
+  couponEvents,
 }
 
 enum SettingsSectionId { activity, tools, preferences, support, admin }
@@ -64,6 +65,7 @@ extension SettingsMenuPresentation on SettingsMenuId {
     SettingsMenuId.terms => l10n.settingsTermsPrivacy,
     SettingsMenuId.adminWebView => l10n.settingsAdminWebView,
     SettingsMenuId.serverStatus => l10n.settingsServerStatus,
+    SettingsMenuId.couponEvents => l10n.couponEventsTitle,
   };
 
   IconData get icon => switch (this) {
@@ -82,5 +84,6 @@ extension SettingsMenuPresentation on SettingsMenuId {
     SettingsMenuId.terms => Icons.description_outlined,
     SettingsMenuId.adminWebView => Icons.admin_panel_settings_outlined,
     SettingsMenuId.serverStatus => Icons.monitor_heart_outlined,
+    SettingsMenuId.couponEvents => Icons.local_offer_outlined,
   };
 }

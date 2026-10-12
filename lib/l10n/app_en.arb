@@ -90,5 +90,17 @@
   "settingsPointCount": "{count} points",
   "@settingsPointCount": {
     "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
+  },
+  "couponEventsTitle": "Coupon events",
+  "couponEventsEmpty": "No coupon events are available.",
+  "couponLoginRequired": "Please sign in to view coupon events.",
+  "couponLoadFailed": "Could not load coupon information.",
+  "couponNetworkError": "Check your connection and try again.",
+  "couponRetry": "Try again",
+  "couponRefresh": "Refresh",
+  "couponLoadMore": "Load more",
+  "couponRemainingCount": "{count} remaining when checked",
+  "@couponRemainingCount": {
+    "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
   }
 }

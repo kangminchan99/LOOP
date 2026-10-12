@@ -64,6 +64,8 @@ class _SettingPageState extends ConsumerState<SettingPage> {
           await context.pushNamed<void>(AppRoute.adminWebView.name);
         case SettingsMenuId.serverStatus:
           await context.pushNamed<void>(AppRoute.adminServerStatus.name);
+        case SettingsMenuId.couponEvents:
+          await context.pushNamed<void>(AppRoute.couponEvents.name);
         case SettingsMenuId.blockedUsers:
         case SettingsMenuId.notificationSettings:
         case SettingsMenuId.notice:
@@ -77,8 +79,9 @@ class _SettingPageState extends ConsumerState<SettingPage> {
   }
 
   Future<void> _updateProfile() async {
-    final result =
-        await ref.read(settingsActionsProvider.notifier).updateProfile();
+    final result = await ref
+        .read(settingsActionsProvider.notifier)
+        .updateProfile();
     if (!mounted || result != SettingsActionResult.failed) return;
     _message(AppLocalizations.of(context).settingsProfileUpdateFailed);
   }
@@ -158,14 +161,13 @@ class _SettingPageState extends ConsumerState<SettingPage> {
               if (user != null) ...[
                 OutlinedButton.icon(
                   onPressed: busy ? null : _logout,
-                  icon:
-                      operation == SettingsOperation.logout
-                          ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                          : const Icon(Icons.logout),
+                  icon: operation == SettingsOperation.logout
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.logout),
                   label: Text(
                     operation == SettingsOperation.logout
                         ? l10n.settingsProcessing

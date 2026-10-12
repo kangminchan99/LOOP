@@ -11,6 +11,7 @@ import 'package:loop/src/features/bluetooth/presentation/pages/ble_page.dart';
 import 'package:loop/src/features/chat/presentation/pages/chat_room_detail_page.dart';
 import 'package:loop/src/features/chat/presentation/pages/chat_room_list_page.dart';
 import 'package:loop/src/features/comments/presentation/pages/comment_list_page.dart';
+import 'package:loop/src/features/coupons/presentation/pages/coupon_event_list_page.dart';
 import 'package:loop/src/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:loop/src/features/ocr/presentation/pages/ocr_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_detail_page.dart';
@@ -103,6 +104,12 @@ final routerProvider = Provider((ref) {
         path: AppRoute.ocr.path,
         name: AppRoute.ocr.name,
         builder: (context, state) => const OcrPage(),
+      ),
+
+      GoRoute(
+        path: AppRoute.couponEvents.path,
+        name: AppRoute.couponEvents.name,
+        builder: (context, state) => const CouponEventListPage(),
       ),
 
       StatefulShellRoute.indexedStack(

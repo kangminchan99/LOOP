@@ -4,6 +4,7 @@ const _activity = SettingsSectionDefinition(SettingsSectionId.activity, [
   SettingsMenuId.comments,
   SettingsMenuId.chat,
   SettingsMenuId.attendance,
+  SettingsMenuId.couponEvents,
   SettingsMenuId.notifications,
   SettingsMenuId.blockedUsers,
 ]);

@@ -90,5 +90,17 @@
   "settingsPointCount": "{count} 포인트",
   "@settingsPointCount": {
     "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
+  },
+  "couponEventsTitle": "쿠폰 이벤트",
+  "couponEventsEmpty": "등록된 쿠폰 이벤트가 없습니다.",
+  "couponLoginRequired": "쿠폰 이벤트는 로그인 후 이용할 수 있어요.",
+  "couponLoadFailed": "쿠폰 정보를 불러오지 못했습니다.",
+  "couponNetworkError": "네트워크 연결을 확인하고 다시 시도해주세요.",
+  "couponRetry": "다시 시도",
+  "couponRefresh": "새로고침",
+  "couponLoadMore": "더 보기",
+  "couponRemainingCount": "조회 당시 {count}장 남음",
+  "@couponRemainingCount": {
+    "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
   }
 }

@@ -14,6 +14,7 @@ enum AppRoute {
   adminWebView,
   adminServerStatus,
   ocr,
+  couponEvents,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -49,6 +50,8 @@ extension AppRouteExtension on AppRoute {
         return '/admin/server-status';
       case AppRoute.ocr:
         return '/ocr';
+      case AppRoute.couponEvents:
+        return '/coupon-events';
     }
   }
 
@@ -84,6 +87,8 @@ extension AppRouteExtension on AppRoute {
         return 'adminServerStatus';
       case AppRoute.ocr:
         return 'ocr';
+      case AppRoute.couponEvents:
+        return 'couponEvents';
     }
   }
 }

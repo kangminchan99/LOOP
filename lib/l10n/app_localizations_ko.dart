@@ -280,4 +280,37 @@ class AppLocalizationsKo extends AppLocalizations {
 
     return '$countString 포인트';
   }
+
+  @override
+  String get couponEventsTitle => '쿠폰 이벤트';
+
+  @override
+  String get couponEventsEmpty => '등록된 쿠폰 이벤트가 없습니다.';
+
+  @override
+  String get couponLoginRequired => '쿠폰 이벤트는 로그인 후 이용할 수 있어요.';
+
+  @override
+  String get couponLoadFailed => '쿠폰 정보를 불러오지 못했습니다.';
+
+  @override
+  String get couponNetworkError => '네트워크 연결을 확인하고 다시 시도해주세요.';
+
+  @override
+  String get couponRetry => '다시 시도';
+
+  @override
+  String get couponRefresh => '새로고침';
+
+  @override
+  String get couponLoadMore => '더 보기';
+
+  @override
+  String couponRemainingCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '조회 당시 $countString장 남음';
+  }
 }

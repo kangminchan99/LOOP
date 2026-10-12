@@ -625,6 +625,60 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'{count} 포인트'**
   String settingsPointCount(int count);
+
+  /// No description provided for @couponEventsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'쿠폰 이벤트'**
+  String get couponEventsTitle;
+
+  /// No description provided for @couponEventsEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'등록된 쿠폰 이벤트가 없습니다.'**
+  String get couponEventsEmpty;
+
+  /// No description provided for @couponLoginRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'쿠폰 이벤트는 로그인 후 이용할 수 있어요.'**
+  String get couponLoginRequired;
+
+  /// No description provided for @couponLoadFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'쿠폰 정보를 불러오지 못했습니다.'**
+  String get couponLoadFailed;
+
+  /// No description provided for @couponNetworkError.
+  ///
+  /// In ko, this message translates to:
+  /// **'네트워크 연결을 확인하고 다시 시도해주세요.'**
+  String get couponNetworkError;
+
+  /// No description provided for @couponRetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 시도'**
+  String get couponRetry;
+
+  /// No description provided for @couponRefresh.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로고침'**
+  String get couponRefresh;
+
+  /// No description provided for @couponLoadMore.
+  ///
+  /// In ko, this message translates to:
+  /// **'더 보기'**
+  String get couponLoadMore;
+
+  /// No description provided for @couponRemainingCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'조회 당시 {count}장 남음'**
+  String couponRemainingCount(int count);
 }
 
 class _AppLocalizationsDelegate
