@@ -13,6 +13,8 @@ import 'package:loop/src/features/coupons/domain/usecases/get_coupon_events_usec
 import 'package:loop/src/features/coupons/domain/usecases/get_my_coupon_usecase.dart';
 import 'package:loop/src/features/coupons/domain/usecases/get_my_coupons_usecase.dart';
 import 'package:loop/src/features/coupons/domain/usecases/issue_coupon_usecase.dart';
+import 'package:loop/src/features/coupons/presentation/providers/coupon_event_detail_notifier.dart';
+import 'package:loop/src/features/coupons/presentation/providers/coupon_event_detail_state.dart';
 import 'package:loop/src/features/coupons/presentation/providers/coupon_event_list_notifier.dart';
 import 'package:loop/src/features/coupons/presentation/providers/coupon_event_list_state.dart';
 
@@ -72,6 +74,55 @@ final couponEventListProvider =
 
       // 로그인 상태일 때만 첫 페이지 조회를 시작한다.
       if (userId != null) {
+        unawaited(notifier.load());
+      }
+
+      return notifier;
+    });
+
+final couponEventDetailProvider = StateNotifierProvider.autoDispose
+    .family<CouponEventDetailNotifier, CouponEventDetailState, int>((
+      ref,
+      eventId,
+    ) {
+      // 이 Notifier가 생성될 당시 로그인한 사용자
+      final loginState = ref.read(loginProvider);
+      final userId = loginState is LoginSuccess ? loginState.user.id : null;
+
+      var sessionValid = true;
+
+      // 종료된 Provider의 ref를 뒤늦게 사용하지 않도록 한다.
+      ref.onDispose(() {
+        sessionValid = false;
+      });
+
+      // 로그아웃·계정 변경을 감지하면 기존 작업을 무효화하고 재생성한다.
+      ref.listen<LoginState>(loginProvider, (previous, next) {
+        final nextUserId = next is LoginSuccess ? next.user.id : null;
+
+        if (nextUserId != userId) {
+          sessionValid = false;
+          ref.invalidateSelf();
+        }
+      });
+
+      bool isSessionCurrent() {
+        if (!sessionValid || userId == null) return false;
+
+        final current = ref.read(loginProvider);
+        return current is LoginSuccess && current.user.id == userId;
+      }
+
+      final notifier = CouponEventDetailNotifier(
+        eventId: eventId,
+        getCouponEventUseCase: ref.watch(getCouponEventUseCaseProvider),
+        getMyCouponUseCase: ref.watch(getMyCouponUseCaseProvider),
+        issueCouponUseCase: ref.watch(issueCouponUseCaseProvider),
+        isSessionCurrent: isSessionCurrent,
+      );
+
+      // 로그인한 경우 상세 정보와 본인 쿠폰 조회를 시작한다.
+      if (isSessionCurrent()) {
         unawaited(notifier.load());
       }
 

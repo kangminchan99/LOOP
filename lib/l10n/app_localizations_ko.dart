@@ -313,4 +313,69 @@ class AppLocalizationsKo extends AppLocalizations {
 
     return '조회 당시 $countString장 남음';
   }
+
+  @override
+  String get couponEventDetailTitle => '쿠폰 이벤트 상세';
+
+  @override
+  String get couponIssuePeriod => '발급 기간';
+
+  @override
+  String get couponExpiresAt => '쿠폰 만료 일시';
+
+  @override
+  String get couponIssuedAt => '발급 일시';
+
+  @override
+  String get couponIssueButton => '쿠폰 받기';
+
+  @override
+  String get couponIssuing => '발급 결과 확인 중…';
+
+  @override
+  String get couponIssued => '발급된 쿠폰이 있습니다.';
+
+  @override
+  String get couponExpired => '발급받은 쿠폰이 만료되었습니다.';
+
+  @override
+  String get couponIssueFailed => '발급 요청을 완료하지 못했습니다. 이벤트 정보를 새로고침해 주세요.';
+
+  @override
+  String get couponIssueUnconfirmed =>
+      '발급 여부를 아직 확인하지 못했습니다. 실패로 확정된 것은 아닙니다. 발급 결과를 다시 확인해 주세요.';
+
+  @override
+  String get couponConfirmIssue => '발급 결과 다시 확인';
+
+  @override
+  String get couponRetryIssue => '발급 요청 다시 보내기';
+
+  @override
+  String get couponRetryIssueHint => '같은 계정으로 이미 발급받았다면 기존 쿠폰을 반환합니다.';
+
+  @override
+  String get couponEventDisabled => '현재 신규 발급이 중지된 이벤트입니다.';
+
+  @override
+  String get couponEventNotStarted => '아직 발급 시작 전입니다.';
+
+  @override
+  String get couponEventEnded => '발급 기간이 종료되었습니다.';
+
+  @override
+  String get couponSoldOut => '쿠폰이 모두 발급되었습니다.';
+
+  @override
+  String get couponEventNotFound => '이벤트를 찾을 수 없습니다.';
+
+  @override
+  String get couponRateLimited => '요청이 많습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get couponIssueNotice => '잔여 수량은 조회 시점 기준이며, 최종 발급 가능 여부는 서버에서 확인합니다.';
+
+  @override
+  String get couponStorageOnlyNotice =>
+      '현재는 발급·보관·만료 확인만 지원하며, 쿠폰 사용이나 포인트 교환은 지원하지 않습니다.';
 }

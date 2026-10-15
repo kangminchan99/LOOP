@@ -102,5 +102,26 @@
   "couponRemainingCount": "{count} remaining when checked",
   "@couponRemainingCount": {
     "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
-  }
+  },
+  "couponEventDetailTitle": "Coupon event details",
+  "couponIssuePeriod": "Claim period",
+  "couponExpiresAt": "Coupon expires on",
+  "couponIssuedAt": "Issued on",
+  "couponIssueButton": "Claim coupon",
+  "couponIssuing": "Checking claim result…",
+  "couponIssued": "A coupon has been issued to you.",
+  "couponExpired": "Your coupon has expired.",
+  "couponIssueFailed": "Could not complete the claim request. Please refresh the event information.",
+  "couponIssueUnconfirmed": "Your claim result is not yet confirmed. This does not mean the claim failed. Please check the result again.",
+  "couponConfirmIssue": "Check claim result again",
+  "couponRetryIssue": "Send claim request again",
+  "couponRetryIssueHint": "If this account already received a coupon, the existing coupon will be returned.",
+  "couponEventDisabled": "New claims are currently paused for this event.",
+  "couponEventNotStarted": "The claim period has not started yet.",
+  "couponEventEnded": "The claim period has ended.",
+  "couponSoldOut": "All coupons have been claimed.",
+  "couponEventNotFound": "Event not found.",
+  "couponRateLimited": "Too many requests. Please try again shortly.",
+  "couponIssueNotice": "Availability reflects the time of the last check. The server confirms whether a coupon can be issued.",
+  "couponStorageOnlyNotice": "Only claiming, storing, and checking expiration are currently supported. Coupon redemption and point exchange are not available."
 }

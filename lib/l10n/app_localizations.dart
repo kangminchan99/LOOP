@@ -679,6 +679,132 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'조회 당시 {count}장 남음'**
   String couponRemainingCount(int count);
+
+  /// No description provided for @couponEventDetailTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'쿠폰 이벤트 상세'**
+  String get couponEventDetailTitle;
+
+  /// No description provided for @couponIssuePeriod.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 기간'**
+  String get couponIssuePeriod;
+
+  /// No description provided for @couponExpiresAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'쿠폰 만료 일시'**
+  String get couponExpiresAt;
+
+  /// No description provided for @couponIssuedAt.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 일시'**
+  String get couponIssuedAt;
+
+  /// No description provided for @couponIssueButton.
+  ///
+  /// In ko, this message translates to:
+  /// **'쿠폰 받기'**
+  String get couponIssueButton;
+
+  /// No description provided for @couponIssuing.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 결과 확인 중…'**
+  String get couponIssuing;
+
+  /// No description provided for @couponIssued.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급된 쿠폰이 있습니다.'**
+  String get couponIssued;
+
+  /// No description provided for @couponExpired.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급받은 쿠폰이 만료되었습니다.'**
+  String get couponExpired;
+
+  /// No description provided for @couponIssueFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 요청을 완료하지 못했습니다. 이벤트 정보를 새로고침해 주세요.'**
+  String get couponIssueFailed;
+
+  /// No description provided for @couponIssueUnconfirmed.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 여부를 아직 확인하지 못했습니다. 실패로 확정된 것은 아닙니다. 발급 결과를 다시 확인해 주세요.'**
+  String get couponIssueUnconfirmed;
+
+  /// No description provided for @couponConfirmIssue.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 결과 다시 확인'**
+  String get couponConfirmIssue;
+
+  /// No description provided for @couponRetryIssue.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 요청 다시 보내기'**
+  String get couponRetryIssue;
+
+  /// No description provided for @couponRetryIssueHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'같은 계정으로 이미 발급받았다면 기존 쿠폰을 반환합니다.'**
+  String get couponRetryIssueHint;
+
+  /// No description provided for @couponEventDisabled.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재 신규 발급이 중지된 이벤트입니다.'**
+  String get couponEventDisabled;
+
+  /// No description provided for @couponEventNotStarted.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 발급 시작 전입니다.'**
+  String get couponEventNotStarted;
+
+  /// No description provided for @couponEventEnded.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 기간이 종료되었습니다.'**
+  String get couponEventEnded;
+
+  /// No description provided for @couponSoldOut.
+  ///
+  /// In ko, this message translates to:
+  /// **'쿠폰이 모두 발급되었습니다.'**
+  String get couponSoldOut;
+
+  /// No description provided for @couponEventNotFound.
+  ///
+  /// In ko, this message translates to:
+  /// **'이벤트를 찾을 수 없습니다.'**
+  String get couponEventNotFound;
+
+  /// No description provided for @couponRateLimited.
+  ///
+  /// In ko, this message translates to:
+  /// **'요청이 많습니다. 잠시 후 다시 시도해 주세요.'**
+  String get couponRateLimited;
+
+  /// No description provided for @couponIssueNotice.
+  ///
+  /// In ko, this message translates to:
+  /// **'잔여 수량은 조회 시점 기준이며, 최종 발급 가능 여부는 서버에서 확인합니다.'**
+  String get couponIssueNotice;
+
+  /// No description provided for @couponStorageOnlyNotice.
+  ///
+  /// In ko, this message translates to:
+  /// **'현재는 발급·보관·만료 확인만 지원하며, 쿠폰 사용이나 포인트 교환은 지원하지 않습니다.'**
+  String get couponStorageOnlyNotice;
 }
 
 class _AppLocalizationsDelegate

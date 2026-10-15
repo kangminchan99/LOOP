@@ -326,4 +326,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
     return '$countString remaining when checked';
   }
+
+  @override
+  String get couponEventDetailTitle => 'Coupon event details';
+
+  @override
+  String get couponIssuePeriod => 'Claim period';
+
+  @override
+  String get couponExpiresAt => 'Coupon expires on';
+
+  @override
+  String get couponIssuedAt => 'Issued on';
+
+  @override
+  String get couponIssueButton => 'Claim coupon';
+
+  @override
+  String get couponIssuing => 'Checking claim result…';
+
+  @override
+  String get couponIssued => 'A coupon has been issued to you.';
+
+  @override
+  String get couponExpired => 'Your coupon has expired.';
+
+  @override
+  String get couponIssueFailed =>
+      'Could not complete the claim request. Please refresh the event information.';
+
+  @override
+  String get couponIssueUnconfirmed =>
+      'Your claim result is not yet confirmed. This does not mean the claim failed. Please check the result again.';
+
+  @override
+  String get couponConfirmIssue => 'Check claim result again';
+
+  @override
+  String get couponRetryIssue => 'Send claim request again';
+
+  @override
+  String get couponRetryIssueHint =>
+      'If this account already received a coupon, the existing coupon will be returned.';
+
+  @override
+  String get couponEventDisabled =>
+      'New claims are currently paused for this event.';
+
+  @override
+  String get couponEventNotStarted => 'The claim period has not started yet.';
+
+  @override
+  String get couponEventEnded => 'The claim period has ended.';
+
+  @override
+  String get couponSoldOut => 'All coupons have been claimed.';
+
+  @override
+  String get couponEventNotFound => 'Event not found.';
+
+  @override
+  String get couponRateLimited =>
+      'Too many requests. Please try again shortly.';
+
+  @override
+  String get couponIssueNotice =>
+      'Availability reflects the time of the last check. The server confirms whether a coupon can be issued.';
+
+  @override
+  String get couponStorageOnlyNotice =>
+      'Only claiming, storing, and checking expiration are currently supported. Coupon redemption and point exchange are not available.';
 }
