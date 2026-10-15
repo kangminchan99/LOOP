@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/core/network/error/failures.dart';
+import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:loop/src/features/auth/presentation/providers/login/login_state.dart';
 import 'package:loop/src/features/coupons/presentation/providers/coupons_providers.dart';
@@ -96,6 +98,36 @@ class CouponEventListPage extends ConsumerWidget {
                                 return Card(
                                   key: ValueKey(event.id),
                                   child: ListTile(
+                                    // 목록을 유지하고 상세 화면을 위에 쌓는다.
+                                    onTap: () async {
+                                      final notifier = ref.read(
+                                        couponEventListProvider.notifier,
+                                      );
+                                      await context.pushNamed<void>(
+                                        AppRoute.couponEventDetail.name,
+                                        pathParameters: {
+                                          'eventId': event.id.toString(),
+                                        },
+                                      );
+                                      // 화면 종료나 로그인 세션 변경 후에는 갱신하지 않는다.
+                                      if (!context.mounted) return;
+                                      if (ref.read(loginProvider)
+                                          is! LoginSuccess) {
+                                        return;
+                                      }
+                                      if (!identical(
+                                        notifier,
+                                        ref.read(
+                                          couponEventListProvider.notifier,
+                                        ),
+                                      )) {
+                                        return;
+                                      }
+
+                                      // 서버의 최신 잔여 수량으로 첫 페이지를 다시 조회한다.
+                                      await notifier.load();
+                                    },
+                                    trailing: const Icon(Icons.chevron_right),
                                     title: Text(
                                       event.title,
                                       maxLines: 2,

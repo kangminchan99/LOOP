@@ -12,6 +12,7 @@ import 'package:loop/src/features/chat/presentation/pages/chat_room_detail_page.
 import 'package:loop/src/features/chat/presentation/pages/chat_room_list_page.dart';
 import 'package:loop/src/features/comments/presentation/pages/comment_list_page.dart';
 import 'package:loop/src/features/coupons/presentation/pages/coupon_event_list_page.dart';
+import 'package:loop/src/features/coupons/presentation/pages/coupon_event_detail_page.dart';
 import 'package:loop/src/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:loop/src/features/ocr/presentation/pages/ocr_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_detail_page.dart';
@@ -110,6 +111,21 @@ final routerProvider = Provider((ref) {
         path: AppRoute.couponEvents.path,
         name: AppRoute.couponEvents.name,
         builder: (context, state) => const CouponEventListPage(),
+      ),
+      GoRoute(
+        path: AppRoute.couponEventDetail.path,
+        name: AppRoute.couponEventDetail.name,
+        redirect: (context, state) {
+          final eventId = int.tryParse(state.pathParameters['eventId'] ?? '');
+          // 잘못된 외부 경로로 상세 API를 요청하지 않는다.
+          if (eventId == null || eventId <= 0 || eventId > 2147483647) {
+            return AppRoute.couponEvents.path;
+          }
+          return null;
+        },
+        builder: (context, state) => CouponEventDetailPage(
+          eventId: int.parse(state.pathParameters['eventId']!),
+        ),
       ),
 
       StatefulShellRoute.indexedStack(

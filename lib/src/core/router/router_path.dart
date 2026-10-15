@@ -15,6 +15,7 @@ enum AppRoute {
   adminServerStatus,
   ocr,
   couponEvents,
+  couponEventDetail,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -52,6 +53,8 @@ extension AppRouteExtension on AppRoute {
         return '/ocr';
       case AppRoute.couponEvents:
         return '/coupon-events';
+      case AppRoute.couponEventDetail:
+        return '/coupon-events/:eventId';
     }
   }
 
@@ -89,6 +92,8 @@ extension AppRouteExtension on AppRoute {
         return 'ocr';
       case AppRoute.couponEvents:
         return 'couponEvents';
+      case AppRoute.couponEventDetail:
+        return 'couponEventDetail';
     }
   }
 }
