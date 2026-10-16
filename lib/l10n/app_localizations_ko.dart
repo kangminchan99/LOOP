@@ -282,6 +282,21 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get myCouponsTitle => '내 쿠폰';
+
+  @override
+  String get myCouponsEmpty => '아직 발급받은 쿠폰이 없습니다.';
+
+  @override
+  String get myCouponsLoginRequired => '내 쿠폰은 로그인 후 확인할 수 있어요.';
+
+  @override
+  String get couponStatusIssued => '발급 완료';
+
+  @override
+  String get couponStatusExpired => '만료';
+
+  @override
   String get couponEventsTitle => '쿠폰 이벤트';
 
   @override

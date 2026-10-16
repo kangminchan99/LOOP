@@ -17,6 +17,8 @@ import 'package:loop/src/features/coupons/presentation/providers/coupon_event_de
 import 'package:loop/src/features/coupons/presentation/providers/coupon_event_detail_state.dart';
 import 'package:loop/src/features/coupons/presentation/providers/coupon_event_list_notifier.dart';
 import 'package:loop/src/features/coupons/presentation/providers/coupon_event_list_state.dart';
+import 'package:loop/src/features/coupons/presentation/providers/my_coupon_list_notifier.dart';
+import 'package:loop/src/features/coupons/presentation/providers/my_coupon_list_state.dart';
 
 // 인증 인터셉터가 설정된 공용 Dio로 API 객체 생성
 final couponsApiProvider = Provider<CouponsApi>((ref) {
@@ -122,6 +124,50 @@ final couponEventDetailProvider = StateNotifierProvider.autoDispose
       );
 
       // 로그인한 경우 상세 정보와 본인 쿠폰 조회를 시작한다.
+      if (isSessionCurrent()) {
+        unawaited(notifier.load());
+      }
+
+      return notifier;
+    });
+
+final myCouponListProvider =
+    StateNotifierProvider.autoDispose<MyCouponListNotifier, MyCouponListState>((
+      ref,
+    ) {
+      // Provider가 생성될 당시의 로그인 사용자
+      final loginState = ref.read(loginProvider);
+      final userId = loginState is LoginSuccess ? loginState.user.id : null;
+
+      var sessionValid = true;
+
+      ref.onDispose(() {
+        sessionValid = false;
+      });
+
+      // 로그아웃·계정 변경 시 이전 계정의 목록과 진행 중 결과를 무효화한다.
+      ref.listen<LoginState>(loginProvider, (previous, next) {
+        final nextUserId = next is LoginSuccess ? next.user.id : null;
+
+        if (nextUserId != userId) {
+          sessionValid = false;
+          ref.invalidateSelf();
+        }
+      });
+
+      bool isSessionCurrent() {
+        if (!sessionValid || userId == null) return false;
+
+        final current = ref.read(loginProvider);
+        return current is LoginSuccess && current.user.id == userId;
+      }
+
+      final notifier = MyCouponListNotifier(
+        getMyCouponsUseCase: ref.watch(getMyCouponsUseCaseProvider),
+        isSessionCurrent: isSessionCurrent,
+      );
+
+      // 로그인 상태에서 처음 구독되면 목록 조회를 시작한다.
       if (isSessionCurrent()) {
         unawaited(notifier.load());
       }

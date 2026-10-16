@@ -5,6 +5,7 @@ const _activity = SettingsSectionDefinition(SettingsSectionId.activity, [
   SettingsMenuId.chat,
   SettingsMenuId.attendance,
   SettingsMenuId.couponEvents,
+  SettingsMenuId.myCoupons,
   SettingsMenuId.notifications,
   SettingsMenuId.blockedUsers,
 ]);

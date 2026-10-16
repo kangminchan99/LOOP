@@ -295,6 +295,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get myCouponsTitle => 'My coupons';
+
+  @override
+  String get myCouponsEmpty => 'You have not received any coupons yet.';
+
+  @override
+  String get myCouponsLoginRequired => 'Please sign in to view your coupons.';
+
+  @override
+  String get couponStatusIssued => 'Issued';
+
+  @override
+  String get couponStatusExpired => 'Expired';
+
+  @override
   String get couponEventsTitle => 'Coupon events';
 
   @override

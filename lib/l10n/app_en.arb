@@ -91,6 +91,11 @@
   "@settingsPointCount": {
     "placeholders": { "count": { "type": "int", "format": "decimalPattern" } }
   },
+  "myCouponsTitle": "My coupons",
+  "myCouponsEmpty": "You have not received any coupons yet.",
+  "myCouponsLoginRequired": "Please sign in to view your coupons.",
+  "couponStatusIssued": "Issued",
+  "couponStatusExpired": "Expired",
   "couponEventsTitle": "Coupon events",
   "couponEventsEmpty": "No coupon events are available.",
   "couponLoginRequired": "Please sign in to view coupon events.",

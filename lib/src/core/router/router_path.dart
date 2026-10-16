@@ -16,6 +16,7 @@ enum AppRoute {
   ocr,
   couponEvents,
   couponEventDetail,
+  myCoupons,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -55,6 +56,8 @@ extension AppRouteExtension on AppRoute {
         return '/coupon-events';
       case AppRoute.couponEventDetail:
         return '/coupon-events/:eventId';
+      case AppRoute.myCoupons:
+        return '/coupons/me';
     }
   }
 
@@ -94,6 +97,8 @@ extension AppRouteExtension on AppRoute {
         return 'couponEvents';
       case AppRoute.couponEventDetail:
         return 'couponEventDetail';
+      case AppRoute.myCoupons:
+        return 'myCoupons';
     }
   }
 }

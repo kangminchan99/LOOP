@@ -626,6 +626,36 @@ abstract class AppLocalizations {
   /// **'{count} 포인트'**
   String settingsPointCount(int count);
 
+  /// No description provided for @myCouponsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 쿠폰'**
+  String get myCouponsTitle;
+
+  /// No description provided for @myCouponsEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 발급받은 쿠폰이 없습니다.'**
+  String get myCouponsEmpty;
+
+  /// No description provided for @myCouponsLoginRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 쿠폰은 로그인 후 확인할 수 있어요.'**
+  String get myCouponsLoginRequired;
+
+  /// No description provided for @couponStatusIssued.
+  ///
+  /// In ko, this message translates to:
+  /// **'발급 완료'**
+  String get couponStatusIssued;
+
+  /// No description provided for @couponStatusExpired.
+  ///
+  /// In ko, this message translates to:
+  /// **'만료'**
+  String get couponStatusExpired;
+
   /// No description provided for @couponEventsTitle.
   ///
   /// In ko, this message translates to:

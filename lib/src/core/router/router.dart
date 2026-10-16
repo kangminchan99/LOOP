@@ -13,6 +13,7 @@ import 'package:loop/src/features/chat/presentation/pages/chat_room_list_page.da
 import 'package:loop/src/features/comments/presentation/pages/comment_list_page.dart';
 import 'package:loop/src/features/coupons/presentation/pages/coupon_event_list_page.dart';
 import 'package:loop/src/features/coupons/presentation/pages/coupon_event_detail_page.dart';
+import 'package:loop/src/features/coupons/presentation/pages/my_coupon_list_page.dart';
 import 'package:loop/src/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:loop/src/features/ocr/presentation/pages/ocr_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_detail_page.dart';
@@ -126,6 +127,12 @@ final routerProvider = Provider((ref) {
         builder: (context, state) => CouponEventDetailPage(
           eventId: int.parse(state.pathParameters['eventId']!),
         ),
+      ),
+
+      GoRoute(
+        path: AppRoute.myCoupons.path,
+        name: AppRoute.myCoupons.name,
+        builder: (context, state) => const MyCouponListPage(),
       ),
 
       StatefulShellRoute.indexedStack(
