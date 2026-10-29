@@ -7,6 +7,7 @@ Flutter 기반 Loop 앱. 문서의 설계·실행 계획과 실제 구현·검�
 - [앱 아키텍처 및 개발 기준](CLAUDE.md): 레이어·UI 모델, 상태 수명, 설정 메뉴 리팩토링, 다국어, 세션 안전성, 테스트·배포 기준.
 - [앱 전체 성능·트래픽·동시성 검증](docs/APP_PERFORMANCE_GUIDE.md): 화면 전환, 프레임 드랍, 네트워크, 동시 작성 테스트 및 최적화 계획.
 - [게시글 오프라인 캐시](docs/POST_OFFLINE_CACHE.md)
+- [사용자 차단·해제 구현 계획](docs/USER_BLOCKING.md): 서버 필터·차단 목록 페이지네이션·캐시·세션·채팅·알림 연동. 현재 문서 단계.
 - [사진 속 글자 추출(OCR) 구현 계획](docs/OCR_FEATURE.md): 한국어 OCR 도입 순서, 계층 구조, 권한·수명·테스트 기준.
 - [BLE 기기 스캔 계획](docs/BLE_FEATURE.md): mock 기반 구현 범위와 단계.
 
