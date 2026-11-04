@@ -17,6 +17,7 @@ enum AppRoute {
   couponEvents,
   couponEventDetail,
   myCoupons,
+  blockedUsers,
 }
 
 extension AppRouteExtension on AppRoute {
@@ -58,6 +59,8 @@ extension AppRouteExtension on AppRoute {
         return '/coupon-events/:eventId';
       case AppRoute.myCoupons:
         return '/coupons/me';
+      case AppRoute.blockedUsers:
+        return '/settings/blocked-users';
     }
   }
 
@@ -99,6 +102,8 @@ extension AppRouteExtension on AppRoute {
         return 'couponEventDetail';
       case AppRoute.myCoupons:
         return 'myCoupons';
+      case AppRoute.blockedUsers:
+        return 'blockedUsers';
     }
   }
 }

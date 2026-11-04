@@ -42,7 +42,6 @@ extension SettingsSectionPresentation on SettingsSectionId {
 extension SettingsMenuPresentation on SettingsMenuId {
   // 미구현 메뉴는 이동하는 것처럼 보이지 않게 비활성화한다.
   bool get isImplemented => switch (this) {
-    SettingsMenuId.blockedUsers ||
     SettingsMenuId.notificationSettings ||
     SettingsMenuId.notice ||
     SettingsMenuId.contact ||

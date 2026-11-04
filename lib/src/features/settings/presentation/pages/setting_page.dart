@@ -69,6 +69,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
         case SettingsMenuId.myCoupons:
           await context.pushNamed<void>(AppRoute.myCoupons.name);
         case SettingsMenuId.blockedUsers:
+          await context.pushNamed<void>(AppRoute.blockedUsers.name);
         case SettingsMenuId.notificationSettings:
         case SettingsMenuId.notice:
         case SettingsMenuId.contact:

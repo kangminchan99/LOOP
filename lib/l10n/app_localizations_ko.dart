@@ -69,6 +69,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsBlockedUsers => '차단한 사용자';
 
   @override
+  String get blockedUsersLoginRequired => '차단한 사용자 목록은 로그인 후 확인할 수 있어요.';
+
+  @override
+  String get blockedUsersEmpty => '차단한 사용자가 없어요.';
+
+  @override
+  String get blockedUsersLoadFailed => '차단 목록을 불러오지 못했어요.';
+
+  @override
+  String get blockedUsersUnknownName => '닉네임 없음';
+
+  @override
+  String get blockedUsersRetry => '다시 시도';
+
+  @override
+  String get blockedUsersLoadMore => '더 보기';
+
+  @override
+  String get blockedUsersUnblock => '차단 해제';
+
+  @override
+  String blockedUsersUnblockConfirm(String nickname) {
+    return '$nickname 사용자의 차단을 해제할까요?';
+  }
+
+  @override
+  String get blockedUsersUnblockSucceeded => '차단을 해제했어요.';
+
+  @override
+  String get blockedUsersUnblockFailed => '차단을 해제하지 못했어요. 다시 시도해 주세요.';
+
+  @override
+  String get blockedUsersUnblockUnconfirmed =>
+      '해제 결과를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.';
+
+  @override
   String get settingsSavedPosts => '저장한 글';
 
   @override

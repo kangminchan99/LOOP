@@ -218,6 +218,72 @@ abstract class AppLocalizations {
   /// **'차단한 사용자'**
   String get settingsBlockedUsers;
 
+  /// No description provided for @blockedUsersLoginRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'차단한 사용자 목록은 로그인 후 확인할 수 있어요.'**
+  String get blockedUsersLoginRequired;
+
+  /// No description provided for @blockedUsersEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'차단한 사용자가 없어요.'**
+  String get blockedUsersEmpty;
+
+  /// No description provided for @blockedUsersLoadFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'차단 목록을 불러오지 못했어요.'**
+  String get blockedUsersLoadFailed;
+
+  /// No description provided for @blockedUsersUnknownName.
+  ///
+  /// In ko, this message translates to:
+  /// **'닉네임 없음'**
+  String get blockedUsersUnknownName;
+
+  /// No description provided for @blockedUsersRetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 시도'**
+  String get blockedUsersRetry;
+
+  /// No description provided for @blockedUsersLoadMore.
+  ///
+  /// In ko, this message translates to:
+  /// **'더 보기'**
+  String get blockedUsersLoadMore;
+
+  /// No description provided for @blockedUsersUnblock.
+  ///
+  /// In ko, this message translates to:
+  /// **'차단 해제'**
+  String get blockedUsersUnblock;
+
+  /// No description provided for @blockedUsersUnblockConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'{nickname} 사용자의 차단을 해제할까요?'**
+  String blockedUsersUnblockConfirm(String nickname);
+
+  /// No description provided for @blockedUsersUnblockSucceeded.
+  ///
+  /// In ko, this message translates to:
+  /// **'차단을 해제했어요.'**
+  String get blockedUsersUnblockSucceeded;
+
+  /// No description provided for @blockedUsersUnblockFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'차단을 해제하지 못했어요. 다시 시도해 주세요.'**
+  String get blockedUsersUnblockFailed;
+
+  /// No description provided for @blockedUsersUnblockUnconfirmed.
+  ///
+  /// In ko, this message translates to:
+  /// **'해제 결과를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.'**
+  String get blockedUsersUnblockUnconfirmed;
+
   /// No description provided for @settingsSavedPosts.
   ///
   /// In ko, this message translates to:

@@ -21,6 +21,7 @@ import 'package:loop/src/features/post/presentation/pages/board_edit_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_page.dart';
 import 'package:loop/src/features/post/presentation/pages/board_write_page.dart';
 import 'package:loop/src/features/settings/presentation/pages/setting_page.dart';
+import 'package:loop/src/features/user_blocks/presentation/pages/blocked_users_page.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(
@@ -133,6 +134,12 @@ final routerProvider = Provider((ref) {
         path: AppRoute.myCoupons.path,
         name: AppRoute.myCoupons.name,
         builder: (context, state) => const MyCouponListPage(),
+      ),
+
+      GoRoute(
+        path: AppRoute.blockedUsers.path,
+        name: AppRoute.blockedUsers.name,
+        builder: (context, state) => const BlockedUsersPage(),
       ),
 
       StatefulShellRoute.indexedStack(

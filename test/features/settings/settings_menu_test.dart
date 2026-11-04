@@ -29,6 +29,7 @@ void main() {
       SettingsMenuId.chat,
       SettingsMenuId.attendance,
       SettingsMenuId.notifications,
+      SettingsMenuId.blockedUsers,
     ]) {
       expect(menus(false, false), isNot(contains(id)));
       expect(menus(true, false), contains(id));
@@ -56,5 +57,6 @@ void main() {
     expect(SettingsMenuId.notificationSettings.isImplemented, isFalse);
     expect(SettingsMenuId.terms.isImplemented, isFalse);
     expect(SettingsMenuId.ocr.isImplemented, isTrue);
+    expect(SettingsMenuId.blockedUsers.isImplemented, isTrue);
   });
 }

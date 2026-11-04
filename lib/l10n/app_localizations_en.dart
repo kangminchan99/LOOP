@@ -70,6 +70,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsBlockedUsers => 'Blocked users';
 
   @override
+  String get blockedUsersLoginRequired => 'Sign in to view your blocked users.';
+
+  @override
+  String get blockedUsersEmpty => 'You haven\'t blocked anyone.';
+
+  @override
+  String get blockedUsersLoadFailed => 'Couldn\'t load your blocked users.';
+
+  @override
+  String get blockedUsersUnknownName => 'No nickname';
+
+  @override
+  String get blockedUsersRetry => 'Retry';
+
+  @override
+  String get blockedUsersLoadMore => 'Load more';
+
+  @override
+  String get blockedUsersUnblock => 'Unblock';
+
+  @override
+  String blockedUsersUnblockConfirm(String nickname) {
+    return 'Unblock $nickname?';
+  }
+
+  @override
+  String get blockedUsersUnblockSucceeded => 'User unblocked.';
+
+  @override
+  String get blockedUsersUnblockFailed =>
+      'Couldn\'t unblock this user. Please try again.';
+
+  @override
+  String get blockedUsersUnblockUnconfirmed =>
+      'Couldn\'t confirm the result. Please try again in a moment.';
+
+  @override
   String get settingsSavedPosts => 'Saved posts';
 
   @override
