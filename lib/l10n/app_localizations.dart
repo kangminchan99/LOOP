@@ -284,6 +284,36 @@ abstract class AppLocalizations {
   /// **'해제 결과를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.'**
   String get blockedUsersUnblockUnconfirmed;
 
+  /// No description provided for @postBlockAuthor.
+  ///
+  /// In ko, this message translates to:
+  /// **'작성자 차단'**
+  String get postBlockAuthor;
+
+  /// No description provided for @postBlockAuthorConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 작성자를 차단하면 게시글 목록과 검색 결과에서 이 작성자의 글이 제외돼요.'**
+  String get postBlockAuthorConfirm;
+
+  /// No description provided for @postBlockAuthorSucceeded.
+  ///
+  /// In ko, this message translates to:
+  /// **'작성자를 차단했어요.'**
+  String get postBlockAuthorSucceeded;
+
+  /// No description provided for @postBlockAuthorFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'작성자를 차단하지 못했어요.'**
+  String get postBlockAuthorFailed;
+
+  /// No description provided for @postBlockAuthorUnconfirmed.
+  ///
+  /// In ko, this message translates to:
+  /// **'차단 결과를 확인하지 못했어요. 설정의 차단 목록을 확인해 주세요.'**
+  String get postBlockAuthorUnconfirmed;
+
   /// No description provided for @settingsSavedPosts.
   ///
   /// In ko, this message translates to:

@@ -105,6 +105,23 @@ class AppLocalizationsKo extends AppLocalizations {
       '해제 결과를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.';
 
   @override
+  String get postBlockAuthor => '작성자 차단';
+
+  @override
+  String get postBlockAuthorConfirm =>
+      '이 작성자를 차단하면 게시글 목록과 검색 결과에서 이 작성자의 글이 제외돼요.';
+
+  @override
+  String get postBlockAuthorSucceeded => '작성자를 차단했어요.';
+
+  @override
+  String get postBlockAuthorFailed => '작성자를 차단하지 못했어요.';
+
+  @override
+  String get postBlockAuthorUnconfirmed =>
+      '차단 결과를 확인하지 못했어요. 설정의 차단 목록을 확인해 주세요.';
+
+  @override
   String get settingsSavedPosts => '저장한 글';
 
   @override

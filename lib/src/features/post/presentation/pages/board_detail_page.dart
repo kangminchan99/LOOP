@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/core/layout/max_width_container.dart';
+import 'package:loop/src/core/network/error/failures.dart';
 import 'package:loop/src/core/router/router_path.dart';
 import 'package:loop/src/core/utils/helpers/initializer.dart';
 import 'package:loop/src/features/auth/presentation/providers/auth_providers.dart';
@@ -14,11 +15,94 @@ import 'package:loop/src/features/comments/presentation/widgets/comment_input_wi
 import 'package:loop/src/features/comments/presentation/widgets/comment_item_widget.dart';
 import 'package:loop/src/features/post/presentation/providers/post_detail/post_detail_state.dart';
 import 'package:loop/src/features/post/presentation/providers/post_providers.dart';
+import 'package:loop/src/features/user_blocks/presentation/providers/user_blocks_providers.dart';
 
-class BoardDetailPage extends ConsumerWidget {
+class BoardDetailPage extends ConsumerStatefulWidget {
   const BoardDetailPage({required this.postId, super.key});
 
   final int postId;
+
+  @override
+  ConsumerState<BoardDetailPage> createState() => _BoardDetailPageState();
+}
+
+class _BoardDetailPageState extends ConsumerState<BoardDetailPage> {
+  int get postId => widget.postId;
+  bool _isBlockingAuthor = false;
+
+  Future<bool?> _showBlockAuthorDialog() => showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      final l10n = AppLocalizations.of(dialogContext);
+      return AlertDialog(
+        title: Text(l10n.postBlockAuthor),
+        content: Text(l10n.postBlockAuthorConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(
+              MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+            ),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.postBlockAuthor),
+          ),
+        ],
+      );
+    },
+  );
+
+  Future<void> _blockAuthor(int authorId) async {
+    if (_isBlockingAuthor) return;
+
+    final login = ref.read(loginProvider);
+    if (login is! LoginSuccess || login.user.id == authorId) return;
+
+    final initialPostId = postId;
+    final isSessionCurrent = ref.read(captureUserBlockSessionProvider);
+    bool canUpdatePage() => isSessionCurrent() && postId == initialPostId;
+
+    setState(() => _isBlockingAuthor = true);
+
+    try {
+      final confirmed = await _showBlockAuthorDialog();
+      if (confirmed != true || !mounted || !canUpdatePage()) return;
+
+      final result = await ref.read(blockUserUseCaseProvider)(
+        targetUserId: authorId,
+        isSessionCurrent: isSessionCurrent,
+      );
+      if (!mounted || !canUpdatePage()) return;
+
+      final l10n = AppLocalizations.of(context);
+      final message = result.fold((failure) {
+        if (failure is NetworkFailure ||
+            failure is CancelTokenFailure ||
+            (failure is ServerFailure &&
+                (failure.statusCode == null || failure.statusCode! >= 500))) {
+          return l10n.postBlockAuthorUnconfirmed;
+        }
+        return l10n.postBlockAuthorFailed;
+      }, (_) => l10n.postBlockAuthorSucceeded);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+
+      if (result.isRight()) {
+        if (ModalRoute.of(context)?.isCurrent != true) {
+          // 다른 화면이 위에 있으면 잘못된 경로를 pop하지 않는다.
+          ref.invalidate(postDetailProvider(initialPostId));
+        } else if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(AppRoute.board.path);
+        }
+      }
+    } finally {
+      if (mounted) setState(() => _isBlockingAuthor = false);
+    }
+  }
 
   // 본문과 댓글은 함께 재조회하되 각자의 성공/실패 상태는 유지.
   Future<void> _reload(WidgetRef ref) async {
@@ -36,7 +120,7 @@ class BoardDetailPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final state = ref.watch(postDetailProvider(postId));
@@ -170,14 +254,23 @@ class BoardDetailPage extends ConsumerWidget {
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
-                        onPressed: () => _startChatWithAuthor(
-                          context: context,
-                          ref: ref,
-                          targetUserId: post.authorId,
-                        ),
+                        onPressed: _isBlockingAuthor
+                            ? null
+                            : () => _startChatWithAuthor(
+                                context: context,
+                                ref: ref,
+                                targetUserId: post.authorId,
+                              ),
                         icon: const Icon(Icons.chat_bubble_outline),
                         label: const Text('작성자와 채팅하기'),
                       ),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: _isBlockingAuthor
+                          ? null
+                          : () => _blockAuthor(post.authorId),
+                      icon: const Icon(Icons.block_outlined),
+                      label: Text(AppLocalizations.of(context).postBlockAuthor),
                     ),
                   ],
                   const Divider(height: 32),

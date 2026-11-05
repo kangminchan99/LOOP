@@ -4,7 +4,6 @@ import 'package:loop/src/features/post/domain/models/post_list_model.dart';
 import 'package:loop/src/features/post/domain/usecases/search_posts_usecase.dart';
 import 'package:loop/src/shared/domain/models/cursor_paginated_response.dart';
 import 'package:loop/src/shared/presentation/providers/cursor_pagination_notifier.dart';
-import 'package:loop/src/shared/presentation/providers/cursor_pagination_state.dart';
 
 class SearchPostNotifier extends CursorPaginationNotifier<PostListModel> {
   SearchPostNotifier(this._searchPostsUseCase);
@@ -21,25 +20,20 @@ class SearchPostNotifier extends CursorPaginationNotifier<PostListModel> {
   }
 
   Future<void> search(String keyword) async {
+    if (!mounted) return;
+
     _keyword = keyword.trim();
+    resetPagination();
 
-    if (_keyword.isEmpty) {
-      state = const CursorPaginationState<PostListModel>(
-        items: [],
-        hasNext: false,
-      );
-      return;
-    }
-
-    await load();
+    if (_keyword.isNotEmpty) await load();
   }
 
   void clear() {
-    _keyword = '';
+    if (!mounted) return;
 
-    state = const CursorPaginationState<PostListModel>(
-      items: [],
-      hasNext: false,
-    );
+    _keyword = '';
+    resetPagination();
   }
+
+  Future<void> reloadAfterVisibilityChange() => search(_keyword);
 }

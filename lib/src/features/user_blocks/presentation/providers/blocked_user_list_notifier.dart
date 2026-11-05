@@ -112,7 +112,7 @@ class BlockedUserListNotifier extends StateNotifier<BlockedUserListState> {
     state = state.copyWith(unblockingUserId: targetUserId);
     final result = await _unblockUserUseCase(
       targetUserId: targetUserId,
-      isSessionCurrent: () => _canUpdate,
+      isSessionCurrent: _isSessionCurrent,
     );
     if (!_canUpdate) return null;
 

@@ -107,6 +107,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Couldn\'t confirm the result. Please try again in a moment.';
 
   @override
+  String get postBlockAuthor => 'Block author';
+
+  @override
+  String get postBlockAuthorConfirm =>
+      'If you block this author, their posts won\'t appear in your post list or search results.';
+
+  @override
+  String get postBlockAuthorSucceeded => 'Author blocked.';
+
+  @override
+  String get postBlockAuthorFailed => 'Couldn\'t block this author.';
+
+  @override
+  String get postBlockAuthorUnconfirmed =>
+      'Couldn\'t confirm whether the author was blocked. Check your blocked users in Settings.';
+
+  @override
   String get settingsSavedPosts => 'Saved posts';
 
   @override

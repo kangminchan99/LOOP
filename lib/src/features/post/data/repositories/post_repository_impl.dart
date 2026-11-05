@@ -13,10 +13,21 @@ import 'package:loop/src/features/post/domain/repositories/abstract_post_reposit
 import 'package:loop/src/shared/domain/models/cursor_paginated_response.dart';
 
 class PostRepositoryImpl implements AbstractPostRepository {
-  PostRepositoryImpl(this._postApi, this._localDataSource)
-    : _session = _localDataSource.session;
+  PostRepositoryImpl(
+    this._postApi,
+    this._localDataSource, {
+    bool allowPublicCache = true,
+    bool requireAuthenticatedViewer = false,
+    Future<bool> Function()? canReadPublicCache,
+  }) : _session = _localDataSource.session,
+       _allowPublicCache = allowPublicCache,
+       _requireAuthenticatedViewer = requireAuthenticatedViewer,
+       _canReadPublicCache = canReadPublicCache;
 
   final int _session;
+  final bool _allowPublicCache;
+  final bool _requireAuthenticatedViewer;
+  final Future<bool> Function()? _canReadPublicCache;
   int? _snapshotRevision;
   DateTime? _snapshotFetchedAt;
   final _logger = Logger('PostRepositoryImpl');
@@ -38,6 +49,19 @@ class PostRepositoryImpl implements AbstractPostRepository {
 
   final PostApi _postApi;
   final PostLocalDataSource _localDataSource;
+
+  bool _hasAuthorization(Response<dynamic> response) =>
+      response.requestOptions.headers.entries.any(
+        (header) =>
+            header.key.toLowerCase() == 'authorization' &&
+            header.value is String &&
+            (header.value as String).trim().isNotEmpty,
+      );
+
+  bool _isMissingViewer(Response<dynamic> response) =>
+      _requireAuthenticatedViewer && !_hasAuthorization(response);
+
+  static const _missingViewer = ServerFailure('로그인 상태를 확인해 주세요.', 401);
 
   @override
   Future<Either<Failure, PostDetailModel>> createPost(
@@ -80,6 +104,7 @@ class PostRepositoryImpl implements AbstractPostRepository {
     final revision = _localDataSource.revision;
     try {
       final response = await _postApi.getPosts(cursor: cursor);
+      if (_isMissingViewer(response)) return const Left(_missingViewer);
       final data = response.data;
       if (data == null) return const Left(ServerFailure('응답 데이터가 없습니다.', 500));
 
@@ -91,7 +116,10 @@ class PostRepositoryImpl implements AbstractPostRepository {
         json: data,
         itemParser: (e) => PostListModel.fromJson(e),
       );
-      if (cursor == null) {
+      if (!_allowPublicCache || _hasAuthorization(response)) {
+        _snapshotRevision = null;
+        _snapshotFetchedAt = null;
+      } else if (cursor == null) {
         _snapshotRevision = revision;
         _snapshotFetchedAt = DateTime.now().toUtc();
       }
@@ -115,6 +143,7 @@ class PostRepositoryImpl implements AbstractPostRepository {
   Future<Either<Failure, PostDetailModel>> getPostById(int postId) async {
     try {
       final response = await _postApi.getPostById(postId);
+      if (_isMissingViewer(response)) return const Left(_missingViewer);
       final data = response.data;
       if (data == null) return const Left(ServerFailure('응답 데이터가 없습니다.', 500));
       return Right(PostDetailModel.fromJson(data));
@@ -189,6 +218,7 @@ class PostRepositoryImpl implements AbstractPostRepository {
         keyword: keyword,
         cursor: cursor,
       );
+      if (_isMissingViewer(response)) return const Left(_missingViewer);
 
       final data = response.data;
 
@@ -214,9 +244,18 @@ class PostRepositoryImpl implements AbstractPostRepository {
   @override
   Future<Either<Failure, List<PostListModel>>> getCachedPosts() async {
     try {
-      if (_session != _localDataSource.session) return const Right([]);
+      if (!_allowPublicCache || _session != _localDataSource.session) {
+        return const Right([]);
+      }
+      final revision = _localDataSource.revision;
+      final canRead = _canReadPublicCache;
+      if (canRead != null && !await canRead()) return const Right([]);
       final posts = await _localDataSource.getCachedPosts();
-      if (_session != _localDataSource.session) return const Right([]);
+      if (canRead != null && !await canRead()) return const Right([]);
+      if (_session != _localDataSource.session ||
+          revision != _localDataSource.revision) {
+        return const Right([]);
+      }
       return Right(posts);
     } catch (_) {
       return const Left(CacheFailure('저장된 게시글을 불러오지 못했습니다.'));
@@ -228,7 +267,9 @@ class PostRepositoryImpl implements AbstractPostRepository {
     List<PostListModel> freshPosts,
   ) async {
     try {
-      if (_session != _localDataSource.session || _snapshotRevision == null) {
+      if (!_allowPublicCache ||
+          _session != _localDataSource.session ||
+          _snapshotRevision == null) {
         return const Right(null);
       }
       await _localDataSource.saveSnapshot(

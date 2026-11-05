@@ -16,10 +16,14 @@ import 'post_cache_test.dart' show post;
 class TestApi extends PostApi {
   TestApi() : super(Dio());
   bool failMutation = false;
+  bool authenticated = false;
   Completer<Response<Map<String, dynamic>>>? pending;
   Response<Map<String, dynamic>> response(Map<String, dynamic> data) =>
       Response(
-        requestOptions: RequestOptions(path: '/posts'),
+        requestOptions: RequestOptions(
+          path: '/posts',
+          headers: {if (authenticated) 'Authorization': 'Bearer test-token'},
+        ),
         statusCode: 200,
         data: data,
       );
@@ -140,6 +144,72 @@ void main() {
         (_) => fail('stale response accepted'),
       );
     });
+    test(
+      'signed-in viewer never reads or writes the public snapshot',
+      () async {
+        await source.saveSnapshot([post(99)]);
+        final signedIn = PostRepositoryImpl(
+          api,
+          source,
+          allowPublicCache: false,
+          requireAuthenticatedViewer: true,
+        );
+        expect(
+          (await signedIn.getCachedPosts()).getOrElse((_) => [post(99)]),
+          isEmpty,
+        );
+        final missingToken = await signedIn.getPosts();
+        expect(missingToken.getLeft().toNullable(), isA<ServerFailure>());
+        api.authenticated = true;
+        expect((await signedIn.getPosts()).isRight(), isTrue);
+        await signedIn.savePostsCache([post(1)]);
+        expect((await source.getCachedPosts()).single.postId, 99);
+      },
+    );
+    test(
+      'a request with authorization never overwrites the public snapshot',
+      () async {
+        await source.saveSnapshot([post(99)]);
+        expect((await repository.getPosts()).isRight(), isTrue);
+        api.authenticated = true;
+        expect((await repository.getPosts(cursor: 'next')).isRight(), isTrue);
+        await repository.savePostsCache([post(1)]);
+        expect((await source.getCachedPosts()).single.postId, 99);
+      },
+    );
+    test('public snapshot is hidden while stored auth is unresolved', () async {
+      await source.saveSnapshot([post(99)]);
+      final restoring = PostRepositoryImpl(
+        api,
+        source,
+        canReadPublicCache: () async => false,
+      );
+      final cached = await restoring.getCachedPosts();
+      expect(cached.isRight(), isTrue);
+      expect(cached.getOrElse((_) => [post(99)]), isEmpty);
+    });
+    test(
+      'visibility invalidation rejects an old in-flight list response',
+      () async {
+        await source.saveSnapshot([post(99)]);
+        api.pending = Completer<Response<Map<String, dynamic>>>();
+        final request = repository.getPosts();
+        final clearing = source.invalidate();
+        api.pending!.complete(
+          api.response({
+            'items': [post(99).toJson()],
+            'hasNext': false,
+          }),
+        );
+        expect(
+          (await request).getLeft().toNullable(),
+          isA<CancelTokenFailure>(),
+        );
+        await clearing;
+        await repository.savePostsCache([post(99)]);
+        expect(await source.getCachedPosts(), isEmpty);
+      },
+    );
     test(
       'mutation prevents stale list snapshot from restoring old title',
       () async {

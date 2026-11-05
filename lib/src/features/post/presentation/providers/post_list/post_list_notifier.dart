@@ -175,6 +175,17 @@ class PostListNotifier extends CursorPaginationNotifier<PostListModel> {
     _freshPosts = [];
   }
 
+  Future<void> reloadAfterVisibilityChange() async {
+    if (!mounted) return;
+
+    _invalidatePending(); // 차단 전에 시작한 목록 요청의 응답은 무시
+    _didReadCache = true; // 이번 재조회에서 기존 디스크 캐시를 먼저 띄우지 않음
+    _failedFirstPage = true; // 실패하면 이전 커서가 아니라 첫 페이지부터 재시도
+
+    state = const CursorPaginationState<PostListModel>(hasNext: false);
+    await load(); // cursor 없이 서버에서 첫 페이지 조회
+  }
+
   void removePost(int postId) {
     if (!mounted) return;
     _invalidatePending();

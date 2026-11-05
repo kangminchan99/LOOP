@@ -42,7 +42,6 @@ class _BoardPageState extends ConsumerState<BoardPage>
 
   bool get _hasSearchText => _searchController.text.trim().isNotEmpty;
   bool _isSearchMode = false;
-  bool _hasSearched = false;
 
   @override
   void dispose() {
@@ -57,17 +56,15 @@ class _BoardPageState extends ConsumerState<BoardPage>
 
     _debounce?.cancel();
 
-    _debounce = Timer(const Duration(milliseconds: 400), () async {
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
       final keyword = value.trim();
 
       if (keyword.isEmpty) {
         ref.read(searchPostProvider.notifier).clear();
 
-        if (!mounted) return;
-
         setState(() {
           _isSearchMode = false;
-          _hasSearched = false;
         });
 
         return;
@@ -77,13 +74,7 @@ class _BoardPageState extends ConsumerState<BoardPage>
         _isSearchMode = true;
       });
 
-      await ref.read(searchPostProvider.notifier).search(keyword);
-
-      if (!mounted) return;
-
-      setState(() {
-        _hasSearched = true;
-      });
+      unawaited(ref.read(searchPostProvider.notifier).search(keyword));
     });
   }
 
@@ -93,7 +84,6 @@ class _BoardPageState extends ConsumerState<BoardPage>
     ref.read(searchPostProvider.notifier).clear();
     setState(() {
       _isSearchMode = false;
-      _hasSearched = false;
     });
   }
 
@@ -145,9 +135,7 @@ class _BoardPageState extends ConsumerState<BoardPage>
             final normalState = ref.watch(postListProvider);
             final searchState = ref.watch(searchPostProvider);
 
-            final state = _isSearchMode && _hasSearched
-                ? searchState
-                : normalState;
+            final state = _isSearchMode ? searchState : normalState;
             // 변경 후: 보여줄 목록이 없을 때만 전체 로딩 표시.
             if (state.isLoading && state.items.isEmpty) {
               return const Center(child: CircularProgressIndicator());
@@ -155,7 +143,20 @@ class _BoardPageState extends ConsumerState<BoardPage>
             if (_isSearchMode &&
                 state.errorMessage != null &&
                 state.items.isEmpty) {
-              return Center(child: Text(state.errorMessage!));
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(state.errorMessage!, textAlign: TextAlign.center),
+                    TextButton(
+                      onPressed: () => ref
+                          .read(searchPostProvider.notifier)
+                          .reloadAfterVisibilityChange(),
+                      child: Text(AppLocalizations.of(context).postsRetry),
+                    ),
+                  ],
+                ),
+              );
             }
 
             final list = CursorPaginatedListView<PostListModel>(
