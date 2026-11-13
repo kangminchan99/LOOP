@@ -55,5 +55,7 @@
 		<string>사진 속 글자를 추출하기 위해 카메라를 사용합니다.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>글자를 추출할 사진을 선택하기 위해 사진 보관함을 사용합니다.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>게시글에 첨부할 음성을 녹음하기 위해 마이크를 사용합니다.</string>
 	</dict>
 </plist>

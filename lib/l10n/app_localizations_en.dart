@@ -124,6 +124,41 @@ class AppLocalizationsEn extends AppLocalizations {
       'Couldn\'t confirm whether the author was blocked. Check your blocked users in Settings.';
 
   @override
+  String get postAudioRecord => 'Record audio';
+
+  @override
+  String get postAudioPreparing => 'Preparing to record…';
+
+  @override
+  String get postAudioStop => 'Stop recording';
+
+  @override
+  String get postAudioStopping => 'Finishing audio…';
+
+  @override
+  String get postAudioLocalOnly =>
+      'Saved on this device only. Not attached to the post yet.';
+
+  @override
+  String get postAudioDelete => 'Delete recording';
+
+  @override
+  String get postAudioPermissionDenied =>
+      'Microphone access is needed to record.';
+
+  @override
+  String get postAudioFailed => 'Couldn’t complete the recording action.';
+
+  @override
+  String get postAudioPreview => 'Preview audio';
+
+  @override
+  String get postAudioPause => 'Pause';
+
+  @override
+  String get postAudioPreviewFailed => 'Couldn’t play the recording.';
+
+  @override
   String get settingsSavedPosts => 'Saved posts';
 
   @override

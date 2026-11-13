@@ -122,6 +122,39 @@ class AppLocalizationsKo extends AppLocalizations {
       '차단 결과를 확인하지 못했어요. 설정의 차단 목록을 확인해 주세요.';
 
   @override
+  String get postAudioRecord => '음성 녹음';
+
+  @override
+  String get postAudioPreparing => '녹음을 준비하고 있어요…';
+
+  @override
+  String get postAudioStop => '녹음 종료';
+
+  @override
+  String get postAudioStopping => '녹음 작업을 마무리하고 있어요…';
+
+  @override
+  String get postAudioLocalOnly => '기기에만 저장됐어요. 아직 게시글에는 첨부되지 않아요.';
+
+  @override
+  String get postAudioDelete => '녹음 삭제';
+
+  @override
+  String get postAudioPermissionDenied => '녹음하려면 마이크 권한이 필요해요.';
+
+  @override
+  String get postAudioFailed => '녹음 작업을 완료하지 못했어요.';
+
+  @override
+  String get postAudioPreview => '미리 듣기';
+
+  @override
+  String get postAudioPause => '일시정지';
+
+  @override
+  String get postAudioPreviewFailed => '녹음을 재생하지 못했어요.';
+
+  @override
   String get settingsSavedPosts => '저장한 글';
 
   @override

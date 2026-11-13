@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:loop/src/core/layout/default_layout.dart';
 import 'package:loop/src/features/post/domain/models/post_request_model.dart';
 import 'package:loop/src/features/post/presentation/providers/create_post/create_post_state.dart';
 import 'package:loop/src/features/post/presentation/providers/post_providers.dart';
+import 'package:loop/src/features/post/presentation/widgets/post_audio_recorder_section.dart';
 
 class BoardWritePage extends ConsumerStatefulWidget {
   const BoardWritePage({super.key});
@@ -16,6 +18,7 @@ class BoardWritePage extends ConsumerStatefulWidget {
 class _BoardWritePageState extends ConsumerState<BoardWritePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  final _audioSessionKey = Object();
 
   @override
   void dispose() {
@@ -164,6 +167,13 @@ class _BoardWritePageState extends ConsumerState<BoardWritePage> {
                   ),
 
                   const SizedBox(height: 12),
+
+                  if (!kIsWeb &&
+                      (defaultTargetPlatform == TargetPlatform.android ||
+                          defaultTargetPlatform == TargetPlatform.iOS)) ...[
+                    PostAudioRecorderSection(sessionKey: _audioSessionKey),
+                    const SizedBox(height: 12),
+                  ],
 
                   Container(
                     padding: const EdgeInsets.all(16),

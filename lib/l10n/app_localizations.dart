@@ -314,6 +314,72 @@ abstract class AppLocalizations {
   /// **'차단 결과를 확인하지 못했어요. 설정의 차단 목록을 확인해 주세요.'**
   String get postBlockAuthorUnconfirmed;
 
+  /// No description provided for @postAudioRecord.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 녹음'**
+  String get postAudioRecord;
+
+  /// No description provided for @postAudioPreparing.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음을 준비하고 있어요…'**
+  String get postAudioPreparing;
+
+  /// No description provided for @postAudioStop.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음 종료'**
+  String get postAudioStop;
+
+  /// No description provided for @postAudioStopping.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음 작업을 마무리하고 있어요…'**
+  String get postAudioStopping;
+
+  /// No description provided for @postAudioLocalOnly.
+  ///
+  /// In ko, this message translates to:
+  /// **'기기에만 저장됐어요. 아직 게시글에는 첨부되지 않아요.'**
+  String get postAudioLocalOnly;
+
+  /// No description provided for @postAudioDelete.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음 삭제'**
+  String get postAudioDelete;
+
+  /// No description provided for @postAudioPermissionDenied.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음하려면 마이크 권한이 필요해요.'**
+  String get postAudioPermissionDenied;
+
+  /// No description provided for @postAudioFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음 작업을 완료하지 못했어요.'**
+  String get postAudioFailed;
+
+  /// No description provided for @postAudioPreview.
+  ///
+  /// In ko, this message translates to:
+  /// **'미리 듣기'**
+  String get postAudioPreview;
+
+  /// No description provided for @postAudioPause.
+  ///
+  /// In ko, this message translates to:
+  /// **'일시정지'**
+  String get postAudioPause;
+
+  /// No description provided for @postAudioPreviewFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음을 재생하지 못했어요.'**
+  String get postAudioPreviewFailed;
+
   /// No description provided for @settingsSavedPosts.
   ///
   /// In ko, this message translates to:

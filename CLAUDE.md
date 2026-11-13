@@ -7,6 +7,7 @@
 - 기능 변경 전 현재 코드, `pubspec.yaml`, `pubspec.lock`, 해당 기능 문서를 함께 확인한다.
 - 성능·네트워크·동시성 작업: [앱 전체 성능 가이드](docs/APP_PERFORMANCE_GUIDE.md).
 - 게시글 캐시: [오프라인 캐시 정책](docs/POST_OFFLINE_CACHE.md).
+- 게시글 음성 첨부: [모바일 준비·녹음·재생·검증 순서](#게시글-음성-첨부).
 - 사용자 차단·해제: [기능 설계](docs/USER_BLOCKING.md). 서버 필터·페이지네이션과 로컬 캐시 가시성 경계를 함께 확인한다. 현재 문서 단계.
 - 기기 기능: [BLE 계획](docs/BLE_FEATURE.md), [OCR 계획](docs/OCR_FEATURE.md).
 - 이 문서는 공통 책임·의존성 기준을, 기능 문서는 데이터 계약·수명·검증 기준을 담당한다. 내용이 충돌하면 실제 동작을 확인하고 명시적으로 결정한다.
@@ -249,6 +250,21 @@ context.go(AppRoute.login.path);
 - 앱 잠금은 인증 세션과 다르다. 로그인 상태여도 잠긴 화면·알림 이동·다이얼로그에서 보호 데이터를 노출하지 않는다.
 - IndexedStack은 화면을 보존하므로 탭 전환과 dispose는 같지 않다. 구독 정리·백그라운드 정책은 명시한다. [StatefulShellRoute](https://pub.dev/documentation/go_router/latest/go_router/StatefulShellRoute-class.html)
 - native SDK 지원은 Android/iOS/macOS/Web별로 확인한다. 메뉴·직접 진입·실행부에서 안전한 미지원 처리를 제공한다.
+
+### 게시글 음성 첨부
+
+상태: **설계 단계.** Android·iOS 글쓰기에서 최대 60초·2MiB의 AAC-LC `.m4a` 음성을 한 개 녹음하고, 미리 들은 뒤 기존 제목·본문에 선택적으로 첨부한다. 게시글 상세에서 누를 때만 재생한다. 자동 재생, 백그라운드 녹음, 웹·macOS 녹음, 음성 인식은 1차 범위가 아니다.
+
+1. **패키지와 권한**: 앱이 사용하는 Dart 3.9.2 기준으로 `flutter pub add 'record:^6.2.1' 'just_audio:^0.10.6'`을 적용하고 잠금 파일에서 실제 해결 버전을 확인한다. 앱에 이미 있는 `path_provider`로 앱 전용 임시 경로를 얻는다. [record 6.2.1](https://pub.dev/packages/record/versions/6.2.1), [just_audio 버전 목록](https://pub.dev/packages/just_audio/versions)
+   - Android: `android/app/src/main/AndroidManifest.xml`의 `<application>` 바깥에 `android.permission.RECORD_AUDIO`를 선언한다.
+   - iOS: `ios/Runner/Info.plist`의 최상위 `<dict>`에 `NSMicrophoneUsageDescription`과 사용 목적을 추가한다. 패키지·권한 변경 후에는 완전히 종료하고 다시 실행한다.
+2. **기기에서 녹음과 미리 듣기**: `lib/src/features/post/` 아래 로컬 데이터 소스가 녹음기와 플레이어 SDK를 감싸고, 글쓰기 상태가 녹음 중·미리 듣기 가능·실패를 관리한다. `board_write_page.dart`에서 사용자가 녹음 버튼을 눌렀을 때만 권한을 요청한다. 종료·다시 녹음·삭제를 지원하고, 녹음 제한에 도달하면 종료한다. 재생 위치가 바뀔 때 글쓰기 화면 전체가 아니라 음성 컨트롤만 갱신한다.
+3. **게시글에 연결**: 업로드 API가 반환한 `audioAttachmentId`를 기존 글쓰기 요청 모델과 `create_post` Notifier 흐름에 선택적으로 연결한다. 업로드 후 등록 실패는 같은 첨부 ID와 등록 재시도 키로 복구한다. 서버가 거절하거나 첨부가 만료된 경우만 다시 올리도록 안내한다. 서버 계약은 서버 저장소 `server.md`의 22-3절을 따른다.
+4. **상세 재생**: `board_detail_page.dart`는 선택적 재생 길이만 사용해 컨트롤을 표시한다. 재생할 때 게시글 ID로 URL을 발급받고 만료 시 권한을 다시 확인해 새 URL을 요청한다. URL을 Drift·공용 캐시·로그에 저장하지 않는다. 음성이 없는 기존 글은 기존 화면을 유지한다.
+
+- 녹음과 미리 듣기가 동시에 켜지지 않게 한다. 전화·백그라운드 전환·앱 잠금 시 녹음을 자동 재개하지 않고 종료를 시도한다. 유효하게 저장됐으면 미리 듣기를 제공하고, 파일이 유효하지 않으면 다시 녹음하도록 안내한다.
+- 화면을 떠나거나 로그아웃하면 녹음기·플레이어·타이머·구독을 정리하고, 더 이상 필요한 작업이 없는 임시 파일을 삭제한다. 계정 전환 전 응답이 새 계정의 글에 붙지 않게 한다. 새 문구는 한국어·영어 ARB에 둔다.
+- 1차 검증: 로컬 녹음 → 미리 듣기를 서버 없이 먼저 확인한다. Android·iOS 실기기에서 권한 거부, 60초 종료, 녹음 중 앱 이탈, 재녹음과 파일 정리를 확인한다. 연동 후에는 등록 재시도, URL 만료, 차단·삭제된 글의 재생 거절, 기존 텍스트 글 동작을 회귀 검증한다.
 
 ## 8. 네트워크·캐시·대규모 사용
 
