@@ -19,6 +19,26 @@ class PostAudioNotifier extends StateNotifier<PostAudioState> {
   Timer? _limitTimer;
   Future<void>? _operationDone;
 
+  bool _stopRequestedOnHide = false;
+
+  Future<void> stopForBackground() async {
+    if (!mounted) return;
+    if (state is PostAudioPreparing) {
+      // 진행 중인 시작 작업에서 취소하거나, 이미 시작됐다면 파일을 마무리한다.
+      _stopRequestedOnHide = true;
+      final starting = _operationDone;
+      if (starting != null) await starting;
+      return;
+    }
+    if (state is! PostAudioRecording) return;
+
+    _stopRequestedOnHide = true;
+    final pending = _operationDone;
+    if (pending != null) await pending;
+    if (!_stopRequestedOnHide) return;
+    await stopRecording();
+  }
+
   Future<void> startRecording() => _runOperation(_startRecording);
   Future<void> stopRecording() => _runOperation(_stopRecording);
   Future<void> discardRecording() => _runOperation(_discardRecording);
@@ -72,11 +92,16 @@ class PostAudioNotifier extends StateNotifier<PostAudioState> {
       return;
     }
 
+    _stopRequestedOnHide = false;
     state = const PostAudioState.preparing();
 
     try {
       final allowed = await _dataSource.requestPermission();
       if (!mounted) return;
+      if (_stopRequestedOnHide) {
+        state = const PostAudioState.idle();
+        return;
+      }
 
       if (!allowed) {
         state = const PostAudioState.failure(PostAudioFailure.permissionDenied);
@@ -85,12 +110,25 @@ class PostAudioNotifier extends StateNotifier<PostAudioState> {
 
       await _dataSource.discardRecording();
       if (!mounted) return;
+      if (_stopRequestedOnHide) {
+        state = const PostAudioState.idle();
+        return;
+      }
 
       final path = await _dataSource.createRecordingPath();
       if (!mounted) return;
+      if (_stopRequestedOnHide) {
+        await _dataSource.discardRecording();
+        if (mounted) state = const PostAudioState.idle();
+        return;
+      }
 
       await _dataSource.start(path: path);
       if (!mounted) return;
+      if (_stopRequestedOnHide) {
+        await _finishRecording();
+        return;
+      }
 
       _startTimers();
       state = const PostAudioState.recording(elapsed: Duration.zero);
@@ -102,6 +140,10 @@ class PostAudioNotifier extends StateNotifier<PostAudioState> {
   Future<void> _stopRecording() async {
     if (!mounted || state is! PostAudioRecording) return;
 
+    await _finishRecording();
+  }
+
+  Future<void> _finishRecording() async {
     _stopTimers();
     state = const PostAudioState.stopping();
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,11 +7,14 @@ import 'package:fpdart/fpdart.dart';
 import 'package:loop/l10n/app_localizations.dart';
 import 'package:loop/src/core/analytics/analytics_providers.dart';
 import 'package:loop/src/core/network/error/failures.dart';
+import 'package:loop/src/features/post/data/data_sources/local/post_audio_player_data_source.dart';
 import 'package:loop/src/features/post/data/data_sources/local/post_audio_recorder_data_source.dart';
 import 'package:loop/src/features/post/domain/models/post_detail_model.dart';
 import 'package:loop/src/features/post/domain/models/post_request_model.dart';
 import 'package:loop/src/features/post/presentation/pages/board_write_page.dart';
 import 'package:loop/src/features/post/presentation/providers/post_audio/post_audio_notifier.dart';
+import 'package:loop/src/features/post/presentation/providers/post_audio/post_audio_preview_notifier.dart';
+import 'package:loop/src/features/post/presentation/providers/post_audio/post_audio_preview_provider.dart';
 import 'package:loop/src/features/post/presentation/providers/post_audio/post_audio_provider.dart';
 import 'package:loop/src/features/post/presentation/providers/post_providers.dart';
 import 'package:loop/src/features/post/presentation/widgets/post_audio_recorder_section.dart';
@@ -19,6 +24,7 @@ import 'post_cache_test.dart' show FakeRepository;
 
 class _Recorder extends PostAudioRecorderDataSource {
   bool permissionGranted = true;
+  Completer<bool>? pendingPermission;
   int permissionRequests = 0;
   int starts = 0;
   int stops = 0;
@@ -27,7 +33,8 @@ class _Recorder extends PostAudioRecorderDataSource {
   @override
   Future<bool> requestPermission() async {
     permissionRequests++;
-    return permissionGranted;
+    final pending = pendingPermission;
+    return pending == null ? permissionGranted : await pending.future;
   }
 
   @override
@@ -44,6 +51,51 @@ class _Recorder extends PostAudioRecorderDataSource {
 
   @override
   Future<void> discardRecording() async => discards++;
+}
+
+class _FakePlayer implements PostAudioPlayerDataSource {
+  // 위젯 테스트의 가상 시간 영역 안에서 Future를 생성한다.
+  late final unloadDone = Completer<void>();
+  late final _playbackChanges =
+      StreamController<({bool playing, bool completed})>.broadcast();
+  Completer<Duration?>? loadDone;
+  int loadCalls = 0;
+  int playCalls = 0;
+  int unloadCalls = 0;
+
+  @override
+  Future<void> unloadFile() {
+    unloadCalls++;
+    return unloadDone.future;
+  }
+
+  @override
+  Stream<({bool playing, bool completed})> get playbackChanges =>
+      _playbackChanges.stream;
+
+  @override
+  Stream<void> get playbackErrors => const Stream.empty();
+
+  @override
+  Future<Duration?> loadFile(String filePath) async {
+    loadCalls++;
+    return await loadDone?.future ?? const Duration(seconds: 5);
+  }
+
+  @override
+  Future<void> play() async {
+    playCalls++;
+    _playbackChanges.add((playing: true, completed: false));
+  }
+
+  @override
+  Future<void> pause() async {}
+
+  @override
+  Future<void> seekToStart() async {}
+
+  @override
+  Future<void> dispose() => _playbackChanges.close();
 }
 
 class _Posts extends FakeRepository {
@@ -65,10 +117,12 @@ class _RecordingClock extends Stopwatch {
 
 void main() {
   late _Recorder recorder;
+  late _FakePlayer player;
   late _Posts posts;
 
   setUp(() {
     recorder = _Recorder();
+    player = _FakePlayer();
     posts = _Posts();
   });
 
@@ -85,6 +139,9 @@ void main() {
           postAudioProvider.overrideWith(
             (_, _) => PostAudioNotifier(recorder, stopwatch: _RecordingClock()),
           ),
+          postAudioPreviewProvider.overrideWith(
+            (_, _) => PostAudioPreviewNotifier(player),
+          ),
         ],
         child: const MaterialApp(
           locale: Locale('en'),
@@ -97,8 +154,121 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  Future<void> recordClip(WidgetTester tester) async {
+    await tester.tap(find.text('Record audio'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Stop recording'));
+    await tester.pumpAndSettle();
+  }
+
+  void hideApp(WidgetTester tester) {
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+  }
+
+  void resumeApp(WidgetTester tester) {
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+  }
+
+  testWidgets('hiding the app finishes recording and keeps the clip', (
+    tester,
+  ) async {
+    await showWritePage(tester);
+    await tester.tap(find.text('Record audio'));
+    await tester.pumpAndSettle();
+    expect(find.text('Stop recording'), findsOneWidget);
+
+    hideApp(tester);
+    await tester.pump();
+    expect(recorder.stops, 1);
+    expect(recorder.discards, 1); // 녹음 시작 전 정리만 실행됨
+
+    resumeApp(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('Stop recording'), findsNothing);
+    expect(find.text('Preview audio'), findsOneWidget);
+    expect(recorder.starts, 1);
+    expect(player.playCalls, 0);
+  });
+
+  testWidgets('inactive alone does not cancel the microphone permission flow', (
+    tester,
+  ) async {
+    recorder.pendingPermission = Completer<bool>();
+    await showWritePage(tester);
+    await tester.tap(find.text('Record audio'));
+    await tester.pump();
+    expect(recorder.permissionRequests, 1);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    recorder.pendingPermission!.complete(true);
+    await tester.pumpAndSettle();
+
+    expect(recorder.starts, 1);
+    expect(recorder.stops, 0);
+    expect(find.text('Stop recording'), findsOneWidget);
+  });
+
   testWidgets(
-    'only a tap requests permission; stop keeps audio locally and delete resets it',
+    'hiding the app stops preview without discarding or autoplaying',
+    (tester) async {
+      await showWritePage(tester);
+      await recordClip(tester);
+      await tester.tap(find.text('Preview audio'));
+      await tester.pumpAndSettle();
+      expect(find.text('Pause'), findsOneWidget);
+      expect(player.playCalls, 1);
+      expect(player.loadCalls, 1);
+
+      hideApp(tester);
+      await tester.pump();
+      expect(player.unloadCalls, 1);
+      player.unloadDone.complete();
+      await tester.pumpAndSettle();
+
+      resumeApp(tester);
+      await tester.pumpAndSettle();
+      expect(find.text('Pause'), findsNothing);
+      expect(find.text('Preview audio'), findsOneWidget);
+      expect(player.playCalls, 1);
+      expect(recorder.discards, 1); // 녹음 시작 전 정리만 실행됨
+
+      await tester.tap(find.text('Preview audio'));
+      await tester.pumpAndSettle();
+      expect(player.loadCalls, 2); // 다시 누르면 파일을 처음부터 준비한다.
+      expect(player.playCalls, 2);
+    },
+  );
+
+  testWidgets('hiding during file load prevents late playback', (tester) async {
+    player.loadDone = Completer<Duration?>();
+    await showWritePage(tester);
+    await recordClip(tester);
+    await tester.tap(find.text('Preview audio'));
+    await tester.pumpAndSettle();
+    expect(player.loadCalls, 1);
+    expect(player.playCalls, 0);
+
+    hideApp(tester);
+    await tester.pump();
+    expect(player.unloadCalls, 0); // 파일 로딩이 끝난 뒤 해제한다.
+    player.loadDone!.complete(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(player.playCalls, 0);
+    expect(player.unloadCalls, 1);
+
+    player.unloadDone.complete();
+    resumeApp(tester);
+    await tester.pumpAndSettle();
+    expect(player.playCalls, 0);
+    expect(recorder.discards, 1);
+    expect(find.text('Preview audio'), findsOneWidget);
+  });
+
+  testWidgets(
+    'only a tap requests permission and deletion waits for the player to release the file',
     (tester) async {
       await showWritePage(tester);
       expect(recorder.permissionRequests, 0);
@@ -122,12 +292,39 @@ void main() {
       );
 
       await tester.tap(find.text('Delete recording'));
+      await tester.pump();
+      expect(player.unloadCalls, 1);
+      expect(recorder.discards, 1); // 아직 녹음 시작 전 정리만 실행됨
+
+      player.unloadDone.complete();
       await tester.pumpAndSettle();
       expect(recorder.discards, 2); // 새 녹음 전 정리 + 삭제
       expect(record, findsOneWidget);
       expect(posts.submitted, isEmpty);
     },
   );
+
+  testWidgets('a failed player release leaves the recording untouched', (
+    tester,
+  ) async {
+    await showWritePage(tester);
+    await tester.tap(find.text('Record audio'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Stop recording'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Delete recording'));
+    await tester.pump();
+    expect(player.unloadCalls, 1);
+
+    player.unloadDone.completeError(StateError('Could not release file'));
+    await tester.pumpAndSettle();
+
+    expect(recorder.discards, 1);
+    expect(find.textContaining('Not attached to the post yet'), findsOneWidget);
+    expect(find.text('Couldn’t play the recording.'), findsOneWidget);
+    expect(find.text('Record audio'), findsNothing);
+  });
 
   testWidgets('denying microphone access does not block a text post', (
     tester,

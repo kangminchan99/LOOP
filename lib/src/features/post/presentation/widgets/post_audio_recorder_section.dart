@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop/l10n/app_localizations.dart';
@@ -6,10 +8,41 @@ import 'package:loop/src/features/post/presentation/providers/post_audio/post_au
 import 'package:loop/src/features/post/presentation/providers/post_audio/post_audio_provider.dart';
 import 'package:loop/src/features/post/presentation/providers/post_audio/post_audio_state.dart';
 
-class PostAudioRecorderSection extends ConsumerWidget {
+class PostAudioRecorderSection extends ConsumerStatefulWidget {
   const PostAudioRecorderSection({required this.sessionKey, super.key});
 
   final Object sessionKey;
+
+  @override
+  ConsumerState<PostAudioRecorderSection> createState() =>
+      _PostAudioRecorderSectionState();
+}
+
+class _PostAudioRecorderSectionState
+    extends ConsumerState<PostAudioRecorderSection> {
+  late final AppLifecycleListener _lifecycleListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycleListener = AppLifecycleListener(onHide: _handleAppHidden);
+  }
+
+  void _handleAppHidden() {
+    final key = widget.sessionKey;
+    final recorderProvider = postAudioProvider(key);
+    if (ref.read(recorderProvider) is PostAudioReady) {
+      ref.read(postAudioPreviewProvider(key).notifier).stopForBackground();
+      return;
+    }
+    unawaited(ref.read(recorderProvider.notifier).stopForBackground());
+  }
+
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+    super.dispose();
+  }
 
   String _formatElapsed(Duration elapsed) {
     final minutes = elapsed.inMinutes;
@@ -18,7 +51,8 @@ class PostAudioRecorderSection extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final sessionKey = widget.sessionKey;
     final l10n = AppLocalizations.of(context);
     final provider = postAudioProvider(sessionKey);
     final state = ref.watch(provider);
@@ -75,10 +109,9 @@ class PostAudioRecorderSection extends ConsumerWidget {
                     ),
                   ),
                   TextButton(
-                    // 이번 단계에서는 로딩·재생 중 삭제를 막는다.
-                    onPressed: isLoading || isPlaying
+                    onPressed: isLoading
                         ? null
-                        : notifier.discardRecording,
+                        : () => player.discardClip(notifier.discardRecording),
                     child: Text(l10n.postAudioDelete),
                   ),
                 ],

@@ -19,6 +19,45 @@ class PostAudioPreviewNotifier extends StateNotifier<PostAudioPreviewState> {
   bool _acceptPlaybackEvents = false;
   bool _commandInProgress = false;
   int _playRequestId = 0;
+  bool _backgroundStopPending = false;
+
+  void stopForBackground() {
+    if (!mounted || _backgroundStopPending || state is PostAudioPreviewIdle) {
+      return;
+    }
+
+    _backgroundStopPending = true;
+    _acceptPlaybackEvents = false;
+    _playRequestId++; // 파일 로딩이 늦게 끝나도 재생하지 않도록 무효화
+
+    if (!_commandInProgress) {
+      unawaited(_unloadForBackground());
+    }
+  }
+
+  void _finishCommand() {
+    _commandInProgress = false;
+
+    if (mounted && _backgroundStopPending) {
+      unawaited(_unloadForBackground());
+    }
+  }
+
+  Future<void> _unloadForBackground() async {
+    _commandInProgress = true;
+    state = const PostAudioPreviewState.loading();
+
+    try {
+      await _player.unloadFile();
+      _loadedPath = null;
+      if (mounted) state = const PostAudioPreviewState.idle();
+    } catch (_) {
+      _showFailure();
+    } finally {
+      _backgroundStopPending = false;
+      _commandInProgress = false;
+    }
+  }
 
   Future<void> play(String filePath) async {
     if (!mounted || _commandInProgress || state is PostAudioPreviewPlaying) {
@@ -50,7 +89,7 @@ class PostAudioPreviewNotifier extends StateNotifier<PostAudioPreviewState> {
     } catch (_) {
       if (requestId == _playRequestId) _showFailure();
     } finally {
-      _commandInProgress = false;
+      _finishCommand();
     }
   }
 
@@ -73,7 +112,7 @@ class PostAudioPreviewNotifier extends StateNotifier<PostAudioPreviewState> {
     } catch (_) {
       _showFailure();
     } finally {
-      _commandInProgress = false;
+      _finishCommand();
     }
   }
 
@@ -111,6 +150,30 @@ class PostAudioPreviewNotifier extends StateNotifier<PostAudioPreviewState> {
       await _errors.cancel();
     } finally {
       await _player.dispose();
+    }
+  }
+
+  Future<void> discardClip(Future<void> Function() deleteRecording) async {
+    if (!mounted || _commandInProgress) return;
+
+    _commandInProgress = true;
+    _acceptPlaybackEvents = false;
+    _playRequestId++; // 이전 재생 작업에서 늦게 오는 결과는 무시
+    state = const PostAudioPreviewState.loading();
+
+    try {
+      await _player.unloadFile();
+      _loadedPath = null;
+
+      if (!mounted) return;
+      await deleteRecording();
+
+      if (mounted) state = const PostAudioPreviewState.idle();
+    } catch (_) {
+      // 플레이어 정리 실패 시에는 파일을 지우지 않는다
+      _showFailure();
+    } finally {
+      _finishCommand();
     }
   }
 }

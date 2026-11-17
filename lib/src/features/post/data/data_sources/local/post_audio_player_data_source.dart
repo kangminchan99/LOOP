@@ -23,5 +23,10 @@ class PostAudioPlayerDataSource {
 
   Future<void> seekToStart() => _player.seek(Duration.zero);
 
+  Future<void> unloadFile() async {
+    await _player.stop();
+    await _player.clearAudioSources();
+  }
+
   Future<void> dispose() => _player.dispose();
 }

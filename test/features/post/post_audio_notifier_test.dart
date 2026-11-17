@@ -28,6 +28,9 @@ class _FakeRecorder implements PostAudioRecorderDataSource {
   bool failDiscard = false;
   bool failStop = false;
   String? stoppedPath = _clipPath;
+  Completer<bool>? pendingPermission;
+  Completer<void>? pathEntered;
+  Completer<String>? pendingPath;
   Completer<void>? startEntered;
   Completer<void>? pendingStart;
   Completer<String?>? pendingStop;
@@ -37,13 +40,16 @@ class _FakeRecorder implements PostAudioRecorderDataSource {
   @override
   Future<bool> requestPermission() async {
     calls.add('permission');
-    return permissionGranted;
+    final pending = pendingPermission;
+    return pending == null ? permissionGranted : await pending.future;
   }
 
   @override
   Future<String> createRecordingPath() async {
     calls.add('createPath');
-    return _clipPath;
+    pathEntered?.complete();
+    final pending = pendingPath;
+    return pending == null ? _clipPath : await pending.future;
   }
 
   @override
@@ -234,6 +240,64 @@ void main() {
       notifier.state,
       const PostAudioState.failure(PostAudioFailure.permissionDenied),
     );
+  });
+
+  test('권한 확인 중 숨겨지면 늦게 권한을 받아도 녹음을 시작하지 않는다', () async {
+    recorder.pendingPermission = Completer<bool>();
+    final starting = notifier.startRecording();
+    expect(notifier.state, const PostAudioState.preparing());
+
+    final hiding = notifier.stopForBackground();
+    recorder.pendingPermission!.complete(true);
+    await starting;
+    await hiding;
+
+    expect(recorder.calls, ['permission']);
+    expect(notifier.state, const PostAudioState.idle());
+
+    // 다음 녹음 버튼까지 막지는 않는다.
+    await notifier.startRecording();
+    expect(notifier.state, isA<PostAudioRecording>());
+    await notifier.discardRecording();
+  });
+
+  test('임시 경로 생성 중 숨겨지면 만들어진 경로를 정리하고 시작하지 않는다', () async {
+    recorder.pathEntered = Completer<void>();
+    recorder.pendingPath = Completer<String>();
+    final starting = notifier.startRecording();
+    await recorder.pathEntered!.future;
+
+    final hiding = notifier.stopForBackground();
+    recorder.pendingPath!.complete(_clipPath);
+    await starting;
+    await hiding;
+
+    expect(recorder.calls, ['permission', 'discard', 'createPath', 'discard']);
+    expect(notifier.state, const PostAudioState.idle());
+  });
+
+  test('녹음기 시작 호출 중 숨겨지면 타이머 없이 한 번만 종료한다', () async {
+    recorder.startEntered = Completer<void>();
+    recorder.pendingStart = Completer<void>();
+    final starting = notifier.startRecording();
+    await recorder.startEntered!.future;
+
+    final hiding = notifier.stopForBackground();
+    final hidingAgain = notifier.stopForBackground();
+    recorder.pendingStart!.complete();
+    await starting;
+    await hiding;
+    await hidingAgain;
+
+    expect(recorder.calls, [
+      'permission',
+      'discard',
+      'createPath',
+      'start',
+      'stop',
+    ]);
+    expect(notifier.state, const PostAudioState.ready(filePath: _clipPath));
+    expect(stopwatch.isRunning, isFalse);
   });
 
   test('녹음 종료는 파일을 남기고 중복 종료·취소를 막는다', () async {
